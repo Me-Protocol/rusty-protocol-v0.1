@@ -3,27 +3,27 @@
 
 #[openbrush::contract]
 pub mod main {
-    use ink_storage::traits::SpreadAllocate;
     use openbrush::{
         contracts::diamond::extensions::diamond_loupe::*,
         traits::Storage,
     };
 
     #[ink(storage)]
-    #[derive(Default, SpreadAllocate, Storage)]
-    pub struct Contract {
+    #[derive(Default, Storage)]
+    pub struct Main {
         #[storage_field]
         ownable: ownable::Data,
         #[storage_field]
         diamond: diamond::Data<Loupe>,
     }
 
-    impl Contract {
+    impl Main {
         #[ink(constructor)]
         pub fn new(owner: AccountId) -> Self {
-            ink_lang::codegen::initialize_contract(|instance: &mut Self| {
-                instance._init_with_owner(owner);
-            })
+            let mut instance = Self::default();
+            instance._init_with_owner(owner);
+
+            instance
         }
 
         #[ink(message, payable, selector = _)]
@@ -32,9 +32,9 @@ pub mod main {
         }
     }
 
-    impl Ownable for Contract {}
+    impl Ownable for Main {}
 
-    impl Diamond for Contract {}
+    impl Diamond for Main {}
 
-    impl DiamondLoupe for Contract {}
+    impl DiamondLoupe for Main {}
 }
