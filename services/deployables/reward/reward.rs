@@ -3,7 +3,11 @@
 
 #[openbrush::contract]
 pub mod reward {
-   
+    use ink::codegen::{
+        EmitEvent,
+        Env,
+    };
+ 
     use openbrush::{
         contracts::{
             ownable::*,
@@ -30,6 +34,24 @@ pub mod reward {
         #[storage_field]
         metadata: metadata::Data,
     }
+
+        #[ink(event)]
+        pub struct Transfer {
+            #[ink(topic)]
+            pub from: Option<AccountId>,
+            #[ink(topic)]
+            pub to: Option<AccountId>,
+            pub value: Balance,
+        }
+    
+        #[ink(event)]
+        pub struct Approval {
+            #[ink(topic)]
+            owner: AccountId,
+            #[ink(topic)]
+            spender: AccountId,
+            value: Balance,
+        }
    
     impl PSP22 for Reward {}
 
@@ -38,6 +60,24 @@ pub mod reward {
     impl PSP22Mintable for Reward {}  
 
     impl Ownable for Reward {}
+
+    impl psp22::Internal for Reward {
+        fn _emit_transfer_event(&self, _from: Option<AccountId>, _to: Option<AccountId>, _amount: Balance) {
+            self.env().emit_event(Transfer {
+                from: _from,
+                to: _to,
+                value: _amount,
+            });
+        }
+
+        fn _emit_approval_event(&self, _owner: AccountId, _spender: AccountId, _amount: Balance) {
+            self.env().emit_event(Approval {
+                owner: _owner,
+                spender: _spender,
+                value: _amount,
+            });
+        }
+    }
 
     impl Reward {
         #[ink(constructor)]
@@ -78,5 +118,4 @@ pub mod reward {
              self.burn(owner,amount)
         }
     }
-
 }

@@ -1,5 +1,5 @@
 [package]
-name = "token"
+name = "reward"
 version = "0.1.0"
 authors = ["paul_oamen <paul@myai.life>"]
 edition = "2021"
@@ -15,12 +15,19 @@ scale-info = { version = "2.3", default-features = false, features = ["derive"],
 openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "~3.0.0", default-features = false, features = ["psp22", "ownable"] }
 
 [lib]
-name = "token"
+name = "reward"
 path = "reward.rs"
+test = true
 crate-type = [
     # Used for normal contract Wasm blobs.
     "cdylib",
 ]
+
+[dev-dependencies]
+rustc-serialize = "0.3"
+tempfile = "3.0"
+pretty_assertions = "1.1"
+
 
 [features]
 default = ["std"]
