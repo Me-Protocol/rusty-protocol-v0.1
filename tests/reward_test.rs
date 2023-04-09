@@ -1,12 +1,13 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 #![feature(min_specialization)]
-#[path = "../reward.rs"]
-mod reward;
 
 #[cfg(test)]
 mod unit_test {
-  
+    use reward::reward::{
+        Reward,
+        Transfer,};
+
     use openbrush::{
         test_utils::*,
         traits::{
@@ -14,19 +15,8 @@ mod unit_test {
             Balance,
         }
     };
-   
-        use super::reward::reward::{
-            Reward,
-            Transfer,};
       
         type Event = <Reward as ::ink::reflect::ContractEventBase>::Type;
-
-    
-        pub struct Approval {
-            owner: AccountId,
-            spender: AccountId,
-            value: Balance,
-        }
 
         fn assert_transfer_event(
             event: &ink::env::test::EmittedEvent,
@@ -83,22 +73,22 @@ mod unit_test {
             assert_transfer_event(&emitted_events[0], None, Some(a), 100);
         }
 
-        #[ink::test]
-        fn get_brand_works(){
-            let accounts = accounts();
-            let a = accounts.bob;
-            let reward = Reward::new(a,Some("me".into()),Some("me".into()),2,100 );
-            assert_eq!(reward.get_brand(), accounts.bob);
+        // #[ink::test]
+        // fn get_brand_works(){
+        //     let accounts = accounts();
+        //     let a = accounts.bob;
+        //     let reward = Reward::new(a,Some("me".into()),Some("me".into()),2,100 );
+        //     assert_eq!(reward.get_brand(), accounts.bob);
             
-        }
+        // }
              
-         #[ink::test]
-            fn change_brand_account_works(){
-            let accounts = accounts();
-            let a = accounts.alice;
-            let mut reward = Reward::new(a,Some("me".into()),Some("me".into()),2,100 );
-            reward.change_brand_account(accounts.bob);
-            assert_eq!(reward.get_brand(), accounts.bob);
-        }
+        //  #[ink::test]
+        //     fn change_brand_account_works(){
+        //     let accounts = accounts();
+        //     let a = accounts.alice;
+        //     let mut reward = Reward::new(a,Some("me".into()),Some("me".into()),2,100 );
+        //     reward.change_brand_account(accounts.bob);
+        //     assert_eq!(reward.get_brand(), accounts.bob);
+        // }
             
     }

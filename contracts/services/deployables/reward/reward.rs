@@ -91,17 +91,17 @@ pub mod reward {
             instance
         }
 
-        #[ink(message)]
-        #[modifiers(only_owner)]
-        pub fn change_brand_account(&mut self, new_brand_account: AccountId) -> Result<(),  OwnableError> {
-            self.transfer_ownership(new_brand_account)?;
-            Ok(())
-        }
+        // #[ink(message)]
+        // #[modifiers(only_owner)]
+        // pub fn change_brand_account(&mut self, new_brand_account: AccountId) -> Result<(),  OwnableError> {
+        //     self.transfer_ownership(new_brand_account)?;
+        //     Ok(())
+        // }
 
-        #[ink(message)]
-        pub fn get_brand(&self) -> AccountId {
-            self.owner()
-        }
+        // #[ink(message)]
+        // pub fn get_brand(&self) -> AccountId {
+        //     self.owner()
+        // }
 
         #[ink(message)]
         #[modifiers(only_owner)]

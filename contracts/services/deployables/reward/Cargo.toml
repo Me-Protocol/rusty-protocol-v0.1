@@ -20,7 +20,7 @@ path = "reward.rs"
 test = true
 crate-type = [
     # Used for normal contract Wasm blobs.
-    "cdylib",
+    "rlib",
 ]
 
 [dev-dependencies]
