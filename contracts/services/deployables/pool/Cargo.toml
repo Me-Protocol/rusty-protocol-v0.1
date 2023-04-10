@@ -1,5 +1,5 @@
 [package]
-name = "reward"
+name = "pool"
 version = "0.1.0"
 authors = ["paul_oamen <paul@myai.life>"]
 edition = "2021"
@@ -13,11 +13,10 @@ scale-info = { version = "2.3", default-features = false, features = ["derive"],
 
 # These dependencies
 openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "~3.0.0", default-features = false, features = ["psp22", "ownable"] }
-global = {path = "../../../", default-features = false}
 
 [lib]
-name = "reward"
-path = "reward.rs"
+name = "pool"
+path = "pool.rs"
 crate-type = [
     # Used for normal contract Wasm blobs.
    "cdylib",
@@ -31,7 +30,6 @@ std = [
     "scale-info/std",
     # These dependencies
     "openbrush/std",
-    "global/std"
 ]
 ink-as-dependency = []
 

@@ -7,7 +7,11 @@ pub mod reward {
         EmitEvent,
         Env,
     };
- 
+    use global:: {
+        controllers::deployables::reward::*,
+        providers::global::error::*
+    };
+    
     use openbrush::{
         contracts::{
             ownable::*,
@@ -55,9 +59,28 @@ pub mod reward {
    
     impl PSP22 for Reward {}
 
-    impl PSP22Metadata for Reward{}
+    impl RewardController for Reward {
+       
+        #[ink(message)]
+        #[modifiers(only_owner)]
+        default fn mint_to(&mut self, account: AccountId, amount: Balance) -> Result<(), ProtocolError> {
+            self.mint(account, amount)?;
+            Ok(())
+        }
+      
 
-    impl PSP22Mintable for Reward {}  
+        ///brands can burn from their own wallet
+        #[ink(message)]
+        #[modifiers(only_owner)]
+        default fn burn_rewards(&mut self, amount: Balance) -> Result<(), ProtocolError>{
+            let owner = self.owner();
+            self.burn(owner,amount)?;
+            Ok(())
+        }
+
+    }
+
+    impl PSP22Metadata for Reward{}
 
     impl Ownable for Reward {}
 
@@ -89,21 +112,6 @@ pub mod reward {
             instance._init_with_owner(brand);
             assert!(instance._mint_to(brand, total_supply).is_ok());
             instance
-        }
-
-        #[ink(message)]
-        #[modifiers(only_owner)]
-        pub fn mint_to(&mut self, account: AccountId, amount: Balance) -> Result<(), PSP22Error> {
-            self.mint(account, amount)
-        }
-      
-
-        ///brands can burn from their own wallet
-        #[ink(message)]
-        #[modifiers(only_owner)]
-        pub fn burn_rewards(&mut self, amount: Balance) -> Result<(), PSP22Error>{
-            let owner = self.owner();
-             self.burn(owner,amount)
         }
     }
 }
