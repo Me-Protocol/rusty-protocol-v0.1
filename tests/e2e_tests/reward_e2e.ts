@@ -25,33 +25,38 @@ describe( "Reward Test", () => {
           bob,
           contract,
           query: contract.query,
-          tx: contract.tx
+          tx: contract.tx,
+          close: async () => {
+            await api.disconnect()
+          }
         }
     }
 
     it('mints initial rewards', async () => {
-        const { api, query, defaultSigner: sender, alice } = await reward_fixture();
+        const { api, query, defaultSigner: sender, alice, close } = await reward_fixture();
     
         await expect(query.balanceOf(alice.address)).to.have.bnToNumber(100);
     
-        await api.disconnect()
+        await close();
       })
 
     it('only brand can mint type a', async () => {
-        const { api, query, defaultSigner: sender, alice, bob, tx, contract } = await reward_fixture();
+        const { api, query, defaultSigner: sender, alice, bob, tx, contract, close } = await reward_fixture();
         await expect(tx.mintTo(bob.address, 100)).to.eventually.be.rejected
-    
+        await close();
     })
 
     it('only brand can mint type b', async () => {
-        const { api, query, defaultSigner: sender, alice, bob, tx, contract } = await reward_fixture();
+        const { api, query, defaultSigner: sender, alice, bob, tx, contract, close } = await reward_fixture();
         await expect(contract.withSigner(alice).tx.mintTo(bob.address, 100)).to.eventually.be.ok
+        await close();
     })
 
     it('brand can burn', async () => {
-        const { api, query, defaultSigner: sender, alice, bob, tx, contract } = await reward_fixture();
+        const { api, query, defaultSigner: sender, alice, bob, tx, contract, close } = await reward_fixture();
         await expect(contract.withSigner(alice).tx.burnRewards(100)).to.eventually.be.ok
         await expect(query.totalSupply()).to.have.bnToNumber(0);
+        await close();
     })
     
 })
