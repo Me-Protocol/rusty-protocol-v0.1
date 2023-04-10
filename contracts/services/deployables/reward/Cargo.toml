@@ -13,6 +13,7 @@ scale-info = { version = "2.3", default-features = false, features = ["derive"],
 
 # These dependencies
 openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "~3.0.0", default-features = false, features = ["psp22", "ownable"] }
+global = {path = "../../../", default-features = false}
 
 [lib]
 name = "reward"
@@ -30,6 +31,7 @@ std = [
     "scale-info/std",
     # These dependencies
     "openbrush/std",
+    "global/std"
 ]
 ink-as-dependency = []
 
