@@ -1,5 +1,5 @@
 {
-    "projectFiles": [],
+    "projectFiles": ["contracts/services/deployables/reward"],
     "artifactsPath": "./artifacts",
     "typechainGeneratedPath": "./typechain-generated"
   }

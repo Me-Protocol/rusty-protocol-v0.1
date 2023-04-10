@@ -4,6 +4,7 @@
 # Ignore build artifacts from the local tests sub-crate.
 target
 artifacts
+notes
 
 # Ignore backup files creates by cargo fmt.
 **/*.rs.bk

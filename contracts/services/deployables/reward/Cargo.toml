@@ -17,17 +17,10 @@ openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", versi
 [lib]
 name = "reward"
 path = "reward.rs"
-test = true
 crate-type = [
     # Used for normal contract Wasm blobs.
-    "rlib",
+   "cdylib",
 ]
-
-[dev-dependencies]
-rustc-serialize = "0.3"
-tempfile = "3.0"
-pretty_assertions = "1.1"
-
 
 [features]
 default = ["std"]
