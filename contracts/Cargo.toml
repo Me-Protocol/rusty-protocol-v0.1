@@ -1,5 +1,5 @@
 [package]
-name = "meprotocol"
+name = "global"
 version = "0.1.0"
 authors = ["paul_oamen <paul@myai.life>"]
 edition = "2021"
@@ -13,19 +13,10 @@ scale-info = { version = "2.3", default-features = false, features = ["derive"],
 
 # These dependencies
 openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "~3.0.0", default-features = false }
-reward = {path = "contracts/services/deployables/reward", default-features = false }
-
-
-[dev-dependencies]
-rustc-serialize = "0.3"
-tempfile = "3.0"
-pretty_assertions = "1.1"
-
 
 [lib]
-name = "meprotocol"
-path = "protocol.rs"
-test = true
+name = "global"
+path = "global.rs"
 crate-type = [
     # Used for normal contract Wasm blobs.
     "rlib",
@@ -39,17 +30,9 @@ std = [
     "scale-info/std",
     # These dependencies
     "openbrush/std",
-    "reward/std",
 ]
+
 ink-as-dependency = []
 
-
-[profile.release]
-panic = "abort"
-lto = false
-
 [profile.dev]
-
-panic = "abort"
-lto = false
-overflow-checks = false
+codegen-units = 16
