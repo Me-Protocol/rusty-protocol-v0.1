@@ -1,4 +1,3 @@
-
 // #![cfg_attr(not(feature = "std"), no_std)]
 // #![feature(min_specialization)]
 
@@ -15,7 +14,7 @@
 //             Balance,
 //         }
 //     };
-      
+
 //         type Event = <Reward as ::ink::reflect::ContractEventBase>::Type;
 
 //         fn assert_transfer_event(
@@ -60,8 +59,7 @@
 //                 );
 //             }
 //         }
-    
-       
+
 //         #[ink::test]
 //         fn new_works() {
 //             let accounts = accounts();
@@ -69,8 +67,8 @@
 //             Reward::new(a,Some("me".into()),Some("me".into()),2,100 );
 //             let emitted_events = ink::env::test::recorded_events().collect::<Vec<_>>();
 //             assert_eq!(1, emitted_events.len());
-    
+
 //             assert_transfer_event(&emitted_events[0], None, Some(a), 100);
 //         }
-            
+
 //     }

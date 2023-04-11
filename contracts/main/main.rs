@@ -3,10 +3,7 @@
 
 #[openbrush::contract]
 pub mod main {
-    use openbrush::{
-        contracts::diamond::extensions::diamond_loupe::*,
-        traits::Storage,
-    };
+    use openbrush::{ contracts::diamond::extensions::diamond_loupe::*, traits::Storage };
 
     #[ink(storage)]
     #[derive(Default, Storage)]

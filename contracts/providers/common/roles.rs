@@ -1,5 +1,4 @@
-
-use openbrush::contracts:: access_control::*;
+use openbrush::contracts::access_control::*;
 
 pub const POOL_MANAGER: RoleType = ink::selector_id!("POOL_MANAGER");
 
