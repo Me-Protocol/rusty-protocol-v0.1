@@ -16,10 +16,10 @@ traits::{
     
 };
 
-use crate::providers::global::error::*;
+use crate::providers::common::errors::*;
 
 #[openbrush::wrapper]
-pub type RewardRef = dyn PSP22 + PSP22Mintable + PSP22Burnable + PSP22Metadata + Ownable;
+pub type RewardRef = dyn  RewardController + PSP22 + PSP22Mintable + PSP22Burnable + PSP22Metadata + Ownable;
 
 #[openbrush::trait_definition]
 pub trait RewardController: PSP22 + PSP22Metadata + Ownable {

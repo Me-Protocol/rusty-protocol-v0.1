@@ -8,7 +8,6 @@ use openbrush::{
     },
 };
 
-
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
 #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
 
@@ -16,7 +15,16 @@ pub enum ProtocolError {
     PSP22Error(PSP22Error),
     AccessControlError(AccessControlError),
     OwnableError(OwnableError),
-
+    ZeroAddressNotAllowed,
+    ZeroNotAllowed,
+    EmptyStringNotAllowed,
+    PoolAlreadyInActive,
+    PoolNotActive,
+    PoolAlreadyActive,
+    AccountAlreadyPoolManager,
+    AccountIsNotAPoolManager,
+    ConversationWillCausePoolToGoOutOfRag,
+    RequestIsNotWithInAccuracyRange
 }
     impl From<AccessControlError> for ProtocolError {
         fn from(access: AccessControlError) -> Self {

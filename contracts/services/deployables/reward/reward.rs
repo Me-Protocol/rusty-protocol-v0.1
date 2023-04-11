@@ -9,7 +9,7 @@ pub mod reward {
     };
     use global:: {
         controllers::deployables::reward::*,
-        providers::global::error::*
+        providers::common::errors::*
     };
     
     use openbrush::{
