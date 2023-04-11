@@ -5,32 +5,6 @@ use openbrush::{
 
 use crate::providers::{ common::errors::* };
 
-#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
-struct PoolState {
-    pub active: bool,
-    pub initiator: AccountId,
-    pub reward: AccountId,
-    pub me_token: AccountId,
-    pub last_reward_amount: Balance,
-    pub last_me_amount: Balance,
-    pub last_transaction_time: u128,
-    locked: bool,
-}
-
-#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
-struct PoolConfig {
-    pub setup_me_amount: Balance,
-    pub r_optimal: u128,
-    pub minimum_reward_amount_for_conversation: Balance,
-    pub minimum_me_amount_for_conversation: Balance,
-    pub notify_reward_amount: Balance,
-    pub notify_me_amount: Balance,
-    pub default_slippage_in_precision: u128,
-    pub allow_internal_swap: bool,
-}
-
 #[openbrush::wrapper]
 pub type APoolRef = dyn AccessControl + PSP22;
 
@@ -43,8 +17,17 @@ pub trait PoolController {
     fn resume_conversations(&mut self) -> Result<(), ProtocolError>;
 
     #[ink(message)]
-    fn give_pool_tokens(
+    fn give_pool_tokens_for_new_position(
         &mut self,
+        pool_numerator_amount: Balance,
+        pool_divisor_amount: Balance,
+        to: AccountId
+    ) -> Result<(), ProtocolError>;
+
+    #[ink(message)]
+    fn give_pool_tokens_for_existing_position(
+        &mut self,
+        position_id : u128,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
         to: AccountId
@@ -71,11 +54,11 @@ pub trait PoolController {
     fn provide_pool_addresses(&self) -> (AccountId, AccountId, AccountId);
 
     #[ink(message)]
-    fn provide_pool_state(&self) -> (bool, AccountId, AccountId, AccountId, Balance, Balance, u128);
+    fn provide_pool_state(&self) -> (bool, AccountId, AccountId, AccountId, Balance, Balance, u64);
 
     fn provide_pool_config(
         &self
-    ) -> (Balance, u128, Balance, Balance, Balance, Balance, u128, bool);
+    ) -> (Balance, u128, u128, Balance, Balance, Balance, Balance, u128, bool);
 
     #[ink(message)]
     fn initiate_outgoing_conversation(

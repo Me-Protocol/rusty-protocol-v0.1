@@ -11,7 +11,7 @@ pub struct PoolState {
     pub me_token: AccountId,
     pub last_reward_amount: Balance,
     pub last_me_amount: Balance,
-    pub last_transaction_time: u128,
+    pub last_transaction_time: u64,
     locked: bool,
 }
 
@@ -20,6 +20,7 @@ pub struct PoolState {
 pub struct PoolConfig {
     pub setup_me_amount: Balance,
     pub r_optimal: u128,
+    pub maximum_r_limit: u128,
     pub minimum_reward_amount_for_conversation: Balance,
     pub minimum_me_amount_for_conversation: Balance,
     pub notify_reward_amount: Balance,
@@ -48,6 +49,7 @@ impl Default for PoolConfig {
         Self {
             setup_me_amount: Default::default(),
             r_optimal: Default::default(),
+            maximum_r_limit: Default::default(),
             minimum_reward_amount_for_conversation: Default::default(),
             minimum_me_amount_for_conversation: Default::default(),
             notify_reward_amount: Default::default(),
@@ -57,6 +59,8 @@ impl Default for PoolConfig {
         }
     }
 }
+
+
 
 pub fn set_pool_initiator<T>(instance: &mut T, initiator: AccountId) where T: Storage<PoolState> {
     instance.data().initiator = initiator;
