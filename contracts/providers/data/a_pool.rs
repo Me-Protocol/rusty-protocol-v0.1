@@ -62,8 +62,6 @@ impl Default for PoolConfig {
     }
 }
 
-
-
 pub fn set_pool_initiator<T>(instance: &mut T, initiator: AccountId) where T: Storage<PoolState> {
     instance.data().initiator = initiator;
 }

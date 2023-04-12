@@ -1,4 +1,12 @@
-use openbrush::{ contracts::traits::{ access_control::*, ownable::*, psp22::PSP22Error, psp34::PSP34Error, errors::ReentrancyGuardError  },  };
+use openbrush::{
+    contracts::traits::{
+        access_control::*,
+        ownable::*,
+        psp22::PSP22Error,
+        psp34::PSP34Error,
+        errors::ReentrancyGuardError,
+    },
+};
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
 #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
@@ -42,7 +50,6 @@ impl From<PSP34Error> for ProtocolError {
         ProtocolError::PSP34Error(error)
     }
 }
-
 
 impl From<OwnableError> for ProtocolError {
     fn from(error: OwnableError) -> Self {

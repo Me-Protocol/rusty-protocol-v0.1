@@ -27,7 +27,7 @@ pub trait PoolController {
     #[ink(message)]
     fn give_more_pool_tokens_for_existing_position(
         &mut self,
-        position_id : u128,
+        position_id: u128,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
         requestor: AccountId,
@@ -57,7 +57,9 @@ pub trait PoolController {
     fn provide_pool_addresses(&self) -> (AccountId, AccountId, AccountId);
 
     #[ink(message)]
-    fn provide_pool_state(&self) -> (bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64);
+    fn provide_pool_state(
+        &self
+    ) -> (bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64);
 
     fn provide_pool_config(
         &self
