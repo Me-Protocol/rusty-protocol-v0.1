@@ -1,4 +1,4 @@
-use openbrush::{ contracts::traits::{ access_control::*, ownable::*, psp22::PSP22Error, psp34::PSP34Error } };
+use openbrush::{ contracts::traits::{ access_control::*, ownable::*, psp22::PSP22Error, psp34::PSP34Error, errors::ReentrancyGuardError  },  };
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
 #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
@@ -6,6 +6,7 @@ pub enum ProtocolError {
     PSP22Error(PSP22Error),
     PSP34Error(PSP34Error),
     AccessControlError(AccessControlError),
+    ReentrancyGuardError(ReentrancyGuardError),
     OwnableError(OwnableError),
     ZeroAddressNotAllowed,
     ZeroNotAllowed,
@@ -18,6 +19,11 @@ pub enum ProtocolError {
     ConversationWillCausePoolToGoOutOfRag,
     RequestIsNotWithInAccuracyRange,
     RequestorIsNotOwnerOfThePosition,
+    InsufficientPositionBalance,
+    ActionWillTakePoolMeTokensBelowConversationLimit,
+    ActionWillTakePoolRewardsBelowConversationLimit,
+    ProtocolOffsetMustBeConsidered,
+    CanNotWithdrawZeroAssetsFromThePool,
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {
@@ -41,5 +47,11 @@ impl From<PSP34Error> for ProtocolError {
 impl From<OwnableError> for ProtocolError {
     fn from(error: OwnableError) -> Self {
         ProtocolError::OwnableError(error)
+    }
+}
+
+impl From<ReentrancyGuardError> for ProtocolError {
+    fn from(error: ReentrancyGuardError) -> Self {
+        ProtocolError::ReentrancyGuardError(error)
     }
 }

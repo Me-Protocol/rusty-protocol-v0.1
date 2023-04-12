@@ -1,3 +1,5 @@
+
+use crate::providers::common::constants::PRECISION;
 pub use crate::{
     providers::{
         data::{a_pool::*, a_position::*}, 
@@ -9,12 +11,12 @@ pub use crate::{
 
 use ink::prelude::vec::Vec;
 use openbrush::{
-    contracts::{ access_control::*, psp34::*, traits::{ psp22::PSP22Ref } },
+    contracts::{ access_control::*, psp34::*, traits::{ psp22::PSP22Ref }, reentrancy_guard::* },
     modifiers,
     traits::{ AccountId, AccountIdExt, Balance, Storage, Timestamp, ZERO_ADDRESS },
 };
 
-impl<T: Storage<PoolState> + Storage<PoolConfig> + Storage<access_control::Data> + Storage<psp34::Data> + Storage<Position> > PoolController
+impl<T: Storage<PoolState> + Storage<PoolConfig> + Storage<access_control::Data> + Storage<psp34::Data> + Storage<Position> + Storage<reentrancy_guard::Data>> PoolController
 for T {
     
     default fn pause_conversations(&mut self) -> Result<(), ProtocolError> {
@@ -34,6 +36,7 @@ for T {
     }
 
     #[modifiers(only_role(POOL_MANAGER))]
+    #[modifiers(non_reentrant)]
     default fn give_pool_tokens_for_new_position(
         &mut self,
         pool_numerator_amount: Balance,
@@ -66,17 +69,20 @@ for T {
 
 
     #[modifiers(only_role(POOL_MANAGER))]
-    default fn give_pool_tokens_for_existing_position(
+    #[modifiers(non_reentrant)]
+    default fn give_more_pool_tokens_for_existing_position(
         &mut self,
         position_id: u128,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
+        requestor: AccountId,
         to: AccountId
     ) -> Result<(), ProtocolError> {
         ensure_address_is_not_zero_address(to)?;
+        ensure_address_is_not_zero_address(requestor)?;
         ensure_value_is_not_zero(position_id)?;
         self.data::<psp34::Data>()._check_token_exists(&Id::U128(position_id))?;
-        if to != self.data::<psp34::Data>()._owner_of(&Id::U128(position_id)).unwrap() {return Err((ProtocolError::RequestorIsNotOwnerOfThePosition))};
+        if requestor != self.data::<psp34::Data>()._owner_of(&Id::U128(position_id)).unwrap() {return Err((ProtocolError::RequestorIsNotOwnerOfThePosition))};
         let pool = Self::env().account_id();
         let state = *self.data::<PoolState>();
         let (current_reward_amount, current_me_amount, added_reward_amount, added_me_amount) =
@@ -98,9 +104,29 @@ for T {
             Ok(())
     }
 
-
-
-    default fn withdraw_assets_from_pool(&mut self, pool_numerator_amount:Balance, pool_divisor_amount: Balance, to: AccountId) -> Result<(), ProtocolError>{
+    
+    #[modifiers(only_role(POOL_MANAGER))]
+    #[modifiers(non_reentrant)]
+    default fn withdraw_assets_from_position(&mut self,position_id: u128, reward_pool_token_amount:Balance, me_pool_token_amount: Balance, requestor: AccountId, to: AccountId) -> Result<(), ProtocolError>{
+        ensure_address_is_not_zero_address(to)?;
+        ensure_address_is_not_zero_address(requestor)?;
+        ensure_value_is_not_zero(position_id)?;
+        if reward_pool_token_amount == 0 && me_pool_token_amount == 0 {return Err(ProtocolError::CanNotWithdrawZeroAssetsFromThePool)}
+        self.data::<psp34::Data>()._check_token_exists(&Id::U128(position_id))?;
+        if requestor != self.data::<psp34::Data>()._owner_of(&Id::U128(position_id)).unwrap() {return Err(ProtocolError::RequestorIsNotOwnerOfThePosition)};
+        let current_position_data =  self.data::<Position>().position_metadata.get(&position_id).unwrap_or_default();
+        if reward_pool_token_amount > current_position_data.reward_position || me_pool_token_amount > current_position_data.me_token_position {
+            return Err(ProtocolError::InsufficientPositionBalance);
+        }
+        let pool = Self::env().account_id();
+        let state = *self.data::<PoolState>();
+        let config = *self.data::<PoolConfig>();
+        self.data::<Position>().position_metadata.insert(&position_id, &PositionMetadata{reward_position:(current_position_data.reward_position - reward_pool_token_amount), me_token_position:(current_position_data.me_token_position - me_pool_token_amount)});
+        let (reward_amount_to_withdraw, me_amount_to_withdraw) = obtain_amount_of_pool_reward_to_withdraw(reward_pool_token_amount, me_pool_token_amount, state.last_reward_amount, state.last_me_amount, config.minimum_reward_amount_for_conversation, config.minimum_me_amount_for_conversation, state.protocol_me_offset, config.r_optimal).unwrap();
+        if reward_amount_to_withdraw != 0 {PSP22Ref::transfer(&state.reward, to, reward_amount_to_withdraw, Vec::<u8>::new())? }
+        if me_amount_to_withdraw != 0 {PSP22Ref::transfer(&state.me_token, to, me_amount_to_withdraw, Vec::<u8>::new())?}
+        let (current_reward_amount, current_me_amount) = objectively_obtain_pool_balances(pool, state.reward, state.me_token);
+        update_pool_state(self, current_reward_amount, current_me_amount, Self::env().block_timestamp())?;
         Ok(())
     }
 
@@ -137,7 +163,7 @@ for T {
 
     default fn provide_pool_state(
         &self
-    ) -> (bool, AccountId, AccountId, AccountId, Balance, Balance, u64) {
+    ) -> (bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64) {
         let state = *self.data::<PoolState>();
 
         (
@@ -147,6 +173,7 @@ for T {
             state.me_token,
             state.last_reward_amount,
             state.last_me_amount,
+            state.protocol_me_offset,
             state.last_transaction_time,
         )
     }
@@ -220,19 +247,6 @@ fn validate_give_pool_tokens_request(
 }
 
 
-// function _updateFeatures(uint256 currentNumerator, uint256 currentDivisor)
-// internal
-// {
-// uint256 R = provider._calculatePoolRatio(
-//     currentNumerator,
-//     currentDivisor
-// );
-// provider._ensureRIsWithinRange(R, features.Rlimit);
-// lastNumerator = currentNumerator;
-// lastDivisor = currentDivisor;
-// features.lastTransactionTime = _blockTimestamp();
-// }
-
 
 fn update_pool_state<T>(instance: &mut T, current_reward_amount: Balance, current_me_amount: Balance, transaction_time: u64) -> Result<(), ProtocolError> where T: Storage<PoolState> +  Storage<PoolConfig> {
     let r = _calculate_pool_ratio(current_reward_amount, current_me_amount);
@@ -242,3 +256,89 @@ fn update_pool_state<T>(instance: &mut T, current_reward_amount: Balance, curren
     instance.data::<PoolState>().last_transaction_time = transaction_time;
     Ok(())
 }
+
+
+fn reward_withdrawal_type_a(position_reward_amount:Balance ) -> (Balance, Balance) {
+    (position_reward_amount, Default::default())
+}
+
+fn reward_withdrawal_type_c(position_reward_amount:Balance, current_reward_amount: Balance, minimum_reward_amount_for_conversation: Balance, minimum_me_amount_for_conversation: Balance, current_me_amount:Balance, protocol_me_offset: Balance, r_optimal: u128 ) -> Result<(Balance, Balance), ProtocolError> {
+ let (base, error) = if protocol_me_offset > minimum_me_amount_for_conversation {(protocol_me_offset, ProtocolError::ProtocolOffsetMustBeConsidered)} else {(minimum_me_amount_for_conversation, ProtocolError::ActionWillTakePoolMeTokensBelowConversationLimit)};
+ if current_me_amount < base {return Err(error)}
+  let reward_amount_to_withdraw = current_reward_amount - minimum_reward_amount_for_conversation;
+  let me_amount_to_withdraw = ((position_reward_amount - reward_amount_to_withdraw)* PRECISION)/r_optimal;
+  if (current_me_amount - me_amount_to_withdraw) < base {return Err(error)}
+  Ok((reward_amount_to_withdraw, me_amount_to_withdraw))
+}
+
+
+fn me_withdrawal_type_a(position_me_amount: Balance) -> (Balance, Balance) {
+    ( Default::default(), position_me_amount)
+}
+
+fn me_withdrawal_type_c(position_me_amount: Balance,current_me_amount: Balance,current_reward_amount: Balance,minimum_reward_amount_for_conversation: Balance, base: Balance, r_optimal: u128)-> Result<(Balance, Balance), ProtocolError> {
+  let mut me_amount_to_withdraw = 0;
+  let mut reward_amount_to_withdraw = 0;
+    if current_me_amount < base{
+          reward_amount_to_withdraw = (position_me_amount * r_optimal)/ PRECISION;
+          if current_reward_amount - reward_amount_to_withdraw < minimum_reward_amount_for_conversation{
+            return Err(ProtocolError::ActionWillTakePoolRewardsBelowConversationLimit);
+          }
+    }
+    else{
+        me_amount_to_withdraw = current_me_amount - base;
+        reward_amount_to_withdraw = ((position_me_amount - me_amount_to_withdraw)*r_optimal)/PRECISION;
+        if current_reward_amount - reward_amount_to_withdraw < minimum_reward_amount_for_conversation{
+            return Err(ProtocolError::ActionWillTakePoolRewardsBelowConversationLimit);
+        }
+    }
+
+    Ok((reward_amount_to_withdraw, me_amount_to_withdraw))
+}
+
+
+
+fn obtain_amount_of_pool_reward_to_withdraw(position_reward_amount:Balance, position_me_amount: Balance, current_reward_amount: Balance, current_me_amount: Balance, minimum_reward_amount_for_conversation: Balance, minimum_me_amount_for_conversation: Balance, protocol_me_offset: Balance, r_optimal: u128)-> Result<(Balance,Balance), ProtocolError>{
+    let mut reward_amount_to_withdraw_a = 0;
+    let mut reward_amount_to_withdraw_b = 0;
+    let mut me_amount_to_withdraw_a = 0;
+    let mut me_amount_to_withdraw_b = 0;
+    let base = if protocol_me_offset > minimum_me_amount_for_conversation {protocol_me_offset} else {minimum_me_amount_for_conversation};
+    if (current_reward_amount < position_reward_amount) || (current_reward_amount - position_reward_amount) < minimum_reward_amount_for_conversation {
+        (reward_amount_to_withdraw_a, me_amount_to_withdraw_a) = reward_withdrawal_type_c(position_reward_amount, current_reward_amount, minimum_reward_amount_for_conversation, minimum_me_amount_for_conversation, current_me_amount, protocol_me_offset, r_optimal).unwrap();
+        
+    }else{ 
+            (reward_amount_to_withdraw_a, me_amount_to_withdraw_a) = reward_withdrawal_type_a(position_reward_amount);
+    }
+    
+    if (current_me_amount < position_me_amount)|| (current_me_amount - position_me_amount) < base{
+        (reward_amount_to_withdraw_b, me_amount_to_withdraw_b) = me_withdrawal_type_c(position_me_amount, current_me_amount, current_reward_amount, minimum_reward_amount_for_conversation,base, r_optimal).unwrap();
+    }
+    else{
+            (reward_amount_to_withdraw_b, me_amount_to_withdraw_b) = me_withdrawal_type_a(position_me_amount); 
+    }
+
+    Ok(((reward_amount_to_withdraw_a + reward_amount_to_withdraw_b), (me_amount_to_withdraw_a + me_amount_to_withdraw_b)))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

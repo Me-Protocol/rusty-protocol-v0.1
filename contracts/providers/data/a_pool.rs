@@ -11,6 +11,7 @@ pub struct PoolState {
     pub me_token: AccountId,
     pub last_reward_amount: Balance,
     pub last_me_amount: Balance,
+    pub protocol_me_offset: Balance,
     pub last_transaction_time: u64,
     locked: bool,
 }
@@ -38,6 +39,7 @@ impl Default for PoolState {
             me_token: ZERO_ADDRESS.into(),
             last_reward_amount: Default::default(),
             last_me_amount: Default::default(),
+            protocol_me_offset: Default::default(),
             last_transaction_time: Default::default(),
             locked: Default::default(),
         }

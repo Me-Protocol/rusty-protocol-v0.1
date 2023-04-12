@@ -25,19 +25,22 @@ pub trait PoolController {
     ) -> Result<(), ProtocolError>;
 
     #[ink(message)]
-    fn give_pool_tokens_for_existing_position(
+    fn give_more_pool_tokens_for_existing_position(
         &mut self,
         position_id : u128,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
+        requestor: AccountId,
         to: AccountId
     ) -> Result<(), ProtocolError>;
 
     #[ink(message)]
-    fn withdraw_assets_from_pool(
+    fn withdraw_assets_from_position(
         &mut self,
+        position_id: u128,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
+        requestor: AccountId,
         to: AccountId
     ) -> Result<(), ProtocolError>;
 
@@ -54,7 +57,7 @@ pub trait PoolController {
     fn provide_pool_addresses(&self) -> (AccountId, AccountId, AccountId);
 
     #[ink(message)]
-    fn provide_pool_state(&self) -> (bool, AccountId, AccountId, AccountId, Balance, Balance, u64);
+    fn provide_pool_state(&self) -> (bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64);
 
     fn provide_pool_config(
         &self
