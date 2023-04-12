@@ -10,6 +10,7 @@ pub use crate::{
 
 use ink::{prelude::vec::Vec, primitives::AccountId};
 use openbrush::{
+    modifier_definition,
     contracts::{ access_control::*, psp34::*, traits::{ psp22::PSP22Ref }, reentrancy_guard::*, pausable::*, },
     modifiers,
     traits::{ Balance, Storage, Timestamp, ZERO_ADDRESS },
@@ -22,27 +23,60 @@ impl<
         Storage<psp34::Data> +
         Storage<Position> +
         Storage<reentrancy_guard::Data> +
-        Storage<pausable::Data>
 > PoolController for T {
-    default fn pause_conversations(&mut self,  requestor: AccountId) -> Result<(), ProtocolError> {
-        if !self.data::<PoolState>().active {
-            return Err(ProtocolError::PoolAlreadyInActive);
+
+    default fn start_allowing_conversations(&mut self,  requestor: AccountId) -> Result<(), ProtocolError> {
+        if  self.data::<PoolState>().started {
+            return Err(ProtocolError::ConversationsAlreadyStarted);
         }
-        self.data::<PoolState>().active = false;
-        self.data::<pausable::Data>().paused = true;
-        self.data::<pausable::Data>()._emit_paused_event(requestor);
+        let pool = Self::env().account_id();
+        let state = *self.data::<PoolState>();
+        let config = *self.data::<PoolConfig>();
+        let (current_reward_amount, current_me_amount) = objectively_obtain_pool_balances(pool, state.reward, state.me_token);
+        if _calculate_pool_ratio(current_reward_amount, current_me_amount) > config.r_optimal {return Err(ProtocolError::ConversationsShouldBeStartedAtOptimalRatioOrLess)}
+        self.data::<PoolState>().started = true;
         Ok(())
     }
 
-    default fn resume_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError> {
-        if self.data::<PoolState>().active {
-            return Err(ProtocolError::PoolAlreadyActive);
-        }
-        self.data::<PoolState>().active = true;
-        self.data::<pausable::Data>().paused = false;
-        self.data::<pausable::Data>()._emit_paused_event(requestor);
+    #[modifiers(when_active)]
+    default fn pause_conversations(&mut self,  requestor: AccountId) -> Result<(), ProtocolError> {
+        self.data::<PoolState>().active = false;
         Ok(())
     }
+
+    #[modifiers(when_not_active)]
+    default fn resume_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError> {
+        self.data::<PoolState>().active = true;
+        Ok(())
+    }
+
+    #[modifiers(only_role(POOL_ADMIN))]
+     default fn add_protocol_me_offset(&mut self, expected_me_offset: Balance) -> Result<bool, ProtocolError >{
+        let pool = Self::env().account_id();
+        let state = *self.data::<PoolState>();
+        let current_me_amount = objectively_obtain_single_balance(pool, state.me_token);
+        let actual_me_offset = current_me_amount - state.last_me_amount;
+        if actual_me_offset < expected_me_offset {
+            if !check_if_within_acceptable_percent_range(expected_me_offset, actual_me_offset){
+                return Err(ProtocolError::ExpectedProtocolMeOffsetExceedsActualMeOffset)
+            }
+        }
+        self.data::<PoolState>().protocol_me_offset = (actual_me_offset + state.protocol_me_offset);
+        Ok(true)
+     }
+
+
+    //  default fn withdraw_protocol_me_offset_only_me_tokens(&mut self, amount_to_withdraw: Balance, to: AccountId) -> Result<bool, ProtocolError >{
+    //     let pool = Self::env().account_id();
+    //     let state = *self.data::<PoolState>();
+    //     let config = *self.data::<PoolConfig>();
+    //     let current_me_offset = state.protocol_me_offset;
+    //     let current_me_amount = objectively_obtain_single_balance(pool, state.me_token);
+    //     if (current_me_amount - current_me_offset) < config.minimum_me_amount_for_conversation{
+
+    //     }
+    //  }
+
 
     #[modifiers(only_role(POOL_MANAGER))]
     #[modifiers(non_reentrant)]
@@ -243,10 +277,10 @@ impl<
 
     default fn provide_pool_state(
         &self
-    ) -> (bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64) {
+    ) -> (bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64) {
         let state = *self.data::<PoolState>();
 
-        (
+        (   state.started,
             state.active,
             state.initiator,
             state.reward,
@@ -277,7 +311,7 @@ impl<
     }
 
  
-    #[modifiers(when_not_paused)]
+    #[modifiers(when_active)]
     default fn initiate_outgoing_conversation(
         &mut self,
         reward_amount_in: Balance,
@@ -291,7 +325,7 @@ impl<
         let pool = Self::env().account_id();
         let config = *self.data::<PoolConfig>();
         let state = *self.data::<PoolState>();
-       let mut working_slippage_in_precision: u128;
+       let working_slippage_in_precision: u128;
        if slippage_in_precision == 0 { working_slippage_in_precision = config.default_slippage_in_precision} else {working_slippage_in_precision = slippage_in_precision};
        let current_reward_amount = objectively_obtain_single_balance(pool, state.reward);
 
@@ -325,52 +359,7 @@ impl<
     }
 
 
-
-    // function engageIncomingPoolConversation(
-    //     uint256 _expectedNumeratorOut,
-    //     address _receiver,
-    //     uint256 slippage_in_percent
-    // ) external locked returns (bool _done) {
-    //     if (slippage_in_percent == 0)
-    //         slippage_in_percent = features.DEFAULT_SLIPPAGE_IN_PERCENT;
-    //     (address _numerator, address _divisor) = (numerator, divisor);
-    //     (
-    //         ,
-    //         uint256 _Roptimal,
-    //         ,
-    //         uint256 _lastDivisor,
-    //         ,
-    //         ,
-    //         ,
-
-    //     ) = _getCommonFeatures();
-
-    //     uint256 divisorBalance = provider.objectivelyObtainSingleBalance(
-    //         address(this),
-    //         _divisor
-    //     );
-
-    //     uint256 divisorDeposited = divisorBalance - _lastDivisor;
-
-    //     uint256 numeratorOut = (divisorDeposited * _Roptimal) / 10**6; 
-
-    //     if (
-    //         !provider.checkIfWithinSlippageRange(
-    //             numeratorOut,
-    //             _expectedNumeratorOut,
-    //             slippage_in_percent
-    //         )
-    //     ) revert(Errors.NOT_WITHIN_ACCURACY_RANGE);
-
-    //     provider.transferERC20(_numerator, _receiver, numeratorOut);
-
-    //     (uint256 newNumeratorBalance, uint256 newDivisorBalance) = provider
-    //         .objectivelyObtainPoolBalances(address(this), _numerator, _divisor);
-    //     _updateFeatures(newNumeratorBalance, newDivisorBalance);
-    //     _done = true;
-    // }
-
-    #[modifiers(when_not_paused)]
+    #[modifiers(when_active)]
     default fn engage_incoming_conversation(
         &mut self,
         expected_reward_amount: Balance,
@@ -381,7 +370,7 @@ impl<
         let config = *self.data::<PoolConfig>();
         let state = *self.data::<PoolState>();
 
-       let mut working_slippage_in_precision: u128;
+       let working_slippage_in_precision: u128;
        if slippage_in_precision == 0 { working_slippage_in_precision = config.default_slippage_in_precision} else {working_slippage_in_precision = slippage_in_precision};
         let current_me_amount = objectively_obtain_single_balance(pool, state.me_token);
         let me_amount_from_conversation = current_me_amount - state.last_me_amount;
@@ -576,4 +565,38 @@ fn obtain_amount_of_pool_reward_to_withdraw(
         reward_amount_to_withdraw_a + reward_amount_to_withdraw_b,
         me_amount_to_withdraw_a + me_amount_to_withdraw_b,
     ))
+}
+
+
+#[modifier_definition]
+pub fn when_active<T, F, R, E>(instance: &mut T, body: F) -> Result<R, E>
+where
+    T: Storage<PoolState>,
+    F: FnOnce(&mut T) -> Result<R, E>,
+    E: From<ProtocolError>,
+{
+    if !instance.data().started {
+        return Err(From::from(ProtocolError::ConversationsNotStarted))
+    }
+
+    if !instance.data().active {
+        return Err(From::from(ProtocolError::PoolNotActive))
+    }
+    body(instance)
+}
+
+
+
+#[modifier_definition]
+pub fn when_not_active<T, F, R, E>(instance: &mut T, body: F) -> Result<R, E>
+where
+    T: Storage<PoolState>,
+    F: FnOnce(&mut T) -> Result<R, E>,
+    E: From<ProtocolError>,
+{
+   
+    if instance.data().active {
+        return Err(From::from(ProtocolError::PoolIsActive))
+    }
+    body(instance)
 }

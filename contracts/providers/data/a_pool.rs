@@ -5,6 +5,7 @@ use crate::providers::common::database::*;
 #[derive(Debug, Clone, Copy)]
 #[openbrush::upgradeable_storage(A_POOL_STATE)]
 pub struct PoolState {
+    pub started: bool,
     pub active: bool,
     pub initiator: AccountId,
     pub reward: AccountId,
@@ -33,6 +34,7 @@ pub struct PoolConfig {
 impl Default for PoolState {
     fn default() -> Self {
         Self {
+            started: Default::default(),
             active: Default::default(),
             initiator: ZERO_ADDRESS.into(),
             reward: ZERO_ADDRESS.into(),

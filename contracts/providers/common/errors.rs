@@ -21,9 +21,13 @@ pub enum ProtocolError {
     ZeroAddressNotAllowed,
     ZeroNotAllowed,
     EmptyStringNotAllowed,
+    ConversationsNotStarted,
+    ConversationsAlreadyStarted,
     PoolAlreadyInActive,
+    PoolIsActive,
     PoolNotActive,
     PoolAlreadyActive,
+    ConversationsShouldBeStartedAtOptimalRatioOrLess,
     AccountAlreadyPoolManager,
     AccountIsNotAPoolManager,
     ConversationWillCausePoolToGoOutOfRag,
@@ -38,6 +42,7 @@ pub enum ProtocolError {
     InsufficientRewardAmountDepositedForConversation,
     ExpectedRewardAmountExceedsActuallyObtainableRewardsAmount,
     CrossBrandConversationFailed,
+    ExpectedProtocolMeOffsetExceedsActualMeOffset,
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {

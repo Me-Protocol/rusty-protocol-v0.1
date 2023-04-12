@@ -10,6 +10,10 @@ pub type APoolRef = dyn PoolController + AccessControl + PSP34 + Pausable;
 
 #[openbrush::trait_definition]
 pub trait PoolController {
+
+    #[ink(message)]
+    fn start_allowing_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError>;
+
     #[ink(message)]
     fn pause_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError>;
 
@@ -59,7 +63,7 @@ pub trait PoolController {
     #[ink(message)]
     fn provide_pool_state(
         &self
-    ) -> (bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64);
+    ) -> (bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64);
 
     fn provide_pool_config(
         &self
@@ -84,4 +88,7 @@ pub trait PoolController {
         output_reward_receiver: AccountId,
         slippage_in_precision: u128
     ) -> Result<(), ProtocolError>;
+
+    #[ink(message)]
+    fn add_protocol_me_offset(&mut self, expected_me_offset: Balance) -> Result<bool, ProtocolError >;
 }
