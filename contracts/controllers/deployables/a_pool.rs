@@ -1,20 +1,20 @@
 use openbrush::{
-    contracts::traits::{ access_control::*, psp22::* },
+    contracts::traits::{ access_control::*, psp22::*, psp34::*, pausable::*, },
     traits::{ AccountId, Balance },
 };
 
 use crate::providers::{ common::errors::* };
 
 #[openbrush::wrapper]
-pub type APoolRef = dyn AccessControl + PSP22;
+pub type APoolRef = dyn PoolController + AccessControl + PSP34 + Pausable;
 
 #[openbrush::trait_definition]
 pub trait PoolController {
     #[ink(message)]
-    fn pause_conversations(&mut self) -> Result<(), ProtocolError>;
+    fn pause_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError>;
 
     #[ink(message)]
-    fn resume_conversations(&mut self) -> Result<(), ProtocolError>;
+    fn resume_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError>;
 
     #[ink(message)]
     fn give_pool_tokens_for_new_position(
@@ -72,6 +72,7 @@ pub trait PoolController {
         expected_output_reward_amount: Balance,
         listener: AccountId,
         listener_r_optimal: u128,
+        requestor: AccountId,
         output_reward_receiver: AccountId,
         slippage_in_precision: u128
     ) -> Result<(), ProtocolError>;

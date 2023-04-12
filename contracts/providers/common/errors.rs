@@ -4,7 +4,8 @@ use openbrush::{
         ownable::*,
         psp22::PSP22Error,
         psp34::PSP34Error,
-        errors::ReentrancyGuardError,
+        pausable::PausableError,
+        errors::{ReentrancyGuardError}
     },
 };
 
@@ -16,6 +17,7 @@ pub enum ProtocolError {
     AccessControlError(AccessControlError),
     ReentrancyGuardError(ReentrancyGuardError),
     OwnableError(OwnableError),
+    PausableError(PausableError),
     ZeroAddressNotAllowed,
     ZeroNotAllowed,
     EmptyStringNotAllowed,
@@ -32,6 +34,10 @@ pub enum ProtocolError {
     ActionWillTakePoolRewardsBelowConversationLimit,
     ProtocolOffsetMustBeConsidered,
     CanNotWithdrawZeroAssetsFromThePool,
+    DepositedRewardAmountIsNotTheSameAsStatedAmount,
+    InsufficientRewardAmountDepositedForConversation,
+    ExpectedRewardAmountExceedsActuallyObtainableRewardsAmount,
+    CrossBrandConversationFailed,
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {
@@ -62,3 +68,10 @@ impl From<ReentrancyGuardError> for ProtocolError {
         ProtocolError::ReentrancyGuardError(error)
     }
 }
+
+impl From<PausableError> for ProtocolError {
+    fn from(error: PausableError) -> Self {
+        ProtocolError::PausableError(error)
+    }
+}
+

@@ -58,6 +58,13 @@ pub fn determine_optimal_me_amount_for_swap_given_reward_amount(
     (reward_amount * PRECISION) / r_optimal
 }
 
+pub fn determine_optimal_reward_amount_for_swap_given_me_amount(
+    r_optimal: u128,
+    me_amount: Balance
+) -> Balance {
+    (me_amount * r_optimal) / PRECISION
+}
+
 pub fn check_if_within_acceptable_slippage_range(
     obtained_value: u128,
     actual_value: u128,

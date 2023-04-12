@@ -8,11 +8,11 @@ pub use crate::{
     controllers::deployables::a_pool::*,
 };
 
-use ink::prelude::vec::Vec;
+use ink::{prelude::vec::Vec, primitives::AccountId};
 use openbrush::{
-    contracts::{ access_control::*, psp34::*, traits::{ psp22::PSP22Ref }, reentrancy_guard::* },
+    contracts::{ access_control::*, psp34::*, traits::{ psp22::PSP22Ref }, reentrancy_guard::*, pausable::*, },
     modifiers,
-    traits::{ AccountId, AccountIdExt, Balance, Storage, Timestamp, ZERO_ADDRESS },
+    traits::{ Balance, Storage, Timestamp, ZERO_ADDRESS },
 };
 
 impl<
@@ -21,21 +21,26 @@ impl<
         Storage<access_control::Data> +
         Storage<psp34::Data> +
         Storage<Position> +
-        Storage<reentrancy_guard::Data>
+        Storage<reentrancy_guard::Data> +
+        Storage<pausable::Data>
 > PoolController for T {
-    default fn pause_conversations(&mut self) -> Result<(), ProtocolError> {
+    default fn pause_conversations(&mut self,  requestor: AccountId) -> Result<(), ProtocolError> {
         if !self.data::<PoolState>().active {
             return Err(ProtocolError::PoolAlreadyInActive);
         }
         self.data::<PoolState>().active = false;
+        self.data::<pausable::Data>().paused = true;
+        self.data::<pausable::Data>()._emit_paused_event(requestor);
         Ok(())
     }
 
-    default fn resume_conversations(&mut self) -> Result<(), ProtocolError> {
+    default fn resume_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError> {
         if self.data::<PoolState>().active {
             return Err(ProtocolError::PoolAlreadyActive);
         }
         self.data::<PoolState>().active = true;
+        self.data::<pausable::Data>().paused = false;
+        self.data::<pausable::Data>()._emit_paused_event(requestor);
         Ok(())
     }
 
@@ -271,24 +276,123 @@ impl<
         )
     }
 
+ 
+    #[modifiers(when_not_paused)]
     default fn initiate_outgoing_conversation(
         &mut self,
         reward_amount_in: Balance,
         expected_output_reward_amount: Balance,
         listener: AccountId,
         listener_r_optimal: u128,
+        requestor: AccountId,
         output_reward_receiver: AccountId,
         slippage_in_precision: u128
     ) -> Result<(), ProtocolError> {
-        Ok(())
+        let pool = Self::env().account_id();
+        let config = *self.data::<PoolConfig>();
+        let state = *self.data::<PoolState>();
+       let mut working_slippage_in_precision: u128;
+       if slippage_in_precision == 0 { working_slippage_in_precision = config.default_slippage_in_precision} else {working_slippage_in_precision = slippage_in_precision};
+       let current_reward_amount = objectively_obtain_single_balance(pool, state.reward);
+
+       let actually_deposited_reward_amount = current_reward_amount - state.last_reward_amount;
+       if !check_if_within_acceptable_percent_range(reward_amount_in, actually_deposited_reward_amount){
+       return Err(ProtocolError::DepositedRewardAmountIsNotTheSameAsStatedAmount);
+       }
+
+       let needed_me_token_amount = determine_optimal_me_amount_for_swap_given_reward_amount(listener_r_optimal, expected_output_reward_amount);
+       if needed_me_token_amount > (state.last_me_amount - config.minimum_me_amount_for_conversation){
+        return Err(ProtocolError::ActionWillTakePoolMeTokensBelowConversationLimit);
+       }
+       let r_last = _calculate_pool_ratio(current_reward_amount, state.last_me_amount);
+       let needed_reward_amount = determine_reward_amount_for_swap_given_me_amount(r_last, config.r_optimal, needed_me_token_amount, state.last_me_amount, working_slippage_in_precision);
+
+       if actually_deposited_reward_amount < needed_reward_amount {return Err(ProtocolError::InsufficientRewardAmountDepositedForConversation)}
+
+       PSP22Ref::transfer(&state.me_token, listener, needed_me_token_amount, Vec::<u8>::new())?;
+        
+       let excess_deposited_reward_amount = actually_deposited_reward_amount - needed_me_token_amount;
+
+       PSP22Ref::transfer(&state.reward, requestor, excess_deposited_reward_amount, Vec::<u8>::new())?;
+        
+        APoolRef::engage_incoming_conversation(&listener,expected_output_reward_amount, output_reward_receiver, working_slippage_in_precision)?;
+        
+        let (current_reward_amount, current_me_amount) = objectively_obtain_pool_balances(pool, state.reward, state.me_token);
+        update_pool_state(self, current_reward_amount, current_me_amount, Self::env().block_timestamp())?;
+
+       Ok(())
+
     }
 
+
+
+    // function engageIncomingPoolConversation(
+    //     uint256 _expectedNumeratorOut,
+    //     address _receiver,
+    //     uint256 slippage_in_percent
+    // ) external locked returns (bool _done) {
+    //     if (slippage_in_percent == 0)
+    //         slippage_in_percent = features.DEFAULT_SLIPPAGE_IN_PERCENT;
+    //     (address _numerator, address _divisor) = (numerator, divisor);
+    //     (
+    //         ,
+    //         uint256 _Roptimal,
+    //         ,
+    //         uint256 _lastDivisor,
+    //         ,
+    //         ,
+    //         ,
+
+    //     ) = _getCommonFeatures();
+
+    //     uint256 divisorBalance = provider.objectivelyObtainSingleBalance(
+    //         address(this),
+    //         _divisor
+    //     );
+
+    //     uint256 divisorDeposited = divisorBalance - _lastDivisor;
+
+    //     uint256 numeratorOut = (divisorDeposited * _Roptimal) / 10**6; 
+
+    //     if (
+    //         !provider.checkIfWithinSlippageRange(
+    //             numeratorOut,
+    //             _expectedNumeratorOut,
+    //             slippage_in_percent
+    //         )
+    //     ) revert(Errors.NOT_WITHIN_ACCURACY_RANGE);
+
+    //     provider.transferERC20(_numerator, _receiver, numeratorOut);
+
+    //     (uint256 newNumeratorBalance, uint256 newDivisorBalance) = provider
+    //         .objectivelyObtainPoolBalances(address(this), _numerator, _divisor);
+    //     _updateFeatures(newNumeratorBalance, newDivisorBalance);
+    //     _done = true;
+    // }
+
+    #[modifiers(when_not_paused)]
     default fn engage_incoming_conversation(
         &mut self,
         expected_reward_amount: Balance,
         output_reward_receiver: AccountId,
         slippage_in_precision: u128
     ) -> Result<(), ProtocolError> {
+        let pool = Self::env().account_id();
+        let config = *self.data::<PoolConfig>();
+        let state = *self.data::<PoolState>();
+
+       let mut working_slippage_in_precision: u128;
+       if slippage_in_precision == 0 { working_slippage_in_precision = config.default_slippage_in_precision} else {working_slippage_in_precision = slippage_in_precision};
+        let current_me_amount = objectively_obtain_single_balance(pool, state.me_token);
+        let me_amount_from_conversation = current_me_amount - state.last_me_amount;
+        let output_reward = determine_optimal_reward_amount_for_swap_given_me_amount(config.r_optimal, me_amount_from_conversation);
+        if expected_reward_amount > output_reward{
+            if !check_if_within_acceptable_slippage_range(expected_reward_amount, output_reward, working_slippage_in_precision) {return Err(ProtocolError::ExpectedRewardAmountExceedsActuallyObtainableRewardsAmount)}
+        }
+        PSP22Ref::transfer(&state.reward, output_reward_receiver, output_reward, Vec::<u8>::new())?;
+
+        let (current_reward_amount, current_me_amount) = objectively_obtain_pool_balances(pool, state.reward, state.me_token);
+        update_pool_state(self, current_reward_amount, current_me_amount, Self::env().block_timestamp())?;
         Ok(())
     }
 }
