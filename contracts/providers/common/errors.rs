@@ -43,6 +43,7 @@ pub enum ProtocolError {
     ExpectedRewardAmountExceedsActuallyObtainableRewardsAmount,
     CrossBrandConversationFailed,
     ExpectedProtocolMeOffsetExceedsActualMeOffset,
+    
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {
