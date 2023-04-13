@@ -1,9 +1,13 @@
 use openbrush::{ contracts::{ traits::{ psp22::PSP22Ref } }, traits::{ AccountId, Balance } };
 
-use crate::providers::common::constants::*;
+use crate::providers::common::{ constants::*, validator::*, errors::* };
 
-pub fn _calculate_pool_ratio(reward_amount: Balance, me_amount: Balance) -> u128 {
-    (reward_amount * PRECISION) / me_amount
+pub fn _calculate_pool_ratio(
+    reward_amount: Balance,
+    me_amount: Balance
+) -> Result<u128, ProtocolError> {
+    ensure_value_is_not_zero(me_amount)?;
+    Ok((reward_amount * PRECISION) / me_amount)
 }
 
 pub fn objectively_obtain_single_balance(pool: AccountId, reward: AccountId) -> Balance {
@@ -20,7 +24,11 @@ pub fn objectively_obtain_pool_balances(
     return (reward_amount, me_amount);
 }
 
-pub fn objectively_obtain_pool_ratio(pool: AccountId, reward: AccountId, me: AccountId) -> u128 {
+pub fn objectively_obtain_pool_ratio(
+    pool: AccountId,
+    reward: AccountId,
+    me: AccountId
+) -> Result<u128, ProtocolError> {
     let (a, b) = objectively_obtain_pool_balances(pool, reward, me);
     _calculate_pool_ratio(a, b)
 }
@@ -54,8 +62,9 @@ pub fn determine_reward_amount_for_swap_given_me_amount(
 pub fn determine_optimal_me_amount_for_swap_given_reward_amount(
     r_optimal: u128,
     reward_amount: Balance
-) -> Balance {
-    (reward_amount * PRECISION) / r_optimal
+) -> Result<u128, ProtocolError> {
+    ensure_value_is_not_zero(r_optimal)?;
+    Ok((reward_amount * PRECISION) / r_optimal)
 }
 
 pub fn determine_optimal_reward_amount_for_swap_given_me_amount(
@@ -69,20 +78,25 @@ pub fn check_if_within_acceptable_slippage_range(
     obtained_value: u128,
     actual_value: u128,
     slipage_in_precision: u128
-) -> bool {
+) -> Result<bool, ProtocolError> {
+    ensure_value_is_not_zero(actual_value)?;
     let a = if obtained_value > actual_value {
         obtained_value - actual_value
     } else {
         actual_value - obtained_value
     };
-    (a * PRECISION) / actual_value <= (PRECISION * slipage_in_precision) / 100
+    Ok((a * PRECISION) / actual_value <= (PRECISION * slipage_in_precision) / 100)
 }
 
-pub fn check_if_within_acceptable_percent_range(obtained_value: u128, actual_value: u128) -> bool {
+pub fn check_if_within_acceptable_percent_range(
+    obtained_value: u128,
+    actual_value: u128
+) -> Result<bool, ProtocolError> {
+    ensure_value_is_not_zero(actual_value)?;
     let a = if obtained_value > actual_value {
         obtained_value - actual_value
     } else {
         actual_value - obtained_value
     };
-    (a * PRECISION) / actual_value <= PRECISION / 100
+    Ok((a * PRECISION) / actual_value <= PRECISION / 100)
 }

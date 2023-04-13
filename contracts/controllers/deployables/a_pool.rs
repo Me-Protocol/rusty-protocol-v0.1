@@ -1,18 +1,17 @@
 use openbrush::{
-    contracts::traits::{ access_control::*, psp22::*, psp34::*, pausable::*, },
+    contracts::traits::{ access_control::*, psp22::*, psp34::*, pausable::* },
     traits::{ AccountId, Balance },
 };
 
-use crate::providers::{ common::errors::* };
+use crate::providers::{ common::errors::*, data::a_pool::* };
 
 #[openbrush::wrapper]
 pub type APoolRef = dyn PoolController + AccessControl + PSP34 + Pausable;
 
 #[openbrush::trait_definition]
 pub trait PoolController {
-
     #[ink(message)]
-    fn start_allowing_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError>;
+    fn start_allowing_conversations(&mut self, requestor: AccountId) -> Result<u128, ProtocolError>;
 
     #[ink(message)]
     fn pause_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError>;
@@ -90,8 +89,42 @@ pub trait PoolController {
     ) -> Result<(), ProtocolError>;
 
     #[ink(message)]
-    fn add_protocol_me_offset(&mut self, expected_me_offset: Balance) -> Result<bool, ProtocolError >;
+    fn add_protocol_me_offset(
+        &mut self,
+        expected_me_offset: Balance
+    ) -> Result<Balance, ProtocolError>;
 
     #[ink(message)]
-    fn withdraw_protocol_me_offset_only_me_tokens(&mut self, me_amount_to_withdraw: Balance) -> Result<bool, ProtocolError >;
+    fn withdraw_protocol_me_offset_only_me_tokens(
+        &mut self,
+        me_amount_to_withdraw: Balance
+    ) -> Result<Balance, ProtocolError>;
+
+    #[ink(message)]
+    fn withdraw_protocol_me_offset_with_rewards_if_need_be(
+        &mut self,
+        me_amount_to_withdraw: Balance
+    ) -> Result<(Balance, Balance), ProtocolError>;
+
+    #[ink(message)]
+    fn forcefully_withdraw_protocol_offset_me_tokens(
+        &mut self,
+        me_amount_to_withdraw: Balance
+    ) -> Result<Balance, ProtocolError>;
+
+    #[ink(message)]
+    fn withdraw_protocol_me_offset_withdrawable(
+        &mut self,
+        me_amount_to_withdraw: Balance
+    ) -> Result<bool, ProtocolError>;
+
+    #[ink(message)]
+    fn change_pool_config_except_r_optimal(
+        &mut self,
+        editable_config: EditablePoolConfig,
+        ignore_default: bool
+    ) -> Result<bool, ProtocolError>;
+
+    #[ink(message)]
+    fn change_r_optimal(&mut self, new_r_optimal: u128) -> Result<bool, ProtocolError>;
 }

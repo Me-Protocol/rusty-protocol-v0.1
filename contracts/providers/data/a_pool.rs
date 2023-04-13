@@ -1,5 +1,6 @@
 use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS } };
 use openbrush::traits::Storage;
+use ink::storage::traits::StorageLayout;
 use crate::providers::common::database::*;
 
 #[derive(Debug, Clone, Copy)]
@@ -31,6 +32,18 @@ pub struct PoolConfig {
     pub allow_internal_swap: bool,
 }
 
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode, StorageLayout)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+pub struct EditablePoolConfig {
+    pub maximum_r_limit: u128,
+    pub minimum_reward_amount_for_conversation: Balance,
+    pub minimum_me_amount_for_conversation: Balance,
+    pub notify_reward_amount: Balance,
+    pub notify_me_amount: Balance,
+    pub default_slippage_in_precision: u128,
+    pub allow_internal_swap: bool,
+}
+
 impl Default for PoolState {
     fn default() -> Self {
         Self {
@@ -53,6 +66,20 @@ impl Default for PoolConfig {
         Self {
             setup_me_amount: Default::default(),
             r_optimal: Default::default(),
+            maximum_r_limit: Default::default(),
+            minimum_reward_amount_for_conversation: Default::default(),
+            minimum_me_amount_for_conversation: Default::default(),
+            notify_reward_amount: Default::default(),
+            notify_me_amount: Default::default(),
+            default_slippage_in_precision: Default::default(),
+            allow_internal_swap: Default::default(),
+        }
+    }
+}
+
+impl Default for EditablePoolConfig {
+    fn default() -> Self {
+        Self {
             maximum_r_limit: Default::default(),
             minimum_reward_amount_for_conversation: Default::default(),
             minimum_me_amount_for_conversation: Default::default(),

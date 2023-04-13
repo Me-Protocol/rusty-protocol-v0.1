@@ -5,7 +5,7 @@ use openbrush::{
         psp22::PSP22Error,
         psp34::PSP34Error,
         pausable::PausableError,
-        errors::{ReentrancyGuardError}
+        errors::{ ReentrancyGuardError },
     },
 };
 
@@ -43,7 +43,10 @@ pub enum ProtocolError {
     ExpectedRewardAmountExceedsActuallyObtainableRewardsAmount,
     CrossBrandConversationFailed,
     ExpectedProtocolMeOffsetExceedsActualMeOffset,
-    
+    PoolIsCurrentlyBelowConversationLimit,
+    OptimalRewardRatioCanNotBeZero,
+    MaximumRewardRatioCanNotBeLessThanTheOptimalRatio,
+    PoolRatioDuringResetOfOptimalRatioCanNotBeGreaterThanTheOptimalRatio,
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {
@@ -80,4 +83,3 @@ impl From<PausableError> for ProtocolError {
         ProtocolError::PausableError(error)
     }
 }
-
