@@ -1,5 +1,3 @@
-use core::default;
-
 use crate::providers::common::constants::PRECISION;
 pub use crate::{
     providers::{
@@ -15,20 +13,19 @@ use openbrush::{
     modifier_definition,
     contracts::{
         access_control::*,
-        psp34::*,
+        psp34::extensions::enumerable::*,
         traits::{ psp22::PSP22Ref },
         reentrancy_guard::*,
-        pausable::*,
     },
     modifiers,
-    traits::{ Balance, Storage, Timestamp, ZERO_ADDRESS },
+    traits::{ Balance, Storage },
 };
 
 impl<
     T: Storage<PoolState> +
         Storage<PoolConfig> +
         Storage<access_control::Data> +
-        Storage<psp34::Data> +
+        Storage<psp34::Data<enumerable::Balances>> +
         Storage<Position> +
         Storage<reentrancy_guard::Data>
 > PoolController for T {
@@ -355,7 +352,7 @@ impl<
                 })
             );
         }
-        self.data::<psp34::Data>()._mint_to(to, Id::U128(id))?;
+        self.data::<psp34::Data<enumerable::Balances>>()._mint_to(to, Id::U128(id))?;
         Ok(())
     }
 
@@ -372,8 +369,16 @@ impl<
         ensure_address_is_not_zero_address(to)?;
         ensure_address_is_not_zero_address(requestor)?;
         ensure_value_is_not_zero(position_id)?;
-        self.data::<psp34::Data>()._check_token_exists(&Id::U128(position_id))?;
-        if requestor != self.data::<psp34::Data>()._owner_of(&Id::U128(position_id)).unwrap() {
+        self
+            .data::<psp34::Data<enumerable::Balances>>()
+            ._check_token_exists(&Id::U128(position_id))?;
+        if
+            requestor !=
+            self
+                .data::<psp34::Data<enumerable::Balances>>()
+                ._owner_of(&Id::U128(position_id))
+                .unwrap()
+        {
             return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
         }
         let pool = Self::env().account_id();
@@ -427,8 +432,16 @@ impl<
         if reward_pool_token_amount == 0 && me_pool_token_amount == 0 {
             return Err(ProtocolError::CanNotWithdrawZeroAssetsFromThePool);
         }
-        self.data::<psp34::Data>()._check_token_exists(&Id::U128(position_id))?;
-        if requestor != self.data::<psp34::Data>()._owner_of(&Id::U128(position_id)).unwrap() {
+        self
+            .data::<psp34::Data<enumerable::Balances>>()
+            ._check_token_exists(&Id::U128(position_id))?;
+        if
+            requestor !=
+            self
+                .data::<psp34::Data<enumerable::Balances>>()
+                ._owner_of(&Id::U128(position_id))
+                .unwrap()
+        {
             return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
         }
         let current_position_data = self
@@ -516,7 +529,7 @@ impl<
         (state.initiator, state.reward, state.me_token)
     }
 
-    default  fn provide_pool_state(
+    default fn provide_pool_state(
         &self
     ) -> (bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64) {
         let state = *self.data::<PoolState>();
@@ -788,6 +801,46 @@ impl<
             }
         }
         Ok(true)
+    }
+
+    default fn get_position_by_index(
+        &self,
+        requestor: AccountId,
+        index: u128
+    ) -> Result<Id, ProtocolError> {
+        let total_number_of_positions = self
+            .data::<psp34::Data<enumerable::Balances>>()
+            .balance_of(requestor);
+        if index > total_number_of_positions.into() {
+            return Err(ProtocolError::InvalidPositionIndex);
+        }
+        let position = self
+            .data::<psp34::Data<enumerable::Balances>>()
+            .owners_token_by_index(requestor, index)
+            .unwrap();
+        Ok(position)
+    }
+
+    fn get_all_positions(&self, requestor: AccountId) -> Result<Vec<Id>, ProtocolError> {
+        let total_number_of_positions = self
+            .data::<psp34::Data<enumerable::Balances>>()
+            .balance_of(requestor);
+        if total_number_of_positions == 0 {
+            return Err(ProtocolError::RequestorHasNoPosition);
+        }
+        if total_number_of_positions > 20 {
+            return Err(ProtocolError::PositionsAreMoreThanTwentyTryToGetThenOneAfterAnother);
+        }
+        let mut positions = Vec::new();
+        for i in 1..=total_number_of_positions {
+            positions.push(
+                self
+                    .data::<psp34::Data<enumerable::Balances>>()
+                    .owners_token_by_index(requestor, i.into())
+                    .unwrap()
+            );
+        }
+        Ok(positions)
     }
 }
 

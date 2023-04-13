@@ -127,4 +127,10 @@ pub trait PoolController {
 
     #[ink(message)]
     fn change_r_optimal(&mut self, new_r_optimal: u128) -> Result<bool, ProtocolError>;
+
+    #[ink(message)]
+    fn get_position_by_index(&self, requestor: AccountId, index: u128) -> Result<Id, ProtocolError>;
+
+    #[ink(message)]
+    fn get_all_positions(&self, requestor: AccountId) -> Result<Vec<Id>, ProtocolError>;
 }
