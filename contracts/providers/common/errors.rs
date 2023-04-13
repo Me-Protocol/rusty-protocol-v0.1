@@ -47,6 +47,9 @@ pub enum ProtocolError {
     OptimalRewardRatioCanNotBeZero,
     MaximumRewardRatioCanNotBeLessThanTheOptimalRatio,
     PoolRatioDuringResetOfOptimalRatioCanNotBeGreaterThanTheOptimalRatio,
+    InvalidPositionIndex,
+    RequestorHasNoPosition,
+    PositionsAreMoreThanTwentyTryToGetThenOneAfterAnother,
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {
