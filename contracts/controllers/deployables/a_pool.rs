@@ -91,4 +91,7 @@ pub trait PoolController {
 
     #[ink(message)]
     fn add_protocol_me_offset(&mut self, expected_me_offset: Balance) -> Result<bool, ProtocolError >;
+
+    #[ink(message)]
+    fn withdraw_protocol_me_offset_only_me_tokens(&mut self, me_amount_to_withdraw: Balance) -> Result<bool, ProtocolError >;
 }

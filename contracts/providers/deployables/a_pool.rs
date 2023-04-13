@@ -50,7 +50,7 @@ impl<
         Ok(())
     }
 
-    #[modifiers(only_role(POOL_ADMIN))]
+    #[modifiers(only_role(PROTOCOL))]
      default fn add_protocol_me_offset(&mut self, expected_me_offset: Balance) -> Result<bool, ProtocolError >{
         let pool = Self::env().account_id();
         let state = *self.data::<PoolState>();
@@ -61,21 +61,25 @@ impl<
                 return Err(ProtocolError::ExpectedProtocolMeOffsetExceedsActualMeOffset)
             }
         }
-        self.data::<PoolState>().protocol_me_offset = (actual_me_offset + state.protocol_me_offset);
+        self.data::<PoolState>().protocol_me_offset = actual_me_offset + state.protocol_me_offset;
         Ok(true)
      }
 
-
-    //  default fn withdraw_protocol_me_offset_only_me_tokens(&mut self, amount_to_withdraw: Balance, to: AccountId) -> Result<bool, ProtocolError >{
-    //     let pool = Self::env().account_id();
-    //     let state = *self.data::<PoolState>();
-    //     let config = *self.data::<PoolConfig>();
-    //     let current_me_offset = state.protocol_me_offset;
-    //     let current_me_amount = objectively_obtain_single_balance(pool, state.me_token);
-    //     if (current_me_amount - current_me_offset) < config.minimum_me_amount_for_conversation{
-
-    //     }
-    //  }
+     #[modifiers(only_role(PROTOCOL))]
+     default fn withdraw_protocol_me_offset_only_me_tokens(&mut self, me_amount_to_withdraw: Balance) -> Result<bool, ProtocolError >{
+        let pool = Self::env().account_id();
+        let protocol = Self::env().caller();
+        let state = *self.data::<PoolState>();
+        let config = *self.data::<PoolConfig>();
+        let current_me_offset = state.protocol_me_offset;
+        if me_amount_to_withdraw > current_me_offset  {return Err(ProtocolError::ExpectedProtocolMeOffsetExceedsActualMeOffset)}
+        let current_me_amount = objectively_obtain_single_balance(pool, state.me_token);
+        if (current_me_amount - me_amount_to_withdraw) < config.minimum_me_amount_for_conversation{
+             return Err(ProtocolError::ActionWillTakePoolMeTokensBelowConversationLimit)
+        }
+        PSP22Ref::transfer(&state.me_token, protocol, me_amount_to_withdraw, Vec::<u8>::new())?;
+        Ok(true)
+     }
 
 
     #[modifiers(only_role(POOL_MANAGER))]
