@@ -20,7 +20,7 @@ name = "pool"
 path = "pool.rs"
 crate-type = [
     # Used for normal contract Wasm blobs.
-   "cdylib",
+   "rlib",
 ]
 
 [features]
