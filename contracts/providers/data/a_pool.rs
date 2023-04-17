@@ -1,6 +1,6 @@
 use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS } };
 use openbrush::traits::Storage;
-use ink::storage::traits::StorageLayout;
+use ink::{storage::traits::StorageLayout};
 use crate::providers::common::database::*;
 
 #[derive(Debug, Clone, Copy)]
@@ -31,8 +31,8 @@ pub struct PoolConfig {
     pub allow_internal_swap: bool,
 }
 
-#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode, StorageLayout)]
-#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
 pub struct PoolSetUpConfig {
     pub r_optimal: u128,
     pub maximum_r_limit: u128,
@@ -44,8 +44,8 @@ pub struct PoolSetUpConfig {
     pub allow_internal_swap: bool,
 }
 
-#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode, StorageLayout)]
-#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
 pub struct EditablePoolConfig {
     pub maximum_r_limit: u128,
     pub minimum_reward_amount_for_conversation: Balance,
@@ -56,18 +56,6 @@ pub struct EditablePoolConfig {
     pub allow_internal_swap: bool,
 }
 
-
-#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode, StorageLayout)]
-#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
-pub struct SetUpPoolConfig {
-    pub maximum_r_limit: u128,
-    pub minimum_reward_amount_for_conversation: Balance,
-    pub minimum_me_amount_for_conversation: Balance,
-    pub notify_reward_amount: Balance,
-    pub notify_me_amount: Balance,
-    pub default_slippage_in_precision: u128,
-    pub allow_internal_swap: bool,
-}
 
 impl Default for PoolState {
     fn default() -> Self {

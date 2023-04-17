@@ -60,7 +60,7 @@ pub mod pool {
             };
 
         instance.pool_config = PoolConfig{
-                r_optimal: Default::default(),
+                r_optimal: config.r_optimal,
                 maximum_r_limit: config.maximum_r_limit,
                 minimum_reward_amount_for_conversation: config.minimum_reward_amount_for_conversation,
                 minimum_me_amount_for_conversation: config.minimum_me_amount_for_conversation,

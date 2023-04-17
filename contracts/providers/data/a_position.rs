@@ -10,8 +10,8 @@ pub struct Position {
     pub next_position_id: u128,
 }
 
-#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode, StorageLayout)]
-#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
 pub struct PositionMetadata {
     pub reward_position: Balance,
     pub me_token_position: Balance,

@@ -3,6 +3,8 @@ use openbrush::{
     traits::{ AccountId, Balance },
 };
 
+use ink::{prelude::vec::Vec};
+
 use crate::providers::{ common::errors::*, data::a_pool::* };
 
 #[openbrush::wrapper]

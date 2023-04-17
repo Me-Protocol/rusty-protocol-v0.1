@@ -341,8 +341,8 @@ impl<
             current_me_amount,
             Self::env().block_timestamp()
         )?;
+        self.data::<Position>().next_position_id += 1;
         let id = self.data::<Position>().next_position_id;
-        self.data::<Position>().next_position_id = id + 1;
         if added_me_amount != 0 || added_reward_amount != 0 {
             self.data::<Position>().position_metadata.insert(
                 &id,
