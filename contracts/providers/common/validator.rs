@@ -1,4 +1,4 @@
-use openbrush::{ traits::{ AccountId, ZERO_ADDRESS } };
+use openbrush::{ traits::{ AccountId, ZERO_ADDRESS , String} };
 
 use crate::providers::common::errors::*;
 

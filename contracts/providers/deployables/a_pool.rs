@@ -57,7 +57,7 @@ impl<
         {
             return Err(ProtocolError::ConversationsShouldBeStartedAtOptimalRatioOrLess);
         }
-        self.data::<PoolConfig>().setup_me_amount = current_me_amount;
+        self.data::<PoolState>().setup_me_amount = current_me_amount;
         self.data::<PoolState>().started = true;
         Ok(config.r_optimal)
     }
@@ -341,8 +341,8 @@ impl<
             current_me_amount,
             Self::env().block_timestamp()
         )?;
+        self.data::<Position>().next_position_id += 1;
         let id = self.data::<Position>().next_position_id;
-        self.data::<Position>().next_position_id = id + 1;
         if added_me_amount != 0 || added_reward_amount != 0 {
             self.data::<Position>().position_metadata.insert(
                 &id,
@@ -531,7 +531,7 @@ impl<
 
     default fn provide_pool_state(
         &self
-    ) -> (bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64) {
+    ) -> (bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, Balance, u64) {
         let state = *self.data::<PoolState>();
 
         (
@@ -543,17 +543,17 @@ impl<
             state.last_reward_amount,
             state.last_me_amount,
             state.protocol_me_offset,
+            state.setup_me_amount,
             state.last_transaction_time,
         )
     }
 
     default fn provide_pool_config(
         &self
-    ) -> (Balance, u128, u128, Balance, Balance, Balance, Balance, u128, bool) {
+    ) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool) {
         let config = *self.data::<PoolConfig>();
 
         (
-            config.setup_me_amount,
             config.r_optimal,
             config.maximum_r_limit,
             config.minimum_reward_amount_for_conversation,
@@ -732,7 +732,7 @@ impl<
             );
         }
         self.data::<PoolConfig>().r_optimal = actual_r_optimal_in_precision;
-        self.data::<PoolConfig>().setup_me_amount = current_me_amount;
+        self.data::<PoolState>().setup_me_amount = current_me_amount;
         Ok(true)
     }
 

@@ -3,6 +3,8 @@ use openbrush::{
     traits::{ AccountId, Balance },
 };
 
+use ink::{prelude::vec::Vec};
+
 use crate::providers::{ common::errors::*, data::a_pool::* };
 
 #[openbrush::wrapper]
@@ -62,11 +64,11 @@ pub trait PoolController {
     #[ink(message)]
     fn provide_pool_state(
         &self
-    ) -> (bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64);
+    ) -> (bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, Balance, u64);
 
     fn provide_pool_config(
         &self
-    ) -> (Balance, u128, u128, Balance, Balance, Balance, Balance, u128, bool);
+    ) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool);
 
     #[ink(message)]
     fn initiate_outgoing_conversation(

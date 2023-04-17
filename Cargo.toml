@@ -7,14 +7,14 @@ edition = "2021"
 [dependencies]
 ink = { version = "4.1.0", default-features = false }
 
-
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
 scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
 
 # These dependencies
 openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "~3.0.0", default-features = false }
 reward = {path = "contracts/services/deployables/reward", default-features = false }
-
+pool = {path = "contracts/services/deployables/pool", default-features = false }
+global = {path = "contracts", default-features = false}
 
 [dev-dependencies]
 rustc-serialize = "0.3"
@@ -40,6 +40,8 @@ std = [
     # These dependencies
     "openbrush/std",
     "reward/std",
+    "pool/std",
+    "global/std",
 ]
 ink-as-dependency = []
 
