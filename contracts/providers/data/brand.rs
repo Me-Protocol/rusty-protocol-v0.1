@@ -15,10 +15,10 @@ pub struct BrandDetails {
 #[derive(Debug)]
 #[openbrush::upgradeable_storage(BRAND_RECORDS)]
 pub struct BrandRecords {
-    pub Id: Mapping<AccountId, BRAND_ID_TYPE>,
-    pub Exists: Mapping<BRAND_ID_TYPE, bool>,
-    pub Details: Mapping<BRAND_ID_TYPE, BrandDetails>,
-    pub GlobalConfig: Mapping<BRAND_ID_TYPE, GlobalBrandConfig>,
+    pub id: Mapping<AccountId, BRAND_ID_TYPE>,
+    pub exists: Mapping<BRAND_ID_TYPE, bool>,
+    pub details: Mapping<BRAND_ID_TYPE, BrandDetails>,
+    pub global_config: Mapping<BRAND_ID_TYPE, GlobalBrandConfig>,
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]

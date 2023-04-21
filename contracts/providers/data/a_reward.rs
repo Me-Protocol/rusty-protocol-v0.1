@@ -32,8 +32,8 @@ pub struct RewardConfig {
 #[derive(Debug)]
 #[openbrush::upgradeable_storage(REWARD_RECORDS)]
 pub struct RewardRecords {
-    pub Details: Mapping<AccountId, RewardDetails>,
-    pub Config: Mapping<AccountId, RewardConfig>,
+    pub details: Mapping<AccountId, RewardDetails>,
+    pub config: Mapping<AccountId, RewardConfig>,
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]

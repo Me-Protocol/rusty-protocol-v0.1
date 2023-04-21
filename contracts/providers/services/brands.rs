@@ -72,7 +72,7 @@ impl<
         let mut i: u64 = 1;
         while no_id {
             id = generate_string_id(concat.to_owned(), i);
-            if !self.data::<BrandRecords>().Exists.get(id).unwrap() {
+            if !self.data::<BrandRecords>().exists.get(id).unwrap() {
                 no_id = false;
             }
             i = i + 1;
@@ -83,10 +83,10 @@ impl<
         } else {
             return Err(ProtocolError::FailedToGenerateId);
         }
-        self.data::<BrandRecords>().Exists.insert(id, &true);
-        self.data::<BrandRecords>().Details.insert(id, &details);
-        self.data::<BrandRecords>().GlobalConfig.insert(id, &config);
-        self.data::<BrandRecords>().Id.insert(requestor, &id);
+        self.data::<BrandRecords>().exists.insert(id, &true);
+        self.data::<BrandRecords>().details.insert(id, &details);
+        self.data::<BrandRecords>().global_config.insert(id, &config);
+        self.data::<BrandRecords>().id.insert(requestor, &id);
 
         Ok(())
     }
@@ -121,11 +121,11 @@ impl<
         let id = get_self_id(self, requestor).unwrap();
 
         if !ignore_default {
-            self.data::<BrandRecords>().GlobalConfig.insert(&id, &brand_config);
+            self.data::<BrandRecords>().global_config.insert(&id, &brand_config);
         } else {
             let mut previous_config: GlobalBrandConfig = self
                 .data::<BrandRecords>()
-                .GlobalConfig.get(&id)
+                .global_config.get(&id)
                 .unwrap();
 
             if brand_config.enable_bounty_rewards != Default::default() {
@@ -140,7 +140,7 @@ impl<
             if brand_config.pay_outgoing_gas_fees != Default::default() {
                 previous_config.pay_outgoing_gas_fees = brand_config.pay_outgoing_gas_fees;
             }
-            self.data::<BrandRecords>().GlobalConfig.insert(&id, &previous_config);
+            self.data::<BrandRecords>().global_config.insert(&id, &previous_config);
         }
 
         Ok(true)
@@ -155,9 +155,9 @@ impl<
         let requestor = Self::env().caller();
         ensure_is_issuing_brand(self, reward, requestor)?;
         if !ignore_default {
-            self.data::<RewardRecords>().Config.insert(reward, &reward_config);
+            self.data::<RewardRecords>().config.insert(reward, &reward_config);
         } else {
-            let mut previous_config = self.data::<RewardRecords>().Config.get(&reward).unwrap();
+            let mut previous_config = self.data::<RewardRecords>().config.get(&reward).unwrap();
 
             if reward_config.specific_exceptions != Default::default() {
                 previous_config.specific_exceptions = reward_config.specific_exceptions;
@@ -180,7 +180,7 @@ impl<
                 previous_config.pay_outgoing_gas_fee = reward_config.pay_outgoing_gas_fee;
             }
 
-            self.data::<RewardRecords>().Config.insert(reward, &previous_config);
+            self.data::<RewardRecords>().config.insert(reward, &previous_config);
         }
         Ok(true)
     }
@@ -192,7 +192,7 @@ impl<
     ) -> Result<bool, ProtocolError> {
         let requestor = Self::env().caller();
         let id = get_self_id(self, requestor).unwrap();
-        let mut details: BrandDetails = self.data::<BrandRecords>().Details.get(id).unwrap();
+        let mut details: BrandDetails = self.data::<BrandRecords>().details.get(id).unwrap();
 
         if !ignore_default {
             details.online_presence = brand_details.online_presence;
@@ -205,7 +205,7 @@ impl<
                 details.name = brand_details.name;
             }
         }
-        self.data::<BrandRecords>().Details.insert(id, &details);
+        self.data::<BrandRecords>().details.insert(id, &details);
         Ok(true)
     }
 
@@ -219,7 +219,7 @@ impl<
         let requestor = Self::env().caller();
         ensure_address_is_not_zero_address(reward)?;
         ensure_is_issuing_brand(self, reward, requestor)?;
-        let mut details = self.data::<RewardRecords>().Details.get(&reward).unwrap();
+        let mut details = self.data::<RewardRecords>().details.get(&reward).unwrap();
         if !ignore_default {
             details.description_link = reward_details.description_link;
             details.name = reward_details.name;
@@ -235,7 +235,7 @@ impl<
                 details.symbol = reward_details.symbol;
             }
         }
-        self.data::<RewardRecords>().Details.insert(reward, &details);
+        self.data::<RewardRecords>().details.insert(reward, &details);
 
         Ok(true)
     }
@@ -281,7 +281,7 @@ impl<
         ensure_address_is_not_zero_address(reward)?;
         let requestor = Self::env().caller();
         ensure_is_issuing_brand(self, reward, requestor)?;
-        let pool_id = self.data::<RewardRecords>().Details.get(&reward).unwrap().pool_id;
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
@@ -298,7 +298,7 @@ impl<
         ensure_address_is_not_zero_address(reward)?;
         let requestor = Self::env().caller();
         ensure_is_issuing_brand(self, reward, requestor)?;
-        let pool_id = self.data::<RewardRecords>().Details.get(&reward).unwrap().pool_id;
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
@@ -366,8 +366,8 @@ impl<
         details.issuing_brand = brand_id;
         details.date_created = Self::env().block_timestamp().into();
 
-        self.data::<RewardRecords>().Details.insert(reward, &details);
-        self.data::<RewardRecords>().Config.insert(reward, &config);
+        self.data::<RewardRecords>().details.insert(reward, &details);
+        self.data::<RewardRecords>().config.insert(reward, &config);
 
         Ok(true)
     }
@@ -385,7 +385,7 @@ impl<
         ensure_address_is_not_zero_address(reward)?;
         let requestor = Self::env().caller();
         ensure_is_issuing_brand(self, reward, requestor)?;
-        let pool_id = self.data::<RewardRecords>().Details.get(&reward).unwrap().pool_id;
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
@@ -406,7 +406,7 @@ impl<
         ensure_address_is_not_zero_address(reward)?;
         let requestor = Self::env().caller();
         ensure_is_issuing_brand(self, reward, requestor)?;
-        let pool_id = self.data::<RewardRecords>().Details.get(&reward).unwrap().pool_id;
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
@@ -422,7 +422,7 @@ impl<
         ensure_address_is_not_zero_address(reward)?;
         let requestor = Self::env().caller();
         ensure_is_issuing_brand(self, reward, requestor)?;
-        let pool_id = self.data::<RewardRecords>().Details.get(&reward).unwrap().pool_id;
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
@@ -434,7 +434,7 @@ impl<
         ensure_address_is_not_zero_address(reward)?;
         let requestor = Self::env().caller();
         ensure_is_issuing_brand(self, reward, requestor)?;
-        let pool_id = self.data::<RewardRecords>().Details.get(&reward).unwrap().pool_id;
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
@@ -446,7 +446,7 @@ impl<
         ensure_address_is_not_zero_address(reward)?;
         let requestor = Self::env().caller();
         ensure_is_issuing_brand(self, reward, requestor)?;
-        let pool_id = self.data::<RewardRecords>().Details.get(&reward).unwrap().pool_id;
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
@@ -466,7 +466,7 @@ impl<
         }
         let requestor = Self::env().caller();
         ensure_is_issuing_brand(self, reward, requestor)?;
-        let pool_id = self.data::<RewardRecords>().Details.get(&reward).unwrap().pool_id;
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
@@ -494,7 +494,7 @@ impl<
         }
         let requestor = Self::env().caller();
         ensure_is_issuing_brand(self, reward, requestor)?;
-        let pool_id = self.data::<RewardRecords>().Details.get(&reward).unwrap().pool_id;
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
@@ -586,8 +586,8 @@ pub fn get_self_id<T>(
 ) -> Result<BRAND_ID_TYPE, ProtocolError>
     where T: Storage<BrandRecords>
 {
-    if instance.data::<BrandRecords>().Id.contains(requestor) {
-        let id = instance.data::<BrandRecords>().Id.get(requestor).unwrap();
+    if instance.data::<BrandRecords>().id.contains(requestor) {
+        let id = instance.data::<BrandRecords>().id.get(requestor).unwrap();
         Ok(id)
     } else {
         return Err(ProtocolError::BrandDoesNotExist);
@@ -603,7 +603,7 @@ pub fn ensure_is_issuing_brand<T>(
 {
     let issuing_brand = instance
         .data::<RewardRecords>()
-        .Details.get(&reward)
+        .details.get(&reward)
         .unwrap().issuing_brand;
 
     let requesting_brand = get_self_id(instance, requestor).unwrap();
