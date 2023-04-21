@@ -60,7 +60,10 @@ pub enum ProtocolError {
     RewardHasNoPool,
     PleaseReadTandC,
     BothDepositsCanNotBeZero,
-    BothWithdrawalsCanNotBeZero
+    BothWithdrawalsCanNotBeZero,
+    BountyDepositNotRecognized,
+    RewardIsNotBountyReward,
+    InsufficientBountyReward,
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {

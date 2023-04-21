@@ -9,3 +9,7 @@ pub const BRAND_RECORDS: u32 = openbrush::storage_unique_key!(brand_records);
 pub const PROTOCOL_RECORDS: u32 = openbrush::storage_unique_key!(protocol_records);
 
 pub const PROTOCOL_CONFIG: u32 = openbrush::storage_unique_key!(protocol_config);
+
+pub const BOUNTY_RECORD: u32 = openbrush::storage_unique_key!(bounty_record);
+
+pub const TREASURY_RECORD: u32 = openbrush::storage_unique_key!(treasury_record);

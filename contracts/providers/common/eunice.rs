@@ -98,5 +98,10 @@ pub fn check_if_within_acceptable_percent_range(
     } else {
         actual_value - obtained_value
     };
-    Ok((a * PRECISION) / actual_value <= PRECISION / 100)
+    let result = (a * PRECISION) / actual_value <= PRECISION / 100;
+
+    if result == false {
+        return Err(ProtocolError::RequestIsNotWithInAccuracyRange);
+    }
+    Ok(result)
 }
