@@ -31,8 +31,8 @@ impl<
         ensure_value_is_not_zero(amount)?;
         if reward_is_bounty_reward(self, reward) != true {
             recognise_reward_as_bounty_reward(self, reward);
-            let current_number_of_bounty_rewards = get_total_number_of_bounty_rewards(self, reward);
-            update_total_number_of_bounty_rewards(self, reward, current_number_of_bounty_rewards + 1);
+            let current_number_of_bounty_rewards = get_total_number_of_bounty_rewards(self);
+            update_total_number_of_bounty_rewards(self, current_number_of_bounty_rewards + 1);
         }
         let bounty_id = Self::env().account_id();
         let previous_balance = get_bounty_balance(self, reward);
@@ -58,7 +58,7 @@ impl<
         let current_bounty_balance = get_bounty_balance(self, reward);
         if amount > current_bounty_balance {return Err(ProtocolError::InsufficientBountyReward)}
         update_bounty_balance(self, reward, current_bounty_balance - amount);
-        PSP22Ref::transfer(&reward, to, amount, Vec::<u8>::new());
+        PSP22Ref::transfer(&reward, to, amount, Vec::<u8>::new())?;
         Ok(true)
     }
 

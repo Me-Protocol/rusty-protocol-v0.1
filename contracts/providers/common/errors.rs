@@ -64,6 +64,11 @@ pub enum ProtocolError {
     BountyDepositNotRecognized,
     RewardIsNotBountyReward,
     InsufficientBountyReward,
+    BrandCanNotBeEmpty,
+    TreasuryDepositNotRecognized,
+    InsufficientTreasuryRewardBalance,
+    InsufficientTreasuryMeBalance,
+
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {

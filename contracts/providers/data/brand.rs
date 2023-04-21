@@ -70,3 +70,4 @@ impl Default for BrandDetails {
       }
   }
 }
+
