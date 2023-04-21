@@ -28,9 +28,8 @@ impl<
         requestor: AccountId,
         metadata: Option<String>
     ) -> Result<bool, ProtocolError> {
-        ensure_address_is_not_zero_address(reward)?;
+      
         ensure_address_is_not_zero_address(requestor)?;
-        ensure_brand_is_not_default(brand)?;
         let treasury = Self::env().account_id();
         let me = get_me(self);
         if reward_amount == 0 && me_amount == 0 {
@@ -42,6 +41,7 @@ impl<
             me
         );
         if reward_amount > 0 {
+            ensure_address_is_not_zero_address(reward)?;
             let previous_reward_balance = get_treasury_reward_balance(self, reward);
             if previous_reward_balance > current_reward_balance {
                 return Err(ProtocolError::TreasuryDepositNotRecognized);
@@ -51,6 +51,7 @@ impl<
             update_treasury_reward_balance(self, reward, current_reward_balance);
         }
         if me_amount > 0 {
+            ensure_brand_is_not_default(brand)?;
             let previous_me_balance = get_treasury_me_balance_for_brand(self, brand);
             if previous_me_balance > current_me_balance {
                 return Err(ProtocolError::TreasuryDepositNotRecognized);
@@ -219,9 +220,9 @@ fn withdraw_reward_and_or_me<T>(
 ) -> Result<bool, ProtocolError>
     where T: Storage<TreasuryRecord>
 {
-    ensure_address_is_not_zero_address(reward)?;
+   
     ensure_address_is_not_zero_address(requestor)?;
-    ensure_brand_is_not_default(brand)?;
+    
     let me = get_me(instance);
     if reward_amount == 0 && me_amount == 0 {
         return Err(ProtocolError::BothWithdrawalsCanNotBeZero);
@@ -232,6 +233,7 @@ fn withdraw_reward_and_or_me<T>(
         me
     );
     if reward_amount > 0 {
+        ensure_address_is_not_zero_address(reward)?;
         if current_reward_balance < reward_amount {
             return Err(ProtocolError::InsufficientTreasuryRewardBalance);
         }
@@ -239,6 +241,7 @@ fn withdraw_reward_and_or_me<T>(
         PSP22Ref::transfer(&reward, to, reward_amount, Vec::<u8>::new())?;
     }
     if me_amount > 0 {
+        ensure_brand_is_not_default(brand)?;
         if current_me_balance < me_amount {
             return Err(ProtocolError::InsufficientTreasuryMeBalance);
         }

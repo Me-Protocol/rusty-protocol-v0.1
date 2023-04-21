@@ -10,6 +10,15 @@ pub fn _calculate_pool_ratio(
     Ok((reward_amount * PRECISION) / me_amount)
 }
 
+pub fn calculate_due_bounty_contribution(
+    reward_amount: Balance,
+    bounty_contribution_in_precision: u128
+) -> Result<u128, ProtocolError> {
+    ensure_value_is_not_zero(reward_amount)?;
+    let contribution = (reward_amount * bounty_contribution_in_precision) / PRECISION;
+    Ok(contribution)
+}
+
 pub fn objectively_obtain_single_balance(pool: AccountId, reward: AccountId) -> Balance {
     PSP22Ref::balance_of(&reward, pool)
 }
@@ -85,7 +94,11 @@ pub fn check_if_within_acceptable_slippage_range(
     } else {
         actual_value - obtained_value
     };
-    Ok((a * PRECISION) / actual_value <= (PRECISION * slipage_in_precision) / 100)
+    let result = (a * PRECISION) / actual_value <= (PRECISION * slipage_in_precision) / 100;
+    if result == false {
+        return Err(ProtocolError::RequestIsNotWithinSlippageRange)
+    }
+    Ok(result)
 }
 
 pub fn check_if_within_acceptable_percent_range(

@@ -581,7 +581,7 @@ impl<
         requestor: AccountId,
         output_reward_receiver: AccountId,
         slippage_in_precision: u128
-    ) -> Result<(), ProtocolError> {
+    ) -> Result<Balance, ProtocolError> {
         let pool = Self::env().account_id();
         let config = *self.data::<PoolConfig>();
         let state = *self.data::<PoolState>();
@@ -638,12 +638,12 @@ impl<
             Vec::<u8>::new()
         )?;
 
-        APoolRef::engage_incoming_conversation(
+        let output_reward = APoolRef::engage_incoming_conversation(
             &listener,
             expected_output_reward_amount,
             output_reward_receiver,
             working_slippage_in_precision
-        )?;
+        ).unwrap();
 
         let (current_reward_amount, current_me_amount) = objectively_obtain_pool_balances(
             pool,
@@ -657,7 +657,7 @@ impl<
             Self::env().block_timestamp()
         )?;
 
-        Ok(())
+        Ok(output_reward)
     }
 
     #[modifiers(when_active)]
@@ -666,7 +666,7 @@ impl<
         expected_reward_amount: Balance,
         output_reward_receiver: AccountId,
         slippage_in_precision: u128
-    ) -> Result<(), ProtocolError> {
+    ) -> Result<Balance, ProtocolError> {
         let pool = Self::env().account_id();
         let config = *self.data::<PoolConfig>();
         let state = *self.data::<PoolState>();
@@ -709,7 +709,7 @@ impl<
             current_me_amount,
             Self::env().block_timestamp()
         )?;
-        Ok(())
+        Ok(output_reward)
     }
 
     #[modifiers(when_not_active)]
@@ -838,6 +838,27 @@ impl<
             );
         }
         Ok(positions)
+    }
+
+    fn determine_needed_reward_amount_given_me_amount(&mut self, me_amount: Balance, slippage_in_precision: u128)-> Result<Balance, ProtocolError>{
+        let config = *self.data::<PoolConfig>();
+        let state = *self.data::<PoolState>();
+        let r_last = _calculate_pool_ratio(state.last_reward_amount, state.last_me_amount).unwrap();
+        let mut slippage = if slippage_in_precision == 0 {config.default_slippage_in_precision} else{slippage_in_precision};
+        let result = determine_reward_amount_for_swap_given_me_amount(r_last,config.r_optimal, me_amount, state.last_me_amount, slippage);
+        Ok(result)
+    }
+
+    fn determine_optimal_needed_me_amount_given_reward_amount(&mut self, reward_amount: Balance)-> Result<Balance, ProtocolError> {
+        ensure_value_is_not_zero(reward_amount);
+        let config = *self.data::<PoolConfig>();
+        let result = determine_optimal_me_amount_for_swap_given_reward_amount(config.r_optimal, reward_amount).unwrap();
+        Ok(result)
+    }
+     
+    fn get_r_optimal(&mut self)-> Result<Balance, ProtocolError>{
+        let config = *self.data::<PoolConfig>();
+        Ok(config.r_optimal)
     }
 }
 

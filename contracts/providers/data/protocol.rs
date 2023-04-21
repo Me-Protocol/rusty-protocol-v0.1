@@ -13,7 +13,7 @@ pub struct ProtocolConfig {
     pub default_notify_reward_amount_in_percent: u8,
     pub cai_in_me: Balance,
     pub protocol_fee: Balance,
-    pub bounty_fee_in_precision: u128,
+    pub bounty_contribution_in_precision: u128,
 }
 
 #[derive(Debug)]
@@ -34,3 +34,11 @@ pub fn get_me<T>(instance: &mut T) -> AccountId where T: Storage<ProtocolRecords
 pub fn get_bount_id<T>(instance: &mut T) -> AccountId where T: Storage<ProtocolRecords> {
     instance.data::<ProtocolRecords>().bounty
 }
+
+pub fn get_treasury_id<T>(instance: &mut T) -> AccountId where T: Storage<ProtocolRecords> {
+     instance.data::<ProtocolRecords>().treasury
+ }
+
+ pub fn get_default_protocol_bounty_contribution_in_precision<T>(instance: &mut T) -> u128 where T: Storage<ProtocolConfig> {
+     instance.data::<ProtocolConfig>().bounty_contribution_in_precision
+ }

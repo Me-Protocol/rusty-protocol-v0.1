@@ -78,7 +78,7 @@ pub trait PoolController {
         requestor: AccountId,
         output_reward_receiver: AccountId,
         slippage_in_precision: u128
-    ) -> Result<(), ProtocolError>;
+    ) -> Result<Balance, ProtocolError>;
 
     #[ink(message)]
     fn engage_incoming_conversation(
@@ -86,7 +86,7 @@ pub trait PoolController {
         expected_reward_amount: Balance,
         output_reward_receiver: AccountId,
         slippage_in_precision: u128
-    ) -> Result<(), ProtocolError>;
+    ) -> Result<Balance, ProtocolError>;
 
     #[ink(message)]
     fn add_protocol_me_offset(
@@ -133,4 +133,14 @@ pub trait PoolController {
 
     #[ink(message)]
     fn get_all_positions(&self, requestor: AccountId) -> Result<Vec<Id>, ProtocolError>;
+   
+    #[ink(message)]
+    fn determine_needed_reward_amount_given_me_amount(&mut self, me_amount: Balance, slippage_in_precision: u128)-> Result<Balance, ProtocolError>;
+
+    #[ink(message)]
+    fn determine_optimal_needed_me_amount_given_reward_amount(&mut self, reward_amount: Balance)-> Result<Balance, ProtocolError>;
+
+    #[ink(message)]
+    fn get_r_optimal(&mut self)-> Result<Balance, ProtocolError>;
+
 }
