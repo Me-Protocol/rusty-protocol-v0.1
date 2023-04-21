@@ -50,6 +50,17 @@ pub enum ProtocolError {
     InvalidPositionIndex,
     RequestorHasNoPosition,
     PositionsAreMoreThanTwentyTryToGetThenOneAfterAnother,
+    FailedToGenerateId,
+    RewardNameCannotBeEmpty,
+    RewardSymbolCannotBeEmpty,
+    BrandDoesNotExist,
+    RequestorIsNotIssuingBrand,
+    AccountAlreadyABountyManager,
+    AccountIsNotABountyManager,
+    RewardHasNoPool,
+    PleaseReadTandC,
+    BothDepositsCanNotBeZero,
+    BothWithdrawalsCanNotBeZero
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {
