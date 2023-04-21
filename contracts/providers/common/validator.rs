@@ -1,6 +1,6 @@
-use openbrush::{ traits::{ AccountId, ZERO_ADDRESS , String} };
+use openbrush::{ traits::{ AccountId, ZERO_ADDRESS, String } };
 
-use crate::providers::common::{errors::*, types::*, constants::*};
+use crate::providers::common::{ errors::*, types::*, constants::* };
 
 pub fn ensure_address_is_not_zero_address(address: AccountId) -> Result<(), ProtocolError> {
     if address == ZERO_ADDRESS.into() {
@@ -35,4 +35,3 @@ pub fn ensure_input_is_not_empty(string_opt: Option<String>) -> Result<(), Proto
         }
     }
 }
-

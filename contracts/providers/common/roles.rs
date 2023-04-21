@@ -8,4 +8,4 @@ pub const POOL_ADMIN: RoleType = ink::selector_id!("POOL_ADMIN");
 
 pub const PROTOCOL: RoleType = ink::selector_id!("PROTOCOL");
 
-pub const BOUNTY_MANAGER:RoleType = ink::selector_id!("BOUNTY_MANAGER");
+pub const BOUNTY_MANAGER: RoleType = ink::selector_id!("BOUNTY_MANAGER");

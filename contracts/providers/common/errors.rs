@@ -68,7 +68,6 @@ pub enum ProtocolError {
     TreasuryDepositNotRecognized,
     InsufficientTreasuryRewardBalance,
     InsufficientTreasuryMeBalance,
-
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {

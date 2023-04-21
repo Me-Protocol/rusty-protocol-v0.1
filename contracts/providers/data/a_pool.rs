@@ -1,6 +1,6 @@
 use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS } };
 use openbrush::traits::Storage;
-use ink::{storage::traits::StorageLayout};
+use ink::{ storage::traits::StorageLayout };
 use crate::providers::common::database::*;
 
 #[derive(Debug, Clone, Copy)]
@@ -56,7 +56,6 @@ pub struct EditablePoolConfig {
     pub allow_internal_swap: bool,
 }
 
-
 impl Default for PoolState {
     fn default() -> Self {
         Self {
@@ -69,7 +68,7 @@ impl Default for PoolState {
             last_me_amount: Default::default(),
             protocol_me_offset: Default::default(),
             setup_me_amount: Default::default(),
-            last_transaction_time: Default::default()
+            last_transaction_time: Default::default(),
         }
     }
 }

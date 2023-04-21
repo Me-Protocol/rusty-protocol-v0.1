@@ -1,6 +1,6 @@
 use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS, Storage } };
-use ink::{storage::{ Mapping}};
-use crate::providers::common::{database::*, types::*};
+use ink::{ storage::{ Mapping } };
+use crate::providers::common::{ database::*, types::* };
 
 #[derive(Debug)]
 #[openbrush::upgradeable_storage(TREASURY_RECORD)]
@@ -9,9 +9,9 @@ pub struct TreasuryRecord {
     pub reward_notify_limits: Mapping<AccountId, u128>,
     pub reward_balances: Mapping<AccountId, u128>,
     pub me_notify_limit: u128,
-    pub me_balances: Mapping<BRAND_ID_TYPE,Balance>,
+    pub me_balances: Mapping<BRAND_ID_TYPE, Balance>,
     pub cai_earned: Mapping<BRAND_ID_TYPE, Balance>,
-    pub total_expenses: Mapping<BRAND_ID_TYPE,Balance >
+    pub total_expenses: Mapping<BRAND_ID_TYPE, Balance>,
 }
 
 impl Default for TreasuryRecord {
@@ -23,59 +23,37 @@ impl Default for TreasuryRecord {
             me_notify_limit: Default::default(),
             me_balances: Mapping::default(),
             cai_earned: Mapping::default(),
-            total_expenses: Mapping::default()
+            total_expenses: Mapping::default(),
         }
     }
 }
 
-pub fn get_reward_notify_limit<T>(
-    instance: &mut T,
-    reward: AccountId,
-) -> Balance
-    where T: Storage<TreasuryRecord> 
+pub fn get_reward_notify_limit<T>(instance: &mut T, reward: AccountId) -> Balance
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().reward_notify_limits.get(&reward).unwrap_or_default()
-    
 }
 
-pub fn update_reward_notify_limit<T>(
-    instance: &mut T,
-    reward: AccountId,
-    new_notify_limit: Balance
-)
-    where T: Storage<TreasuryRecord> 
+pub fn update_reward_notify_limit<T>(instance: &mut T, reward: AccountId, new_notify_limit: Balance)
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().reward_notify_limits.insert(&reward, &new_notify_limit);
-    
 }
 
-pub fn get_me_notify_limit<T>(
-    instance: &mut T,
-) -> Balance
-    where T: Storage<TreasuryRecord> 
-{
+pub fn get_me_notify_limit<T>(instance: &mut T) -> Balance where T: Storage<TreasuryRecord> {
     instance.data::<TreasuryRecord>().me_notify_limit
-    
 }
 
-pub fn update_me_notify_limit<T>(
-    instance: &mut T,
-    new_notify_limit: Balance
-)
-    where T: Storage<TreasuryRecord> 
+pub fn update_me_notify_limit<T>(instance: &mut T, new_notify_limit: Balance)
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().me_notify_limit = new_notify_limit;
-    
 }
 
-pub fn get_treasury_reward_balance<T>(
-    instance: &mut T,
-    reward: AccountId,
-) -> Balance
-    where T: Storage<TreasuryRecord> 
+pub fn get_treasury_reward_balance<T>(instance: &mut T, reward: AccountId) -> Balance
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().reward_balances.get(&reward).unwrap_or_default()
-    
 }
 
 pub fn update_treasury_reward_balance<T>(
@@ -83,20 +61,15 @@ pub fn update_treasury_reward_balance<T>(
     reward: AccountId,
     new_treasury_balance: Balance
 )
-    where T: Storage<TreasuryRecord> 
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().reward_balances.insert(&reward, &new_treasury_balance);
-    
 }
 
-pub fn get_treasury_me_balance_for_brand<T>(
-    instance: &mut T,
-    brand: BRAND_ID_TYPE,
-) -> Balance
-    where T: Storage<TreasuryRecord> 
+pub fn get_treasury_me_balance_for_brand<T>(instance: &mut T, brand: BRAND_ID_TYPE) -> Balance
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().me_balances.get(&brand).unwrap_or_default()
-    
 }
 
 pub fn update_treasury_me_balance_for_brand<T>(
@@ -104,41 +77,27 @@ pub fn update_treasury_me_balance_for_brand<T>(
     brand: BRAND_ID_TYPE,
     new_me_balance: Balance
 )
-    where T: Storage<TreasuryRecord> 
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().me_balances.insert(&brand, &new_me_balance);
-    
 }
 
-pub fn get_cai_earned_by_brand<T>(
-    instance: &mut T,
-    brand: BRAND_ID_TYPE,
-) -> Balance
-    where T: Storage<TreasuryRecord> 
+pub fn get_cai_earned_by_brand<T>(instance: &mut T, brand: BRAND_ID_TYPE) -> Balance
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().cai_earned.get(&brand).unwrap_or_default()
-    
 }
 
-pub fn update_cai_earned_brand<T>(
-    instance: &mut T,
-    brand: BRAND_ID_TYPE,
-    new_cai_earned: Balance
-)
-    where T: Storage<TreasuryRecord> 
+pub fn update_cai_earned_brand<T>(instance: &mut T, brand: BRAND_ID_TYPE, new_cai_earned: Balance)
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().cai_earned.insert(&brand, &new_cai_earned);
-    
 }
 
-pub fn get_total_treasury_expenses_for_brand<T>(
-    instance: &mut T,
-    brand: BRAND_ID_TYPE,
-) -> Balance
-    where T: Storage<TreasuryRecord> 
+pub fn get_total_treasury_expenses_for_brand<T>(instance: &mut T, brand: BRAND_ID_TYPE) -> Balance
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().total_expenses.get(&brand).unwrap_or_default()
-    
 }
 
 pub fn update_total_treasury_expenses_for_brand<T>(
@@ -146,27 +105,15 @@ pub fn update_total_treasury_expenses_for_brand<T>(
     brand: BRAND_ID_TYPE,
     total_expenses: Balance
 )
-    where T: Storage<TreasuryRecord> 
+    where T: Storage<TreasuryRecord>
 {
     instance.data::<TreasuryRecord>().total_expenses.insert(&brand, &total_expenses);
-    
 }
 
-pub fn get_me<T>(
-    instance: &mut T,
-) -> AccountId
-    where T: Storage<TreasuryRecord> 
-{
+pub fn get_me<T>(instance: &mut T) -> AccountId where T: Storage<TreasuryRecord> {
     instance.data::<TreasuryRecord>().me_id
-    
 }
 
-pub fn update_me_id<T>(
-    instance: &mut T,
-    new_me_id: AccountId,
-)
-    where T: Storage<TreasuryRecord> 
-{
+pub fn update_me_id<T>(instance: &mut T, new_me_id: AccountId) where T: Storage<TreasuryRecord> {
     instance.data::<TreasuryRecord>().me_id = new_me_id;
-    
 }

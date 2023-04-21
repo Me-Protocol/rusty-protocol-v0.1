@@ -2,7 +2,11 @@
 #![feature(min_specialization)]
 #[openbrush::contract]
 pub mod pool {
-    use global::providers::{ data::a_pool::*, deployables::a_pool::{*, PoolSetUpConfig, PoolConfig, POOL_ADMIN, POOL_MANAGER} , common::roles::*};
+    use global::providers::{
+        data::a_pool::*,
+        deployables::a_pool::{ *, PoolSetUpConfig, PoolConfig, POOL_ADMIN, POOL_MANAGER },
+        common::roles::*,
+    };
     use openbrush::{
         contracts::{ access_control::*, psp34::extensions::enumerable::*, reentrancy_guard::* },
         traits::{ Storage },
@@ -35,18 +39,17 @@ pub mod pool {
     impl Pool {
         #[ink(constructor)]
         pub fn new(
-        initiator: AccountId, 
-        reward: AccountId,
-        me_token: AccountId,
-        config: PoolSetUpConfig,
+            initiator: AccountId,
+            reward: AccountId,
+            me_token: AccountId,
+            config: PoolSetUpConfig
         ) -> Self {
-        
-        let mut instance =   Self::default();
-        
-        let caller = instance.env().caller();
-        ink::env::debug_println!("new pool");
-        
-        instance.pool_state = PoolState{
+            let mut instance = Self::default();
+
+            let caller = instance.env().caller();
+            ink::env::debug_println!("new pool");
+
+            instance.pool_state = PoolState {
                 started: false,
                 active: false,
                 initiator,
@@ -58,8 +61,8 @@ pub mod pool {
                 setup_me_amount: 0,
                 last_transaction_time: 0,
             };
-      
-                instance.pool_config = PoolConfig{
+
+            instance.pool_config = PoolConfig {
                 r_optimal: config.r_optimal,
                 maximum_r_limit: config.maximum_r_limit,
                 minimum_reward_amount_for_conversation: config.minimum_reward_amount_for_conversation,
@@ -70,14 +73,13 @@ pub mod pool {
                 allow_internal_swap: config.allow_internal_swap,
             };
 
-           instance._init_with_admin(caller);
-            
-           instance.grant_role(POOL_ADMIN, caller).expect("");
-           
-           instance.grant_role(POOL_MANAGER, caller).expect("");
-           
-           instance
+            instance._init_with_admin(caller);
 
-        }
+            instance.grant_role(POOL_ADMIN, caller).expect("");
+
+            instance.grant_role(POOL_MANAGER, caller).expect("");
+
+            instance
         }
     }
+}

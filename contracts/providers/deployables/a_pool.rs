@@ -8,7 +8,7 @@ pub use crate::{
     controllers::deployables::a_pool::*,
 };
 
-use ink::{ prelude::vec::Vec, primitives::AccountId};
+use ink::{ prelude::vec::Vec, primitives::AccountId };
 use openbrush::{
     modifier_definition,
     contracts::{
@@ -337,7 +337,7 @@ impl<
                 state.last_me_amount
             ).unwrap();
 
-            ink::env::debug_println!("finished validating");
+        ink::env::debug_println!("finished validating");
         update_pool_state(
             self,
             current_reward_amount,
@@ -514,7 +514,7 @@ impl<
     }
 
     #[modifiers(only_role(POOL_ADMIN))]
-    default fn remove_pool_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError> {
+    default  fn remove_pool_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError> {
         ensure_address_is_not_zero_address(pool_manager)?;
         if !self.data::<access_control::Data>().has_role(POOL_MANAGER, pool_manager) {
             return Err(ProtocolError::AccountIsNotAPoolManager);
@@ -556,9 +556,7 @@ impl<
         )
     }
 
-    default fn provide_pool_config(
-        &self
-    ) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool) {
+    default fn provide_pool_config(&self) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool) {
         let config = *self.data::<PoolConfig>();
 
         (
@@ -743,15 +741,6 @@ impl<
         self.data::<PoolState>().setup_me_amount = current_me_amount;
         Ok(true)
     }
-
-    //updating pool configurations
-    // pub maximum_r_limit: u128,
-    // pub minimum_reward_amount_for_conversation: Balance,
-    // pub minimum_me_amount_for_conversation: Balance,
-    // pub notify_reward_amount: Balance,
-    // pub notify_me_amount: Balance,
-    // pub default_slippage_in_precision: u128,
-    // pub allow_internal_swap: bool,
 
     default fn change_pool_config_except_r_optimal(
         &mut self,
