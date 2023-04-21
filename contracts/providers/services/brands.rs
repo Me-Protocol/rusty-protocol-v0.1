@@ -6,7 +6,7 @@ pub use crate::{
         data::{ brand::*, a_pool::*, a_reward::*, protocol::* },
         common::{ roles::*, errors::ProtocolError, eunice::*, validator::* , types::*, constants::*},
     },
-    controllers::{services::brands::*, deployables::{a_pool::*, reward::*}},
+    controllers::{services::brands::*, deployables::{a_pool::*, reward::*, treasury::*, bounty::*}},
 };
 
 use ink::{ prelude::vec::Vec, primitives::AccountId, env::hash::{Keccak256, CryptoHash, HashOutput}};
@@ -268,12 +268,23 @@ impl<
     }
 
 
-    // #[ink(message)]
-    // fn set_bounty_trigger_limit(&mut self, reward_address: AccountId, trigger_limit:Balance ) -> Result<bool, ProtocolError>;
+    fn set_bounty_trigger_limit(&mut self, reward: AccountId, trigger_limit:Balance ) -> Result<bool, ProtocolError>{
+      ensure_address_is_not_zero_address(reward)?;
+      ensure_value_is_not_zero(trigger_limit)?;
+      let bounty = get_bount_id(self);
+      let requestor = Self::env().caller();
+      BountyRef::set_trigger_limit(&bounty, reward, trigger_limit, requestor)?;
+      Ok(true)
+    }
 
-
-    // #[ink(message)]
-    // fn fund_bounty_pool(&mut self, reward_address: AccountId, amount:Balance ) -> Result<bool, ProtocolError>;
+    fn fund_bounty_pool(&mut self, reward: AccountId, amount:Balance ) -> Result<bool, ProtocolError>{
+      ensure_address_is_not_zero_address(reward)?;
+      ensure_value_is_not_zero(amount)?;
+      let bounty = get_bount_id(self);
+      let requestor = Self::env().caller();
+      BountyRef::deposit_bounty(&bounty, reward, amount, requestor)?;
+      Ok(true)
+    }
 
     fn integrate_existing_reward(&mut self, reward: AccountId, reward_description_link:Option<String>, read_t_and_c: bool ) -> Result<bool, ProtocolError>{
        
@@ -398,16 +409,33 @@ impl<
     }
 
 
-    // #[ink(message)]
-    // fn top_up_treasury_balances(&mut self, reward_address: AccountId,  reward_amount:Balance, me_amount:Balance)-> Result<bool, ProtocolError>;
+
+    fn top_up_treasury_balances(&mut self, reward: AccountId,  reward_amount:Balance, me_amount:Balance)-> Result<bool, ProtocolError>{
+        ensure_address_is_not_zero_address(reward)?;
+        let requestor = Self::env().caller();
+        let treasury = self.data::<ProtocolRecords>().treasury.clone();
+        let brand = get_self_id(self, requestor).unwrap_or_default();
+        let me = get_me(self);
+        if reward_amount > 0 {
+            PSP22Ref::transfer_from(&reward,requestor,treasury,reward_amount,Vec::<u8>::new())?;
+        }
+        if me_amount > 0{
+            PSP22Ref::transfer_from(&me,requestor,treasury,me_amount,Vec::<u8>::new())?;
+        }
+       
+        TreasuryRef::deposit_reward_and_or_me(&treasury, reward, reward_amount, me_amount, brand, requestor, Default::default())?;
+        Ok(true)
+    }
 
 
-    // #[ink(message)]
-    // fn withdraw_treasury_balances(&mut self, reward_address: AccountId, reward_amount:Balance, me_amount:Balance)-> Result<bool, ProtocolError>;
-
-
-    // #[ink(message)]
-    // fn allow_auto_pool_top_up_from_treasury(&mut self, reward_address: AccountId, automator: AccountId, reward_limit:Balance, me_limit:Balance, limit_time_frame:u64)-> Result<bool, ProtocolError>;
+    fn withdraw_treasury_balances(&mut self, reward: AccountId, reward_amount:Balance, me_amount:Balance, to: AccountId)-> Result<bool, ProtocolError>{
+        ensure_address_is_not_zero_address(reward)?;
+        let requestor = Self::env().caller();
+        let treasury = self.data::<ProtocolRecords>().treasury.clone();
+        let brand = get_self_id(self, requestor).unwrap_or_default();
+        TreasuryRef::withdraw_reward_and_or_me(&treasury, reward, reward_amount, me_amount, brand, to, requestor)?;
+        Ok(true)
+    }
 
 
 }
