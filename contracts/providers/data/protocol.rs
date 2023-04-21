@@ -1,4 +1,4 @@
-use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS, String } };
+use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS, String,Storage } };
 use ink::{storage::{traits::StorageLayout, Mapping}};
 use crate::providers::common::{database::*, types::*};
 
@@ -26,3 +26,23 @@ use crate::providers::common::{database::*, types::*};
      pub last_updated: u64,
 
 }
+
+
+pub fn get_me<T>(
+     instance: &mut T,
+ ) -> AccountId
+     where T: Storage<ProtocolRecords> 
+ {
+     instance.data::<ProtocolRecords>().me
+
+ } 
+
+
+ pub fn get_bount_id<T>(
+     instance: &mut T,
+ ) -> AccountId
+     where T: Storage<ProtocolRecords> 
+ {
+     instance.data::<ProtocolRecords>().bounty
+
+ } 

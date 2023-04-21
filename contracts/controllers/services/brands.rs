@@ -50,12 +50,12 @@ pub trait BrandController {
     fn remove_pool_manager(&mut self, reward_address: AccountId, pool_manager:AccountId ) -> Result<bool, ProtocolError>;
 
 
-    // #[ink(message)]
-    // fn set_bounty_trigger_limit(&mut self, reward_address: AccountId, trigger_limit:Balance ) -> Result<bool, ProtocolError>;
+    #[ink(message)]
+    fn set_bounty_trigger_limit(&mut self, reward_address: AccountId, trigger_limit:Balance ) -> Result<bool, ProtocolError>;
 
 
-    // #[ink(message)]
-    // fn fund_bounty_pool(&mut self, reward_address: AccountId, amount:Balance ) -> Result<bool, ProtocolError>;
+    #[ink(message)]
+    fn fund_bounty_pool(&mut self, reward_address: AccountId, amount:Balance ) -> Result<bool, ProtocolError>;
 
 
     #[ink(message)]
@@ -68,10 +68,6 @@ pub trait BrandController {
 
     #[ink(message)]
     fn change_optimal_valuation(&mut self, reward_address: AccountId, new_optimal_valuation:u128, auto_start_conversations:bool ) -> Result<bool, ProtocolError>;
-
-
-    // #[ink(message)]
-    // fn get_optimal_valuation(&mut self, reward_address: AccountId) -> u128;
 
 
     #[ink(message)]
@@ -98,16 +94,12 @@ pub trait BrandController {
     fn reduce_pool_balances(&mut self, reward_address: AccountId, position:u128, reward_amount:Balance, me_amount:Balance)-> Result<bool, ProtocolError>;
 
 
-    // #[ink(message)]
-    // fn top_up_treasury_balances(&mut self, reward_address: AccountId, reward_amount:Balance, me_amount:Balance)-> Result<bool, ProtocolError>;
+    #[ink(message)]
+    fn top_up_treasury_balances(&mut self, reward_address: AccountId, reward_amount:Balance, me_amount:Balance)-> Result<bool, ProtocolError>;
 
 
-    // #[ink(message)]
-    // fn withdraw_treasury_balances(&mut self, reward_address: AccountId, reward_amount:Balance, me_amount:Balance)-> Result<bool, ProtocolError>;
-
-
-    // #[ink(message)]
-    // fn allow_auto_pool_top_up_from_treasury(&mut self, reward_address: AccountId, automator: AccountId, reward_limit:Balance, me_limit:Balance, limit_time_frame:u64)-> Result<bool, ProtocolError>;
+    #[ink(message)]
+    fn withdraw_treasury_balances(&mut self, reward_address: AccountId, reward_amount:Balance, me_amount:Balance, to: AccountId)-> Result<bool, ProtocolError>;
 
 
 

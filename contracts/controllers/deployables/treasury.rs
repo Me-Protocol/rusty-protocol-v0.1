@@ -8,7 +8,7 @@ use ink::{prelude::vec::Vec};
 use crate::providers::{ common::{errors::*, types::*}, data::a_pool::* };
 
 #[openbrush::wrapper]
-pub type TresuryRef = dyn TreasuryController + AccessControl ;
+pub type TreasuryRef = dyn TreasuryController + AccessControl ;
 
 #[openbrush::trait_definition]
 pub trait TreasuryController {

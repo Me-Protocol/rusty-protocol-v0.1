@@ -24,7 +24,7 @@ impl<
     T: Storage<TreasuryRecord> +  Storage<access_control::Data> + Storage<reentrancy_guard::Data>
 > TreasuryController for T {
 
-
+    #[modifiers(only_role(PROTOCOL))]
     fn deposit_reward_and_or_me(&mut self, reward:AccountId, reward_amount:Balance, me_amount:Balance, brand: BRAND_ID_TYPE, requestor: AccountId, metadata: Option<String>) -> Result<bool, ProtocolError>{
         ensure_address_is_not_zero_address(reward)?;
         ensure_address_is_not_zero_address(requestor)?;
@@ -50,8 +50,8 @@ impl<
         Ok(true)
         
     }
-  
-
+   
+    #[modifiers(only_role(PROTOCOL))]
     fn receive_cai(&mut self, me_amount:Balance, brand: BRAND_ID_TYPE, requestor: AccountId, metadata: Option<String>  ) -> Result<bool, ProtocolError>{
          ensure_value_is_not_zero(me_amount)?;
          ensure_brand_is_not_default(brand)?;
@@ -67,7 +67,8 @@ impl<
          Ok(true)
     }
 
-    
+    #[modifiers(only_role(PROTOCOL))]
+    #[modifiers(non_reentrant)]
     fn withdraw_reward_and_or_me(&mut self, reward:AccountId, reward_amount:Balance, me_amount:Balance, brand: BRAND_ID_TYPE, to: AccountId, requestor: AccountId) -> Result<bool, ProtocolError>{
         let treasury = Self::env().account_id();
         //emit event
@@ -75,6 +76,8 @@ impl<
         Ok(true)
     }
 
+    #[modifiers(only_role(PROTOCOL))] 
+    #[modifiers(non_reentrant)]
     fn top_up_pool_with_reward_and_or_me(&mut self, reward:AccountId, pool_id: AccountId, reward_amount:Balance, me_amount:Balance, brand: BRAND_ID_TYPE, requestor: AccountId, metadata: Option<String>) -> Result<bool, ProtocolError>{
         let treasury = Self::env().account_id();
         //emit event
@@ -82,6 +85,8 @@ impl<
         Ok(true)
     }
 
+    #[modifiers(only_role(PROTOCOL))]
+    #[modifiers(non_reentrant)]
     fn pay_for_some_costs(&mut self, reward:AccountId, to: AccountId, reward_amount:Balance, me_amount:Balance, brand: BRAND_ID_TYPE, requestor: AccountId, metadata: Option<String>) -> Result<bool, ProtocolError>{
         let treasury = Self::env().account_id();
         //emit event
@@ -89,7 +94,7 @@ impl<
         Ok(true)
     }
 
-
+    #[modifiers(only_role(PROTOCOL))]
     fn set_reward_notify_limit(&mut self, reward:AccountId, new_notify_limit:Balance, requestor: AccountId) -> Result<bool, ProtocolError>{
        ensure_address_is_not_zero_address(reward)?;
        ensure_address_is_not_zero_address(requestor)?;
@@ -98,21 +103,21 @@ impl<
        Ok(true)
     }
 
-
+    #[modifiers(only_role(PROTOCOL))]
     fn get_reward_notify_limit(&mut self, reward:AccountId, requestor: AccountId) -> Result<Balance, ProtocolError>
     {
          Ok(get_reward_notify_limit(self, reward))
     }
 
-
+    #[modifiers(only_role(PROTOCOL))]
     fn set_me_notify_limit(&mut self, new_notify_limit:Balance, requestor: AccountId) -> Result<bool, ProtocolError>{
         ensure_address_is_not_zero_address(requestor)?;
         ensure_value_is_not_zero(new_notify_limit)?;
         update_me_notify_limit(self, new_notify_limit);
         Ok(true)
     }
-
-
+ 
+    #[modifiers(only_role(PROTOCOL))]
     fn get_me_notify_limit(&mut self, requestor: AccountId) -> Result<Balance, ProtocolError>{
          Ok(get_me_notify_limit(self))
     }
