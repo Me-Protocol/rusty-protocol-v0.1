@@ -8,7 +8,7 @@ pub use crate::{
     controllers::deployables::a_pool::*,
 };
 
-use ink::{ prelude::vec::Vec, primitives::AccountId };
+use ink::{ prelude::vec::Vec, primitives::AccountId};
 use openbrush::{
     modifier_definition,
     contracts::{
@@ -321,9 +321,11 @@ impl<
         pool_divisor_amount: Balance,
         to: AccountId
     ) -> Result<(), ProtocolError> {
+        ink::env::debug_println!("started");
         ensure_address_is_not_zero_address(to)?;
         let pool = Self::env().account_id();
         let state = *self.data::<PoolState>();
+        ink::env::debug_println!("validating rewards");
         let (current_reward_amount, current_me_amount, added_reward_amount, added_me_amount) =
             validate_give_pool_tokens_request(
                 state.reward,
@@ -335,12 +337,15 @@ impl<
                 state.last_me_amount
             ).unwrap();
 
+            ink::env::debug_println!("finished validating");
         update_pool_state(
             self,
             current_reward_amount,
             current_me_amount,
             Self::env().block_timestamp()
         )?;
+
+        ink::env::debug_println!("updated poolstate");
         self.data::<Position>().next_position_id += 1;
         let id = self.data::<Position>().next_position_id;
         if added_me_amount != 0 || added_reward_amount != 0 {
@@ -352,7 +357,10 @@ impl<
                 })
             );
         }
+        ink::env::debug_println!("updated position");
         self.data::<psp34::Data<enumerable::Balances>>()._mint_to(to, Id::U128(id))?;
+
+        ink::env::debug_println!("done");
         Ok(())
     }
 

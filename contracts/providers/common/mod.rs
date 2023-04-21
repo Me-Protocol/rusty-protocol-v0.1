@@ -4,3 +4,4 @@ pub mod eunice;
 pub mod validator;
 pub mod database;
 pub mod roles;
+pub mod types;

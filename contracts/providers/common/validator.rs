@@ -28,3 +28,4 @@ pub fn ensure_input_is_not_empty(string_opt: Option<String>) -> Result<(), Proto
         }
     }
 }
+

@@ -39,12 +39,12 @@ pub mod pool {
         reward: AccountId,
         me_token: AccountId,
         config: PoolSetUpConfig,
-        ignoreDefault: bool,
         ) -> Self {
         
         let mut instance =   Self::default();
         
         let caller = instance.env().caller();
+        ink::env::debug_println!("new pool");
         
         instance.pool_state = PoolState{
                 started: false,
@@ -58,8 +58,8 @@ pub mod pool {
                 setup_me_amount: 0,
                 last_transaction_time: 0,
             };
-
-        instance.pool_config = PoolConfig{
+      
+                instance.pool_config = PoolConfig{
                 r_optimal: config.r_optimal,
                 maximum_r_limit: config.maximum_r_limit,
                 minimum_reward_amount_for_conversation: config.minimum_reward_amount_for_conversation,
