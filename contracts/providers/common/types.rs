@@ -1,0 +1,1 @@
+pub type BRAND_ID_TYPE = [u8; 10];

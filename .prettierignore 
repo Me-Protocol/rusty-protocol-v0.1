@@ -1,2 +1,2 @@
-contracts/providers
+contracts/providers/deployables/a_pool
 contracts/services/deployables/reward

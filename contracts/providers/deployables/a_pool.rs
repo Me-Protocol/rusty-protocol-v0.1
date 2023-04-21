@@ -321,9 +321,11 @@ impl<
         pool_divisor_amount: Balance,
         to: AccountId
     ) -> Result<(), ProtocolError> {
+        ink::env::debug_println!("started");
         ensure_address_is_not_zero_address(to)?;
         let pool = Self::env().account_id();
         let state = *self.data::<PoolState>();
+        ink::env::debug_println!("validating rewards");
         let (current_reward_amount, current_me_amount, added_reward_amount, added_me_amount) =
             validate_give_pool_tokens_request(
                 state.reward,
@@ -335,12 +337,15 @@ impl<
                 state.last_me_amount
             ).unwrap();
 
+        ink::env::debug_println!("finished validating");
         update_pool_state(
             self,
             current_reward_amount,
             current_me_amount,
             Self::env().block_timestamp()
         )?;
+
+        ink::env::debug_println!("updated poolstate");
         self.data::<Position>().next_position_id += 1;
         let id = self.data::<Position>().next_position_id;
         if added_me_amount != 0 || added_reward_amount != 0 {
@@ -352,7 +357,10 @@ impl<
                 })
             );
         }
+        ink::env::debug_println!("updated position");
         self.data::<psp34::Data<enumerable::Balances>>()._mint_to(to, Id::U128(id))?;
+
+        ink::env::debug_println!("done");
         Ok(())
     }
 
@@ -506,7 +514,7 @@ impl<
     }
 
     #[modifiers(only_role(POOL_ADMIN))]
-    default fn remove_pool_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError> {
+    default  fn remove_pool_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError> {
         ensure_address_is_not_zero_address(pool_manager)?;
         if !self.data::<access_control::Data>().has_role(POOL_MANAGER, pool_manager) {
             return Err(ProtocolError::AccountIsNotAPoolManager);
@@ -548,9 +556,7 @@ impl<
         )
     }
 
-    default fn provide_pool_config(
-        &self
-    ) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool) {
+    default fn provide_pool_config(&self) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool) {
         let config = *self.data::<PoolConfig>();
 
         (
@@ -735,15 +741,6 @@ impl<
         self.data::<PoolState>().setup_me_amount = current_me_amount;
         Ok(true)
     }
-
-    //updating pool configurations
-    // pub maximum_r_limit: u128,
-    // pub minimum_reward_amount_for_conversation: Balance,
-    // pub minimum_me_amount_for_conversation: Balance,
-    // pub notify_reward_amount: Balance,
-    // pub notify_me_amount: Balance,
-    // pub default_slippage_in_precision: u128,
-    // pub allow_internal_swap: bool,
 
     default fn change_pool_config_except_r_optimal(
         &mut self,

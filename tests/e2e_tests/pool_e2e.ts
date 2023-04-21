@@ -27,6 +27,8 @@ describe( "Pool Test", () => {
         const me = new rewardContract(meAddress, admin, api)
         const poolFactory = new poolConstructor(api, admin);
 
+       
+
         const poolAAddress = (await poolFactory.new(admin.address, rewardAAddress, meAddress,
             {   rOptimal: 0,
                 maximumRLimit: 10,
@@ -37,7 +39,7 @@ describe( "Pool Test", () => {
                 defaultSlippageInPrecision: 0,
                 allowInternalSwap: false
             }
-            ,false)).address;
+            )).address;
             const poolBAddress = (await poolFactory.new(admin.address, rewardBAddress, meAddress,
                 {   rOptimal: 0,
                     maximumRLimit: 10,
@@ -48,9 +50,11 @@ describe( "Pool Test", () => {
                     defaultSlippageInPrecision: 0,
                     allowInternalSwap: false
                 }
-                ,false)).address;
+                )).address;
         const poolA = new poolContract(poolAAddress, admin, api)
         const poolB = new poolContract(poolBAddress, admin, api)
+        me.tx.transfer(brandA.address, 1000, []);
+        me.tx.transfer(brandB.address, 1000, []);
 
         return {
           api,
@@ -68,5 +72,25 @@ describe( "Pool Test", () => {
         }
     }
 
-    }
+
+    it('should give pool tokens', async () => {
+                const { poolA, rewardA, me, brandA, admin, close } = await pool_fixture();
+            
+                await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+                await  rewardA.withSigner(brandA).query.transfer(poolA.address, 100, []);
+                await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+                
+                try {
+                    let output =  await rewardA.query.transfer(poolA.address, 100000000, []);
+                    console.log(output)
+                }catch(error){
+                    console.log(error)
+                }
+               
+                 
+                 await close();
+              });
+
+     }
 );
