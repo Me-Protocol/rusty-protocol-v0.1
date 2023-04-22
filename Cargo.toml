@@ -12,8 +12,8 @@ scale-info = { version = "2.3", default-features = false, features = ["derive"],
 
 # These dependencies
 openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "~3.0.0", default-features = false }
-reward = {path = "contracts/services/deployables/reward", default-features = false }
-pool = {path = "contracts/services/deployables/pool", default-features = false }
+reward = {path = "contracts/modules/deployables/reward", default-features = false }
+pool = {path = "contracts/modules/deployables/pool", default-features = false }
 global = {path = "contracts", default-features = false}
 
 [dev-dependencies]
