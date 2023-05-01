@@ -1,5 +1,5 @@
 use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS, Storage } };
-use ink::{ storage::{ Mapping } };
+use ink::{ storage::{ Mapping, traits::StorageLayout } };
 use crate::providers::common::{ database::*, types::* };
 
 #[derive(Debug)]
@@ -12,6 +12,13 @@ pub struct TreasuryRecord {
     pub me_balances: Mapping<BRAND_ID_TYPE, Balance>,
     pub cai_earned: Mapping<BRAND_ID_TYPE, Balance>,
     pub total_expenses: Mapping<BRAND_ID_TYPE, Balance>,
+}
+
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
+pub struct EditableTreasuryRecords {
+    pub me_id: AccountId,
+    pub me_notify_limit: u128,
 }
 
 impl Default for TreasuryRecord {
@@ -116,4 +123,9 @@ pub fn get_me<T>(instance: &mut T) -> AccountId where T: Storage<TreasuryRecord>
 
 pub fn update_me_id<T>(instance: &mut T, new_me_id: AccountId) where T: Storage<TreasuryRecord> {
     instance.data::<TreasuryRecord>().me_id = new_me_id;
+}
+
+pub fn update_editable_treasury_records<T>(instance: &mut T, new_editable_record: EditableTreasuryRecords) where T: Storage<TreasuryRecord> {
+      update_me_id(instance, new_editable_record.me_id);
+      update_me_notify_limit(instance, new_editable_record.me_notify_limit);
 }
