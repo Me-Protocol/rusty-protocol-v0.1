@@ -30,8 +30,8 @@ describe( "Pool Test", () => {
        
 
         const poolAAddress = (await poolFactory.new(admin.address, rewardAAddress, meAddress,
-            {   rOptimal: 0,
-                maximumRLimit: 10,
+            {   rOptimal: 1000000,
+                maximumRLimit: 10000000,
                 minimumRewardAmountForConversation: 0,
                 minimumMeAmountForConversation: 0,
                 notifyRewardAmount: 0,
@@ -80,17 +80,42 @@ describe( "Pool Test", () => {
 
                 await  rewardA.withSigner(brandA).query.transfer(poolA.address, 100, []);
                 await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+                await poolA.tx.startAllowingConversations(brandA.address);
                 
-                try {
-                    let output =  await rewardA.query.transfer(poolA.address, 100000000, []);
-                    console.log(output)
-                }catch(error){
-                    console.log(error)
-                }
+                // try {
+                //     let output =  await rewardA.query.transfer(poolA.address, 100000000, []);
+                //     console.log(output)
+                // }catch(error){
+                //     console.log(error)
+                // }
                
                  
                  await close();
               });
+
+
+              it('should start conversation', async () => {
+                const { poolA, rewardA, me, brandA, admin, close } = await pool_fixture();
+            
+                await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+                await  rewardA.withSigner(brandA).query.transfer(poolA.address, 100, []);
+                await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+                await poolA.withSigner(brandA).tx.startAllowingConversations(brandA.address);
+                
+                // try {
+                //     let output =  await rewardA.query.transfer(poolA.address, 100000000, []);
+                //     console.log(output)
+                // }catch(error){
+                //     console.log(error)
+                // }
+               
+                 
+                 await close();
+              });
+
 
      }
 );

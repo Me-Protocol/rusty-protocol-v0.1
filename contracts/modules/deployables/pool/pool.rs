@@ -47,7 +47,7 @@ pub mod pool {
             let mut instance = Self::default();
 
             let caller = instance.env().caller();
-            ink::env::debug_println!("new pool");
+            // ink::env::debug_println!("new pool");
 
             instance.pool_state = PoolState {
                 started: false,
@@ -75,9 +75,9 @@ pub mod pool {
 
             instance._init_with_admin(caller);
 
-            instance.grant_role(POOL_ADMIN, caller).expect("");
+            instance._setup_role(POOL_ADMIN,caller);
 
-            instance.grant_role(POOL_MANAGER, caller).expect("");
+            instance._setup_role(POOL_MANAGER, caller);
 
             instance
         }
