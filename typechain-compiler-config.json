@@ -1,5 +1,5 @@
 {
-    "projectFiles": ["contracts/services/deployables"],
+    "projectFiles": ["contracts/modules/deployables/pool"],
     "artifactsPath": "./artifacts",
     "typechainGeneratedPath": "./typechain-generated"
   }

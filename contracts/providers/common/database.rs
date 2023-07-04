@@ -13,3 +13,5 @@ pub const PROTOCOL_CONFIG: u32 = openbrush::storage_unique_key!(protocol_config)
 pub const BOUNTY_RECORD: u32 = openbrush::storage_unique_key!(bounty_record);
 
 pub const TREASURY_RECORD: u32 = openbrush::storage_unique_key!(treasury_record);
+
+pub const RESERVED: u32 = openbrush::storage_unique_key!(reserved);

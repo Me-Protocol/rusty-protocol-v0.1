@@ -23,6 +23,8 @@ pub enum ProtocolError {
     EmptyStringNotAllowed,
     ConversationsNotStarted,
     ConversationsAlreadyStarted,
+    OpenRewardsNotStarted,
+    OpenRewardsAlreadyStarted,
     PoolAlreadyInActive,
     PoolIsActive,
     PoolNotActive,

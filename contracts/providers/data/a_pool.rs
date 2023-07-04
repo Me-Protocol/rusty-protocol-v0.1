@@ -3,18 +3,19 @@ use openbrush::traits::Storage;
 use ink::{ storage::traits::StorageLayout };
 use crate::providers::common::database::*;
 
+
 #[derive(Debug, Clone, Copy)]
 #[openbrush::upgradeable_storage(A_POOL_STATE)]
 pub struct PoolState {
     pub started: bool,
     pub active: bool,
+    pub busy :bool,
     pub initiator: AccountId,
     pub reward: AccountId,
     pub me_token: AccountId,
     pub last_reward_amount: Balance,
     pub last_me_amount: Balance,
     pub protocol_me_offset: Balance,
-    pub setup_me_amount: Balance,
     pub last_transaction_time: u64,
 }
 
@@ -61,13 +62,13 @@ impl Default for PoolState {
         Self {
             started: Default::default(),
             active: Default::default(),
+            busy: Default::default(),
             initiator: ZERO_ADDRESS.into(),
             reward: ZERO_ADDRESS.into(),
             me_token: ZERO_ADDRESS.into(),
             last_reward_amount: Default::default(),
             last_me_amount: Default::default(),
             protocol_me_offset: Default::default(),
-            setup_me_amount: Default::default(),
             last_transaction_time: Default::default(),
         }
     }

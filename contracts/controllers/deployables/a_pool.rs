@@ -12,27 +12,23 @@ pub type APoolRef = dyn PoolController + AccessControl + PSP34 + Pausable;
 
 #[openbrush::trait_definition]
 pub trait PoolController {
-    #[ink(message)]
-    fn start_allowing_conversations(&mut self, requestor: AccountId) -> Result<u128, ProtocolError>;
 
     #[ink(message)]
-    fn pause_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError>;
+    fn start_open_rewards(&mut self) -> Result<u128, ProtocolError>;
 
     #[ink(message)]
-    fn resume_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError>;
+    fn pause_open_rewards(&mut self) -> Result<bool, ProtocolError> ;
 
     #[ink(message)]
-    fn give_pool_tokens_for_new_position(
+    fn resume_open_rewards(&mut self) -> Result<bool, ProtocolError> ;
+    
+    #[ink(message)]
+    fn get_open_rewards_state(&self) -> bool;
+    
+    #[ink(message)]
+    fn record_liquidity_provided(
         &mut self,
-        pool_numerator_amount: Balance,
-        pool_divisor_amount: Balance,
-        to: AccountId
-    ) -> Result<(), ProtocolError>;
-
-    #[ink(message)]
-    fn give_more_pool_tokens_for_existing_position(
-        &mut self,
-        position_id: u128,
+        position: u128,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
         requestor: AccountId,
@@ -40,9 +36,9 @@ pub trait PoolController {
     ) -> Result<(), ProtocolError>;
 
     #[ink(message)]
-    fn withdraw_assets_from_position(
+    fn withdraw_liquidity(
         &mut self,
-        position_id: u128,
+        position: u128,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
         requestor: AccountId,
@@ -50,10 +46,10 @@ pub trait PoolController {
     ) -> Result<(), ProtocolError>;
 
     #[ink(message)]
-    fn add_pool_manager(&mut self, new_pool_manager: AccountId) -> Result<(), ProtocolError>;
+    fn add_open_rewards_manager(&mut self, new_pool_manager: AccountId) -> Result<(), ProtocolError>;
 
     #[ink(message)]
-    fn remove_pool_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError>;
+    fn remove_open_rewards_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError>;
 
     #[ink(message)]
     fn provide_pool_ratios(&self) -> (u128, u128);
@@ -64,7 +60,7 @@ pub trait PoolController {
     #[ink(message)]
     fn provide_pool_state(
         &self
-    ) -> (bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, Balance, u64);
+    ) -> (bool, bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64);
 
     fn provide_pool_config(&self) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool);
 
@@ -133,6 +129,12 @@ pub trait PoolController {
 
     #[ink(message)]
     fn get_all_positions(&self, requestor: AccountId) -> Result<Vec<Id>, ProtocolError>;
+
+    #[ink(message)]
+    fn get_position_data(
+        &self,
+        position: u128
+    ) -> Result<(Balance, Balance), ProtocolError>;
    
     #[ink(message)]
     fn determine_needed_reward_amount_given_me_amount(&mut self, me_amount: Balance, slippage_in_precision: u128)-> Result<Balance, ProtocolError>;

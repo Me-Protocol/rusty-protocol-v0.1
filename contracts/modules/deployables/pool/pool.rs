@@ -3,8 +3,8 @@
 #[openbrush::contract]
 pub mod pool {
     use global::providers::{
-        data::a_pool::*,
-        deployables::a_pool::{ *, PoolSetUpConfig, PoolConfig, POOL_ADMIN, POOL_MANAGER },
+        data::{a_pool::*},
+        deployables::{a_pool::{ *, PoolSetUpConfig, PoolConfig, POOL_ADMIN, POOL_MANAGER }, bounty::{OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN}},
         common::roles::*,
     };
     use openbrush::{
@@ -15,6 +15,7 @@ pub mod pool {
     #[ink(storage)]
     #[derive(Default, Storage)]
     pub struct Pool {
+       
         #[storage_field]
         pub pool_state: PoolState,
 
@@ -34,12 +35,11 @@ pub mod pool {
         pub guard: reentrancy_guard::Data,
     }
 
-    impl PoolController for Pool {}
+    impl PoolController for Pool{}
 
     impl Pool {
         #[ink(constructor)]
         pub fn new(
-            initiator: AccountId,
             reward: AccountId,
             me_token: AccountId,
             config: PoolSetUpConfig
@@ -47,18 +47,17 @@ pub mod pool {
             let mut instance = Self::default();
 
             let caller = instance.env().caller();
-            // ink::env::debug_println!("new pool");
-
+         
             instance.pool_state = PoolState {
                 started: false,
                 active: false,
-                initiator,
+                busy: false,
+                initiator: caller,
                 reward,
                 me_token,
                 last_reward_amount: 0,
                 last_me_amount: 0,
                 protocol_me_offset: 0,
-                setup_me_amount: 0,
                 last_transaction_time: 0,
             };
 
@@ -75,9 +74,13 @@ pub mod pool {
 
             instance._init_with_admin(caller);
 
-            instance._setup_role(POOL_ADMIN,caller);
+            instance._setup_role(OPEN_REWARDS_ADMIN,caller);
 
-            instance._setup_role(POOL_MANAGER, caller);
+            instance._setup_role(OPEN_REWARDS_MANAGER, caller);
+
+            instance._setup_role(PROTOCOL, caller);
+
+            instance._set_role_admin(OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN);
 
             instance
         }

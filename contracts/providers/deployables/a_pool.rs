@@ -2,6 +2,7 @@ use crate::providers::common::constants::PRECISION;
 pub use crate::{
     providers::{
         data::{ a_pool::*, a_position::* },
+        common::{context::*},
         deployables::a_pool,
         common::{ roles::*, errors::ProtocolError, eunice::*, validator::* },
     },
@@ -22,25 +23,28 @@ use openbrush::{
 };
 
 impl<
-    T: Storage<PoolState> +
+    T:  Storage<PoolState> +
         Storage<PoolConfig> +
         Storage<access_control::Data> +
         Storage<psp34::Data<enumerable::Balances>> +
         Storage<Position> +
         Storage<reentrancy_guard::Data>
 > PoolController for T {
+
     #[modifiers(when_not_active)]
-    default fn start_allowing_conversations(
-        &mut self,
-        requestor: AccountId
+    #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
+    default fn start_open_rewards(
+        &mut self
     ) -> Result<u128, ProtocolError> {
+
         if self.data::<PoolState>().started {
             return Err(ProtocolError::ConversationsAlreadyStarted);
         }
+        
         let pool = Self::env().account_id();
         let state = *self.data::<PoolState>();
         let config = *self.data::<PoolConfig>();
-        if config.r_optimal == 0 {
+        if  config.r_optimal == 0 {
             return Err(ProtocolError::OptimalRewardRatioCanNotBeZero);
         }
         if config.maximum_r_limit < config.r_optimal {
@@ -57,21 +61,33 @@ impl<
         {
             return Err(ProtocolError::ConversationsShouldBeStartedAtOptimalRatioOrLess);
         }
-        self.data::<PoolState>().setup_me_amount = current_me_amount;
+       
         self.data::<PoolState>().started = true;
+        self.data::<PoolState>().active = true;
+
         Ok(config.r_optimal)
     }
 
     #[modifiers(when_active)]
-    default fn pause_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError> {
+    #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
+    default fn pause_open_rewards( &mut self) -> Result<bool, ProtocolError> {
         self.data::<PoolState>().active = false;
-        Ok(())
+        Ok(true)
     }
 
     #[modifiers(when_not_active)]
-    default fn resume_conversations(&mut self, requestor: AccountId) -> Result<(), ProtocolError> {
+    #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
+    default fn resume_open_rewards( &mut self) -> Result<bool, ProtocolError> {
+        if !self.data::<PoolState>().started  {
+            return Err(ProtocolError::OpenRewardsNotStarted);
+        }
+        
         self.data::<PoolState>().active = true;
-        Ok(())
+        Ok(true)
+    }
+
+    default fn get_open_rewards_state(&self) -> bool{
+        self.data::<PoolState>().active
     }
 
     #[modifiers(only_role(PROTOCOL))]
@@ -313,84 +329,24 @@ impl<
         Ok(withdrawable_me_amount)
     }
 
-    #[modifiers(only_role(POOL_MANAGER))]
+
+    #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
     #[modifiers(non_reentrant)]
-    default fn give_pool_tokens_for_new_position(
+    default fn record_liquidity_provided(
         &mut self,
-        pool_numerator_amount: Balance,
-        pool_divisor_amount: Balance,
-        to: AccountId
-    ) -> Result<(), ProtocolError> {
-        ink::env::debug_println!("started");
-        ensure_address_is_not_zero_address(to)?;
-        let pool = Self::env().account_id();
-        let state = *self.data::<PoolState>();
-        ink::env::debug_println!("validating rewards");
-        let (current_reward_amount, current_me_amount, added_reward_amount, added_me_amount) =
-            validate_give_pool_tokens_request(
-                state.reward,
-                state.me_token,
-                pool,
-                pool_numerator_amount,
-                pool_divisor_amount,
-                state.last_reward_amount,
-                state.last_me_amount
-            ).unwrap();
-
-        ink::env::debug_println!("finished validating");
-        update_pool_state(
-            self,
-            current_reward_amount,
-            current_me_amount,
-            Self::env().block_timestamp()
-        )?;
-
-        ink::env::debug_println!("updated poolstate");
-        self.data::<Position>().next_position_id += 1;
-        let id = self.data::<Position>().next_position_id;
-        if added_me_amount != 0 || added_reward_amount != 0 {
-            self.data::<Position>().position_metadata.insert(
-                &id,
-                &(PositionMetadata {
-                    reward_position: added_reward_amount,
-                    me_token_position: added_me_amount,
-                })
-            );
-        }
-        ink::env::debug_println!("updated position");
-        self.data::<psp34::Data<enumerable::Balances>>()._mint_to(to, Id::U128(id))?;
-
-        ink::env::debug_println!("done");
-        Ok(())
-    }
-
-    #[modifiers(only_role(POOL_MANAGER))]
-    #[modifiers(non_reentrant)]
-    default fn give_more_pool_tokens_for_existing_position(
-        &mut self,
-        position_id: u128,
+        position: u128,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
         requestor: AccountId,
         to: AccountId
     ) -> Result<(), ProtocolError> {
+    
         ensure_address_is_not_zero_address(to)?;
         ensure_address_is_not_zero_address(requestor)?;
-        ensure_value_is_not_zero(position_id)?;
-        self
-            .data::<psp34::Data<enumerable::Balances>>()
-            ._check_token_exists(&Id::U128(position_id))?;
-        if
-            requestor !=
-            self
-                .data::<psp34::Data<enumerable::Balances>>()
-                ._owner_of(&Id::U128(position_id))
-                .unwrap()
-        {
-            return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
-        }
+
         let pool = Self::env().account_id();
         let state = *self.data::<PoolState>();
+    
         let (current_reward_amount, current_me_amount, added_reward_amount, added_me_amount) =
             validate_give_pool_tokens_request(
                 state.reward,
@@ -408,27 +364,58 @@ impl<
             current_me_amount,
             Self::env().block_timestamp()
         )?;
+
+        if position == 0{
+            self.data::<Position>().next_position_id += 1;
+            let id = self.data::<Position>().next_position_id;
+            if added_me_amount != 0 || added_reward_amount != 0 {
+                self.data::<Position>().position_metadata.insert(
+                    &id,
+                    &(PositionMetadata {
+                        reward_position: added_reward_amount,
+                        me_token_position: added_me_amount,
+                    })
+                );
+            }
+            self.data::<psp34::Data<enumerable::Balances>>()._mint_to(to, Id::U128(id))?;
+        }
+        else{
+            self
+            .data::<psp34::Data<enumerable::Balances>>()
+            ._check_token_exists(&Id::U128(position))?;
+        if
+            requestor !=
+            self
+                .data::<psp34::Data<enumerable::Balances>>()
+                ._owner_of(&Id::U128(position))
+                .unwrap()
+        {
+            return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
+        }
         if added_me_amount != 0 || added_reward_amount != 0 {
             let current_position_data = self
                 .data::<Position>()
-                .position_metadata.get(&position_id)
+                .position_metadata.get(&position)
                 .unwrap_or_default();
             self.data::<Position>().position_metadata.insert(
-                &position_id,
+                &position,
                 &(PositionMetadata {
                     reward_position: added_reward_amount + current_position_data.reward_position,
                     me_token_position: added_me_amount + current_position_data.me_token_position,
                 })
             );
         }
+        }
+        
         Ok(())
     }
+   
 
-    #[modifiers(only_role(POOL_MANAGER))]
+    #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
     #[modifiers(non_reentrant)]
-    default fn withdraw_assets_from_position(
+    default fn withdraw_liquidity(
         &mut self,
-        position_id: u128,
+        position: u128,
         reward_pool_token_amount: Balance,
         me_pool_token_amount: Balance,
         requestor: AccountId,
@@ -436,25 +423,25 @@ impl<
     ) -> Result<(), ProtocolError> {
         ensure_address_is_not_zero_address(to)?;
         ensure_address_is_not_zero_address(requestor)?;
-        ensure_value_is_not_zero(position_id)?;
+        ensure_value_is_not_zero(position)?;
         if reward_pool_token_amount == 0 && me_pool_token_amount == 0 {
             return Err(ProtocolError::CanNotWithdrawZeroAssetsFromThePool);
         }
         self
             .data::<psp34::Data<enumerable::Balances>>()
-            ._check_token_exists(&Id::U128(position_id))?;
+            ._check_token_exists(&Id::U128(position))?;
         if
             requestor !=
             self
                 .data::<psp34::Data<enumerable::Balances>>()
-                ._owner_of(&Id::U128(position_id))
+                ._owner_of(&Id::U128(position))
                 .unwrap()
         {
             return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
         }
         let current_position_data = self
             .data::<Position>()
-            .position_metadata.get(&position_id)
+            .position_metadata.get(&position)
             .unwrap_or_default();
         if
             reward_pool_token_amount > current_position_data.reward_position ||
@@ -466,7 +453,7 @@ impl<
         let state = *self.data::<PoolState>();
         let config = *self.data::<PoolConfig>();
         self.data::<Position>().position_metadata.insert(
-            &position_id,
+            &position,
             &(PositionMetadata {
                 reward_position: current_position_data.reward_position - reward_pool_token_amount,
                 me_token_position: current_position_data.me_token_position - me_pool_token_amount,
@@ -503,23 +490,23 @@ impl<
         Ok(())
     }
 
-    #[modifiers(only_role(POOL_ADMIN))]
-    default fn add_pool_manager(&mut self, new_pool_manager: AccountId) -> Result<(), ProtocolError> {
+    #[modifiers(only_role(OPEN_REWARDS_ADMIN))]
+    default fn add_open_rewards_manager(&mut self, new_pool_manager: AccountId) -> Result<(), ProtocolError> {
         ensure_address_is_not_zero_address(new_pool_manager)?;
-        if self.data::<access_control::Data>().has_role(POOL_MANAGER, new_pool_manager) {
+        if self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER, new_pool_manager) {
             return Err(ProtocolError::AccountAlreadyPoolManager);
         }
-        self.data::<access_control::Data>().grant_role(POOL_MANAGER, new_pool_manager)?;
+        self.data::<access_control::Data>().grant_role(OPEN_REWARDS_MANAGER, new_pool_manager)?;
         Ok(())
     }
 
-    #[modifiers(only_role(POOL_ADMIN))]
-    default  fn remove_pool_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError> {
+    #[modifiers(only_role(OPEN_REWARDS_ADMIN))]
+    default  fn remove_open_rewards_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError> {
         ensure_address_is_not_zero_address(pool_manager)?;
-        if !self.data::<access_control::Data>().has_role(POOL_MANAGER, pool_manager) {
+        if !self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER, pool_manager) {
             return Err(ProtocolError::AccountIsNotAPoolManager);
         }
-        self.data::<access_control::Data>().revoke_role(POOL_MANAGER, pool_manager)?;
+        self.data::<access_control::Data>().revoke_role(OPEN_REWARDS_MANAGER, pool_manager)?;
         Ok(())
     }
 
@@ -539,19 +526,19 @@ impl<
 
     default fn provide_pool_state(
         &self
-    ) -> (bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, Balance, u64) {
+    ) -> (bool, bool, bool, AccountId, AccountId, AccountId, Balance,Balance, Balance, u64) {
         let state = *self.data::<PoolState>();
 
         (
             state.started,
             state.active,
+            state.busy,
             state.initiator,
             state.reward,
             state.me_token,
             state.last_reward_amount,
             state.last_me_amount,
             state.protocol_me_offset,
-            state.setup_me_amount,
             state.last_transaction_time,
         )
     }
@@ -713,6 +700,7 @@ impl<
     }
 
     #[modifiers(when_not_active)]
+    #[modifiers(only_role(POOL_ADMIN))]
     default fn change_r_optimal(&mut self, new_r_optimal: u128) -> Result<bool, ProtocolError> {
         let pool = Self::env().account_id();
         let config = *self.data::<PoolConfig>();
@@ -738,10 +726,11 @@ impl<
             );
         }
         self.data::<PoolConfig>().r_optimal = actual_r_optimal_in_precision;
-        self.data::<PoolState>().setup_me_amount = current_me_amount;
+       
         Ok(true)
     }
 
+    #[modifiers(only_role(POOL_ADMIN))]
     default fn change_pool_config_except_r_optimal(
         &mut self,
         editable_config: EditablePoolConfig,
@@ -798,6 +787,23 @@ impl<
             }
         }
         Ok(true)
+    }
+
+
+
+    default fn get_position_data(
+        &self,
+        position: u128
+    ) -> Result<(Balance, Balance), ProtocolError> {
+        self
+            .data::<psp34::Data<enumerable::Balances>>()
+            ._check_token_exists(&Id::U128(position))?;
+        
+        let current_position_data = self
+            .data::<Position>()
+            .position_metadata.get(&position)
+            .unwrap_or_default();
+        Ok((current_position_data.reward_position, current_position_data.me_token_position))
     }
 
     default fn get_position_by_index(
@@ -1066,3 +1072,4 @@ pub fn when_not_active<T, F, R, E>(instance: &mut T, body: F) -> Result<R, E>
     }
     body(instance)
 }
+
