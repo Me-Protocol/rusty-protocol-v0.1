@@ -90,6 +90,12 @@ impl<
         self.data::<PoolState>().active
     }
 
+  
+        default fn get_balance(&self, token:AccountId, account: AccountId) -> Balance {
+            let token_balance:Balance = PSP22Ref::balance_of(&token, account);
+            token_balance
+        }
+
     #[modifiers(only_role(PROTOCOL))]
     #[modifiers(non_reentrant)]
     default fn add_protocol_me_offset(
@@ -334,7 +340,6 @@ impl<
     #[modifiers(non_reentrant)]
     default fn record_liquidity_provided(
         &mut self,
-        position: u128,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
         requestor: AccountId,
@@ -365,12 +370,17 @@ impl<
             Self::env().block_timestamp()
         )?;
 
-        if position == 0{
+        let positions: Vec<Id> =  self.get_all_positions(requestor).unwrap_or_default();
+       
+        let position:Id;
+
+    
+        if positions.len() == 0{
             self.data::<Position>().next_position_id += 1;
             let id = self.data::<Position>().next_position_id;
             if added_me_amount != 0 || added_reward_amount != 0 {
                 self.data::<Position>().position_metadata.insert(
-                    &id,
+                    &Id::U128(id),
                     &(PositionMetadata {
                         reward_position: added_reward_amount,
                         me_token_position: added_me_amount,
@@ -380,14 +390,15 @@ impl<
             self.data::<psp34::Data<enumerable::Balances>>()._mint_to(to, Id::U128(id))?;
         }
         else{
+            position = positions[0].clone();
             self
             .data::<psp34::Data<enumerable::Balances>>()
-            ._check_token_exists(&Id::U128(position))?;
+            ._check_token_exists(&position)?;
         if
             requestor !=
             self
                 .data::<psp34::Data<enumerable::Balances>>()
-                ._owner_of(&Id::U128(position))
+                ._owner_of(&position)
                 .unwrap()
         {
             return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
@@ -415,30 +426,59 @@ impl<
     #[modifiers(non_reentrant)]
     default fn withdraw_liquidity(
         &mut self,
-        position: u128,
+        mut positionId: Id,
         reward_pool_token_amount: Balance,
         me_pool_token_amount: Balance,
         requestor: AccountId,
         to: AccountId
     ) -> Result<(), ProtocolError> {
+        ink::env::debug_println!("in");
         ensure_address_is_not_zero_address(to)?;
         ensure_address_is_not_zero_address(requestor)?;
-        ensure_value_is_not_zero(position)?;
+     
         if reward_pool_token_amount == 0 && me_pool_token_amount == 0 {
             return Err(ProtocolError::CanNotWithdrawZeroAssetsFromThePool);
         }
+     
+        
+        let position:Id;
+        if positionId == Id::U128(0) {
+
+            ink::env::debug_println!("found position {}",0);
+
+            let positions: Vec<Id> =  self.get_all_positions(requestor).unwrap_or_default();
+       
+            if positions.len() == 0{
+                return Err(ProtocolError::RequestorHasNotLiquidityInPool);
+            }
+            else{
+                position = positions[0].clone();
+            }
+        }
+        else{
+            position = positionId
+        }
+
+        ink::env::debug_println!("finished dealing with position");
+
+
+        ink::env::debug_println!("checking token");
         self
             .data::<psp34::Data<enumerable::Balances>>()
-            ._check_token_exists(&Id::U128(position))?;
+            ._check_token_exists(&Id::U128(1))?;
+
+            ink::env::debug_println!("token exists");
         if
             requestor !=
             self
                 .data::<psp34::Data<enumerable::Balances>>()
-                ._owner_of(&Id::U128(position))
+                ._owner_of(&position)
                 .unwrap()
         {
             return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
         }
+
+        ink::env::debug_println!("owner correct");
         let current_position_data = self
             .data::<Position>()
             .position_metadata.get(&position)
@@ -449,9 +489,12 @@ impl<
         {
             return Err(ProtocolError::InsufficientPositionBalance);
         }
+        ink::env::debug_println!("sufficient balance");
         let pool = Self::env().account_id();
         let state = *self.data::<PoolState>();
         let config = *self.data::<PoolConfig>();
+
+        ink::env::debug_println!("making update");
         self.data::<Position>().position_metadata.insert(
             &position,
             &(PositionMetadata {
@@ -459,6 +502,8 @@ impl<
                 me_token_position: current_position_data.me_token_position - me_pool_token_amount,
             })
         );
+
+        ink::env::debug_println!("obtaining amount to withdraw");
         let (reward_amount_to_withdraw, me_amount_to_withdraw) =
             obtain_amount_of_pool_reward_to_withdraw(
                 reward_pool_token_amount,
@@ -470,6 +515,8 @@ impl<
                 state.protocol_me_offset,
                 config.r_optimal
             ).unwrap();
+
+        ink::env::debug_println!("transferring tokens");
         if reward_amount_to_withdraw != 0 {
             PSP22Ref::transfer(&state.reward, to, reward_amount_to_withdraw, Vec::<u8>::new())?;
         }
@@ -798,10 +845,10 @@ impl<
         self
             .data::<psp34::Data<enumerable::Balances>>()
             ._check_token_exists(&Id::U128(position))?;
-        
+
         let current_position_data = self
             .data::<Position>()
-            .position_metadata.get(&position)
+            .position_metadata.get(&Id::U128(position))
             .unwrap_or_default();
         Ok((current_position_data.reward_position, current_position_data.me_token_position))
     }
@@ -824,7 +871,7 @@ impl<
         Ok(position)
     }
 
-    fn get_all_positions(&self, requestor: AccountId) -> Result<Vec<Id>, ProtocolError> {
+   default fn get_all_positions(&self, requestor: AccountId) -> Result<Vec<Id>, ProtocolError> {
         let total_number_of_positions = self
             .data::<psp34::Data<enumerable::Balances>>()
             .balance_of(requestor);
@@ -835,7 +882,7 @@ impl<
             return Err(ProtocolError::PositionsAreMoreThanTwentyTryToGetThenOneAfterAnother);
         }
         let mut positions = Vec::new();
-        for i in 1..=total_number_of_positions {
+        for i in 0..total_number_of_positions {
             positions.push(
                 self
                     .data::<psp34::Data<enumerable::Balances>>()
@@ -895,13 +942,13 @@ fn validate_give_pool_tokens_request(
     let added_reward_amount = current_reward_amount - last_reward_amount;
     let added_me_amount = current_me_amount - last_me_amount;
 
-    if !check_if_within_acceptable_percent_range(reward_amount, added_reward_amount).unwrap() {
-        return Err(ProtocolError::RequestIsNotWithInAccuracyRange);
-    }
-
-    if !check_if_within_acceptable_percent_range(me_amount, added_me_amount).unwrap() {
-        return Err(ProtocolError::RequestIsNotWithInAccuracyRange);
-    }
+   if added_reward_amount < reward_amount {
+    return Err(ProtocolError::RequestIsNotWithInAccuracyRange);
+   }
+   
+   if added_me_amount < me_amount{
+    return Err(ProtocolError::RequestIsNotWithInAccuracyRange);
+   }
 
     Ok((current_reward_amount, current_me_amount, added_reward_amount, added_me_amount))
 }

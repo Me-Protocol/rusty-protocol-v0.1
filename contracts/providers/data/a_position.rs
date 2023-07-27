@@ -1,12 +1,12 @@
 use ink::storage::traits::StorageLayout;
-use openbrush::{ storage::Mapping, traits::{ AccountId, Balance } };
+use openbrush::{ storage::Mapping, traits::{ AccountId, Balance}, contracts::traits::psp34::Id };
 
 use crate::providers::common::database::*;
 
 #[derive(Debug)]
 #[openbrush::upgradeable_storage(LIQUIDITY_POSITION)]
 pub struct Position {
-    pub position_metadata: Mapping<u128, PositionMetadata>,
+    pub position_metadata: Mapping<Id, PositionMetadata>,
     pub next_position_id: u128,
 }
 

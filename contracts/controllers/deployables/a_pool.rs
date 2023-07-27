@@ -28,7 +28,6 @@ pub trait PoolController {
     #[ink(message)]
     fn record_liquidity_provided(
         &mut self,
-        position: u128,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
         requestor: AccountId,
@@ -38,7 +37,7 @@ pub trait PoolController {
     #[ink(message)]
     fn withdraw_liquidity(
         &mut self,
-        position: u128,
+        position: Id,
         pool_numerator_amount: Balance,
         pool_divisor_amount: Balance,
         requestor: AccountId,
@@ -144,5 +143,8 @@ pub trait PoolController {
 
     #[ink(message)]
     fn get_r_optimal(&mut self)-> Result<Balance, ProtocolError>;
+
+    #[ink(message)]
+    fn get_balance(&self, token:AccountId, account: AccountId) -> Balance;
 
 }
