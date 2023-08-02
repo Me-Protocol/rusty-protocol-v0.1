@@ -426,7 +426,7 @@ impl<
     #[modifiers(non_reentrant)]
     default fn withdraw_liquidity(
         &mut self,
-        mut positionId: Id,
+        position_id: Id,
         reward_pool_token_amount: Balance,
         me_pool_token_amount: Balance,
         requestor: AccountId,
@@ -442,7 +442,7 @@ impl<
      
         
         let position:Id;
-        if positionId == Id::U128(0) {
+        if position_id == Id::U128(0) {
 
             ink::env::debug_println!("found position {}",0);
 
@@ -456,7 +456,7 @@ impl<
             }
         }
         else{
-            position = positionId
+            position = position_id
         }
 
         ink::env::debug_println!("finished dealing with position");
@@ -956,13 +956,17 @@ fn validate_give_pool_tokens_request(
 fn update_pool_state<T>(
     instance: &mut T,
     current_reward_amount: Balance,
-    current_me_amount: Balance,
+    mut current_me_amount: Balance,
     transaction_time: u64
 ) -> Result<(), ProtocolError>
     where T: Storage<PoolState> + Storage<PoolConfig>
 {
+    if current_me_amount == 0 {current_me_amount = 1}
     let r = _calculate_pool_ratio(current_reward_amount, current_me_amount).unwrap();
-    ensure_r_is_within_acceptable_range(r, instance.data::<PoolConfig>().maximum_r_limit)?;
+    if instance.data::<PoolConfig>().maximum_r_limit != 0{
+        ensure_r_is_within_acceptable_range(r, instance.data::<PoolConfig>().maximum_r_limit)?;
+    }
+   
     instance.data::<PoolState>().last_reward_amount = current_reward_amount;
     instance.data::<PoolState>().last_me_amount = current_me_amount;
     instance.data::<PoolState>().last_transaction_time = transaction_time;

@@ -236,7 +236,7 @@ describe( "Pool Test", () => {
 
                 // console.log(result);
 
-                await poolA.tx.withdrawLiquidity(IdBuilder.U8(0),100,100,brandA.address,brandA.address);
+                await poolA.tx.withdrawLiquidity(IdBuilder.U128(0),100,100,brandA.address,brandA.address);
 
                 let brandARewardBalanceAfter = (await rewardA.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
 
