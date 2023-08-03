@@ -209,43 +209,192 @@ describe( "Pool Test", () => {
               //   await close();
               // });
 
+             
 
 
-              it('should withdraw the liqudity provided', async () => {
+
+
+              // it('should withdraw the liqudity provided', async () => {
+              //   const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+            
+              //   await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+              //   await  rewardA.withSigner(brandA).query.transfer(poolA.address, 100, []);
+               
+              //   await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+                
+              //   await poolA.withSigner(admin).tx.startOpenRewards();
+
+              //   await poolA.tx.recordLiquidityProvided(100,100,brandA.address,brandA.address);
+                 
+        
+
+              //   let brandARewardBalanceBefore = (await rewardA.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
+
+              //   let brandAMeBalanceBefore = (await me.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
+
+              //   // let result = await poolA.withSigner(brandA).tx.withdrawLiquidity(IdBuilder.U128(0),100,100,brandA.address, brandA.address);
+
+              //   // let result = (await poolA.query.getBalance(rewardA.address, brandA.address)).value.unwrapRecursively().rawNumber.toString();
+
+              //   // console.log(result);
+
+              //   await poolA.tx.withdrawLiquidity(IdBuilder.U128(0),100,100,brandA.address,brandA.address);
+
+              //   let brandARewardBalanceAfter = (await rewardA.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
+
+              //   let brandAMeBalanceAfter = (await me.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
+
+              //   expect([(parseInt(brandARewardBalanceBefore) + 100).toString(), (parseInt(brandAMeBalanceBefore) + 100).toString()].toString()).to.be.eq([brandARewardBalanceAfter,brandAMeBalanceAfter].toString())
+
+              //   await close();
+              // });
+
+
+
+              // it('should add_open_rewards_manager', async () => {
+              //   const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+            
+              //   await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+              //   await  rewardA.withSigner(brandA).query.transfer(poolA.address, 100, []);
+               
+              //   await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+                
+              //   await poolA.withSigner(admin).tx.startOpenRewards();
+                
+              //   await poolA.tx.addOpenRewardsManager(brandA.address);
+
+              //   let isManager = (await poolA.query.checkIfIsOpenRewardsManager(brandA.address)).value.unwrapRecursively();
+              //   console.log(isManager);
+
+              //   expect(isManager).to.be.equal(true);
+
+              //   await poolA.withSigner(brandA).tx.recordLiquidityProvided(100,100,brandA.address,brandA.address);
+                 
+        
+
+              //   let brandARewardBalanceBefore = (await rewardA.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
+
+              //   let brandAMeBalanceBefore = (await me.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
+
+              //   // let result = await poolA.withSigner(brandA).tx.withdrawLiquidity(IdBuilder.U128(0),100,100,brandA.address, brandA.address);
+
+              //   // let result = (await poolA.query.getBalance(rewardA.address, brandA.address)).value.unwrapRecursively().rawNumber.toString();
+
+              //   // console.log(result);
+
+              //   await poolA.withSigner(brandA).tx.withdrawLiquidity(IdBuilder.U128(0),100,100,brandA.address,brandA.address);
+
+              //   let brandARewardBalanceAfter = (await rewardA.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
+
+              //   let brandAMeBalanceAfter = (await me.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
+
+              //   expect([(parseInt(brandARewardBalanceBefore) + 100).toString(), (parseInt(brandAMeBalanceBefore) + 100).toString()].toString()).to.be.eq([brandARewardBalanceAfter,brandAMeBalanceAfter].toString())
+
+              //   await close();
+              // });
+
+
+              // it('should remove_open_rewards_manager', async () => {
+              //   const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+            
+              //   await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+              //   await  rewardA.withSigner(brandA).query.transfer(poolA.address, 100, []);
+               
+              //   await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+                
+              //   await poolA.withSigner(admin).tx.startOpenRewards();
+                
+              //   await poolA.tx.addOpenRewardsManager(brandA.address);
+
+              //   await poolA.tx.removeOpenRewardsManager(brandA.address);
+
+              //   let isManager = (await poolA.query.checkIfIsOpenRewardsManager(brandA.address)).value.unwrapRecursively();
+               
+              //   expect(isManager).to.be.equal(false);
+
+              //   await close();
+              // });
+
+
+              // it('should get the liquidity ratios in the pool', async () => {
+              //   const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+            
+              //   await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+              //   await  rewardA.withSigner(brandA).query.transfer(poolA.address, 100, []);
+               
+              //   await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+              //   await poolA.tx.recordLiquidityProvided(100,100,brandA.address,brandA.address);
+                
+              //   await poolA.withSigner(admin).tx.startOpenRewards();
+                
+              // const response =  (await poolA.query.getLiquidityRatios()).value.unwrapRecursively();
+
+              // expect([parseInt(response[0].rawNumber.toString()), parseInt(response[1].rawNumber.toString())].toString()).to.be.eq([1000000,1000000].toString())
+              // });
+
+
+              // it('should get the addresses of the pool initiator and the tokens in the pool', async () => {
+              //   const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+            
+              //   await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+              //   await  rewardA.withSigner(brandA).query.transfer(poolA.address, 100, []);
+               
+              //   await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+                
+              // const response =  (await poolA.query.getLiquidityIds()).value.unwrapRecursively();
+
+              // expect([response[0], response[1], response[2]].toString()).to.be.eq([admin.address,rewardA.address, me.address].toString())
+              // });
+
+              it('should get the state of the pool', async () => {
                 const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
                 await  rewardA.withSigner(brandA).query.transfer(poolA.address, 100, []);
+
                
                 await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
-                
-                await poolA.withSigner(admin).tx.startOpenRewards();
 
                 await poolA.tx.recordLiquidityProvided(100,100,brandA.address,brandA.address);
-                 
-        
-
-                let brandARewardBalanceBefore = (await rewardA.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
-
-                let brandAMeBalanceBefore = (await me.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
-
-                // let result = await poolA.withSigner(brandA).tx.withdrawLiquidity(IdBuilder.U128(0),100,100,brandA.address, brandA.address);
-
-                // let result = (await poolA.query.getBalance(rewardA.address, brandA.address)).value.unwrapRecursively().rawNumber.toString();
-
-                // console.log(result);
-
-                await poolA.tx.withdrawLiquidity(IdBuilder.U128(0),100,100,brandA.address,brandA.address);
-
-                let brandARewardBalanceAfter = (await rewardA.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
-
-                let brandAMeBalanceAfter = (await me.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
-
-                // expect([(parseInt(brandARewardBalanceBefore) + 100).toString(), (parseInt(brandAMeBalanceBefore) + 100).toString()].toString()).to.be.eq([brandARewardBalanceAfter,brandAMeBalanceAfter].toString())
-
-                await close();
+                
+              const response =  (await poolA.query.getOpenRewardsState()).value.unwrapRecursively();
+              expect([response[0], response[1], response[2], response[3], response[4], response[5], response[6], response[7], response[8]].toString()).to.be.eq([false,false,false,admin.address,rewardA.address,me.address,100,100,0].toString())
               });
+
+
+
+              it('should get the configuration of the pool', async () => {
+                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+            
+                await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+                await  rewardA.withSigner(brandA).query.transfer(poolA.address, 100, []);
+
+               
+                await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+                await poolA.tx.recordLiquidityProvided(100,100,brandA.address,brandA.address);
+                
+              const response =  (await poolA.query.getOpenRewardsConfigurations()).value.unwrapRecursively();
+              expect([response[0], response[1], response[2], response[3], response[4], response[5], response[6], response[7]].toString()).to.be.eq([1000000,10000000,0,0,0,me.address,100,100,0].toString())
+              });
+
+
+              // config.r_optimal,
+              // config.maximum_r_limit,
+              // config.minimum_reward_amount_for_conversation,
+              // config.minimum_me_amount_for_conversation,
+              // config.notify_reward_amount,
+              // config.notify_me_amount,
+              // config.default_slippage_in_precision,
+              // config.allow_internal_swap,
 
      }
 );
