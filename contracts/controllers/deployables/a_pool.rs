@@ -23,7 +23,7 @@ pub trait PoolController {
     fn resume_open_rewards(&mut self) -> Result<bool, ProtocolError> ;
     
     #[ink(message)]
-    fn get_open_rewards_state(&self) -> bool;
+    fn check_open_rewards_state(&self) -> bool;
     
     #[ink(message)]
     fn record_liquidity_provided(
@@ -51,17 +51,18 @@ pub trait PoolController {
     fn remove_open_rewards_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError>;
 
     #[ink(message)]
-    fn provide_pool_ratios(&self) -> (u128, u128);
+    fn get_liquidity_ratios(&self) -> (u128, u128);
 
     #[ink(message)]
-    fn provide_pool_addresses(&self) -> (AccountId, AccountId, AccountId);
+    fn get_liquidity_ids(&self) -> (AccountId, AccountId, AccountId);
 
     #[ink(message)]
-    fn provide_pool_state(
+    fn get_open_rewards_state(
         &self
     ) -> (bool, bool, bool, AccountId, AccountId, AccountId, Balance, Balance, Balance, u64);
 
-    fn provide_pool_config(&self) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool);
+    #[ink(message)]
+    fn get_open_rewards_configurations(&self) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool);
 
     #[ink(message)]
     fn initiate_outgoing_conversation(
@@ -146,5 +147,8 @@ pub trait PoolController {
 
     #[ink(message)]
     fn get_balance(&self, token:AccountId, account: AccountId) -> Balance;
+
+    #[ink(message)]
+    fn check_if_is_open_rewards_manager(&self, pool_manager: AccountId) -> Result<bool, ProtocolError>;
 
 }

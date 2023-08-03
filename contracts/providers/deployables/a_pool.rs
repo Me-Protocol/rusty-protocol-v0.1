@@ -86,7 +86,7 @@ impl<
         Ok(true)
     }
 
-    default fn get_open_rewards_state(&self) -> bool{
+    default fn check_open_rewards_state(&self) -> bool{
         self.data::<PoolState>().active
     }
 
@@ -557,7 +557,13 @@ impl<
         Ok(())
     }
 
-    default fn provide_pool_ratios(&self) -> (u128, u128) {
+    default  fn check_if_is_open_rewards_manager(&self, pool_manager: AccountId) -> Result<bool, ProtocolError> {
+        ensure_address_is_not_zero_address(pool_manager)?;
+        let is_manager = self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER,pool_manager);
+        Ok(is_manager)
+    }
+
+    default fn get_liquidity_ratios(&self) -> (u128, u128) {
         let state = *self.data::<PoolState>();
         let config = *self.data::<PoolConfig>();
         (
@@ -566,12 +572,12 @@ impl<
         )
     }
 
-    fn provide_pool_addresses(&self) -> (AccountId, AccountId, AccountId) {
+    fn get_liquidity_ids(&self) -> (AccountId, AccountId, AccountId) {
         let state = *self.data::<PoolState>();
         (state.initiator, state.reward, state.me_token)
     }
 
-    default fn provide_pool_state(
+    default fn get_open_rewards_state(
         &self
     ) -> (bool, bool, bool, AccountId, AccountId, AccountId, Balance,Balance, Balance, u64) {
         let state = *self.data::<PoolState>();
@@ -590,7 +596,8 @@ impl<
         )
     }
 
-    default fn provide_pool_config(&self) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool) {
+
+    default fn get_open_rewards_configurations(&self) -> (u128, u128, Balance, Balance, Balance, Balance, u128, bool) {
         let config = *self.data::<PoolConfig>();
 
         (
