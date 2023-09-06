@@ -12,7 +12,7 @@
 //     fn new_works() {
 //         let accounts = accounts();
 //         let a = accounts.bob;
-//         let b = accounts.bob;
+//         let b = accounts.alice;
 //         let pool = Pool::new(
 //             a,
 //             b,
@@ -26,8 +26,7 @@
 //                 notify_me_amount: 1,
 //                 default_slippage_in_precision: 1,
 //                 allow_internal_swap: false,
-//             },
-//             true
+//             }
 //         );
 
 //         assert_eq!(pool.provide_pool_state(), (false, false, a, b, a, 0, 0, 0, 0, 0));

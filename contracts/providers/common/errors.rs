@@ -23,6 +23,8 @@ pub enum ProtocolError {
     EmptyStringNotAllowed,
     ConversationsNotStarted,
     ConversationsAlreadyStarted,
+    OpenRewardsNotStarted,
+    OpenRewardsAlreadyStarted,
     PoolAlreadyInActive,
     PoolIsActive,
     PoolNotActive,
@@ -70,7 +72,8 @@ pub enum ProtocolError {
     InsufficientTreasuryMeBalance,
     RequestIsNotWithinSlippageRange,
     RewardIsNotOpened,
-    TragetedRewardIsNotOpened
+    TragetedRewardIsNotOpened,
+    RequestorHasNotLiquidityInPool
 }
 impl From<AccessControlError> for ProtocolError {
     fn from(access: AccessControlError) -> Self {

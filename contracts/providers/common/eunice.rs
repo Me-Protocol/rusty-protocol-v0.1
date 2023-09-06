@@ -4,8 +4,9 @@ use crate::providers::common::{ constants::*, validator::*, errors::* };
 
 pub fn _calculate_pool_ratio(
     reward_amount: Balance,
-    me_amount: Balance
+   mut me_amount: Balance
 ) -> Result<u128, ProtocolError> {
+    if me_amount == 0 {me_amount = 1};
     ensure_value_is_not_zero(me_amount)?;
     Ok((reward_amount * PRECISION) / me_amount)
 }

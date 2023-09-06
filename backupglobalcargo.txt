@@ -1,26 +1,26 @@
 [package]
-name = "pool"
-version = "0.1.1"
+name = "global"
+version = "0.1.0"
 authors = ["paul_oamen <paul@myai.life>"]
 edition = "2021"
 
 [dependencies]
-ink = { version = "4.2.1", default-features = false }
+ink = { version = "4.1.0", default-features = false }
 
 
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
 scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
 
 # These dependencies
-openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "3.1.1", default-features = false, features = ["access_control", "psp34", "reentrancy_guard"] }
-global = {path = "../../../", default-features = false}
+openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "3.1.1", default-features = false, features = ["psp22","ownable","access_control", "psp34", "reentrancy_guard", "pausable"] }
+
 
 [lib]
-name = "pool"
-path = "pool.rs"
+name = "global"
+path = "global.rs"
 crate-type = [
     # Used for normal contract Wasm blobs.
-   "cdylib","rlib"
+    "rlib",
 ]
 
 [features]
@@ -31,16 +31,9 @@ std = [
     "scale-info/std",
     # These dependencies
     "openbrush/std",
-    "global/std"
 ]
+
 ink-as-dependency = []
 
-[profile.release]
-panic = "abort"
-lto = false
-
 [profile.dev]
-
-panic = "abort"
-lto = false
-overflow-checks = false
+codegen-units = 16
