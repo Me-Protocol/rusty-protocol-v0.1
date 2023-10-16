@@ -15,7 +15,7 @@ use openbrush::{
     contracts::{
         access_control::*,
         psp34::extensions::enumerable::*,
-        traits::{ psp22::PSP22Ref },
+        traits::psp22::PSP22Ref,
         reentrancy_guard::*,
     },
     modifiers,
@@ -26,10 +26,11 @@ impl<
     T:  Storage<PoolState> +
         Storage<PoolConfig> +
         Storage<access_control::Data> +
-        Storage<psp34::Data<enumerable::Balances>> +
+        Storage<psp34::Data<>> +
         Storage<Position> +
-        Storage<reentrancy_guard::Data>
-> PoolController for T {
+        Storage<reentrancy_guard::Data> +
+        Internal
+> PoolController  for T {
 
     #[modifiers(when_not_active)]
     #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
@@ -387,17 +388,17 @@ impl<
                     })
                 );
             }
-            self.data::<psp34::Data<enumerable::Balances>>()._mint_to(to, Id::U128(id))?;
+            self.data::<psp34::Data>()._mint_to(to, Id::U128(id))?;
         }
         else{
             position = positions[0].clone();
             self
-            .data::<psp34::Data<enumerable::Balances>>()
+            .data::<psp34::Data>()
             ._check_token_exists(&position)?;
         if
             requestor !=
             self
-                .data::<psp34::Data<enumerable::Balances>>()
+                .data::<psp34::Data>()
                 ._owner_of(&position)
                 .unwrap()
         {
@@ -464,14 +465,14 @@ impl<
 
         ink::env::debug_println!("checking token");
         self
-            .data::<psp34::Data<enumerable::Balances>>()
+            .data::<psp34::Data>()
             ._check_token_exists(&Id::U128(1))?;
 
             ink::env::debug_println!("token exists");
         if
             requestor !=
             self
-                .data::<psp34::Data<enumerable::Balances>>()
+                .data::<psp34::Data>()
                 ._owner_of(&position)
                 .unwrap()
         {
@@ -850,7 +851,7 @@ impl<
         position: u128
     ) -> Result<(Balance, Balance), ProtocolError> {
         self
-            .data::<psp34::Data<enumerable::Balances>>()
+            .data::<psp34::Data<>>()
             ._check_token_exists(&Id::U128(position))?;
 
         let current_position_data = self
@@ -866,13 +867,13 @@ impl<
         index: u128
     ) -> Result<Id, ProtocolError> {
         let total_number_of_positions = self
-            .data::<psp34::Data<enumerable::Balances>>()
+            .data::<psp34::Data>()
             .balance_of(requestor);
         if index > total_number_of_positions.into() {
             return Err(ProtocolError::InvalidPositionIndex);
         }
         let position = self
-            .data::<psp34::Data<enumerable::Balances>>()
+            .data::<psp34::Data>()
             .owners_token_by_index(requestor, index)
             .unwrap();
         Ok(position)
@@ -880,7 +881,7 @@ impl<
 
    default fn get_all_positions(&self, requestor: AccountId) -> Result<Vec<Id>, ProtocolError> {
         let total_number_of_positions = self
-            .data::<psp34::Data<enumerable::Balances>>()
+            .data::<psp34::Data>()
             .balance_of(requestor);
         if total_number_of_positions == 0 {
             return Err(ProtocolError::RequestorHasNoPosition);
@@ -892,7 +893,7 @@ impl<
         for i in 0..total_number_of_positions {
             positions.push(
                 self
-                    .data::<psp34::Data<enumerable::Balances>>()
+                    .data::<psp34::Data<>>()
                     .owners_token_by_index(requestor, i.into())
                     .unwrap()
             );

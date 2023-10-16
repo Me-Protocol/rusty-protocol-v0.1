@@ -4,7 +4,8 @@ use openbrush::{ storage::Mapping, traits::{ AccountId, Balance}, contracts::tra
 use crate::providers::common::database::*;
 
 #[derive(Debug)]
-#[openbrush::upgradeable_storage(LIQUIDITY_POSITION)]
+// #[openbrush::upgradeable_storage(LIQUIDITY_POSITION)]
+#[openbrush::storage_item(LIQUIDITY_POSITION)]
 pub struct Position {
     pub position_metadata: Mapping<Id, PositionMetadata>,
     pub next_position_id: u128,

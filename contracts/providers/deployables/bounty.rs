@@ -1,7 +1,7 @@
 use crate::providers::{ common::constants::PRECISION, data::bounty::BountyRecord };
 pub use crate::{
     providers::{
-        data::{ bounty::* },
+        data::bounty::*,
         common::{ roles::*, errors::ProtocolError, eunice::*, validator::* },
     },
     controllers::deployables::bounty::*,
@@ -16,7 +16,7 @@ use openbrush::{
 };
 
 impl<
-    T: Storage<BountyRecord> + Storage<access_control::Data> + Storage<reentrancy_guard::Data>
+    T: Storage<BountyRecord> + Storage<access_control::Data> + Storage<reentrancy_guard::Data> + Internal
 > BountyController for T {
     #[modifiers(only_role(PROTOCOL))]
     fn deposit_bounty(

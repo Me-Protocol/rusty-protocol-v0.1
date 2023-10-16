@@ -1,6 +1,9 @@
-use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS, String, Storage } };
+use openbrush::traits::{ AccountId, Balance, String, Storage };
 use ink::{ storage::{ traits::StorageLayout, Mapping } };
 use crate::providers::common::{ database::*, types::BRAND_ID_TYPE, errors::ProtocolError };
+
+pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
+
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
 #[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
@@ -31,7 +34,7 @@ pub struct RewardConfig {
 }
 
 #[derive(Debug)]
-#[openbrush::upgradeable_storage(REWARD_RECORDS)]
+#[openbrush::storage_item(REWARD_RECORDS)]
 pub struct RewardRecords {
     pub details: Mapping<AccountId, RewardDetails>,
     pub config: Mapping<AccountId, RewardConfig>,
