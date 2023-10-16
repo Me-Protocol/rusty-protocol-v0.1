@@ -1,4 +1,4 @@
-use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS } };
+use openbrush::{ traits::{ AccountId } };
 use openbrush::traits::Storage;
 use ink::{ storage::traits::StorageLayout };
 use crate::providers::common::database::*;
@@ -11,7 +11,7 @@ pub trait ContextTrait {
 }
 
 #[derive(Debug, Clone, Copy)]
-#[openbrush::upgradeable_storage(RESERVED)]
+#[openbrush::storage_item(RESERVED)]
 pub struct Context {
     
 }

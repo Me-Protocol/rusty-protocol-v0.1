@@ -1,9 +1,12 @@
-use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS, Storage } };
+use openbrush::{ traits::{ AccountId, Balance, Storage } };
 use ink::{ storage::{ Mapping, traits::StorageLayout } };
 use crate::providers::common::{ database::*, types::* };
 
+pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
+
 #[derive(Debug)]
-#[openbrush::upgradeable_storage(TREASURY_RECORD)]
+// #[openbrush::upgradeable_storage(TREASURY_RECORD)]
+#[openbrush::storage_item(TREASURY_RECORD)]
 pub struct TreasuryRecord {
     pub me_id: AccountId,
     pub reward_notify_limits: Mapping<AccountId, u128>,
