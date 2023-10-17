@@ -29,7 +29,12 @@ impl<
         Storage<psp34::Data<>> +
         Storage<Position> +
         Storage<reentrancy_guard::Data> +
-        Internal
+        Internal +
+        psp34::Internal +
+        PSP34EnumerableImpl +
+        BalancesManagerImpl +
+        MembersManager +
+        AccessControlImpl
 > PoolController  for T {
 
     #[modifiers(when_not_active)]
@@ -388,19 +393,24 @@ impl<
                     })
                 );
             }
-            self.data::<psp34::Data>()._mint_to(to, Id::U128(id))?;
+            //Todo self.data::<psp34::Data>()._mint_to(to, Id::U128(id))?;
+            psp34::Internal::_mint_to(self, to, Id::U128(id))?;
         }
         else{
             position = positions[0].clone();
-            self
-            .data::<psp34::Data>()
-            ._check_token_exists(&position)?;
+            psp34::Internal::_check_token_exists(self, &position)?;
+            // Todo self
+            // .data::<psp34::Data>()
+            // ._check_token_exists(&position)?;
         if
-            requestor !=
-            self
-                .data::<psp34::Data>()
-                ._owner_of(&position)
-                .unwrap()
+        requestor != 
+            psp34::Internal
+            ::_owner_of(self, &position).unwrap()
+            //Todo requestor !=
+            // self
+            //     .data::<psp34::Data>()
+            //     ._owner_of(&position)
+            //     .unwrap()
         {
             return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
         }
@@ -464,17 +474,22 @@ impl<
 
 
         ink::env::debug_println!("checking token");
-        self
-            .data::<psp34::Data>()
-            ._check_token_exists(&Id::U128(1))?;
+        psp34::Internal::_check_token_exists(self, &Id::U128(1))?;
+        // self
+        //     .data::<psp34::Data>()
+        //     ._check_token_exists(&Id::U128(1))?;
 
             ink::env::debug_println!("token exists");
         if
-            requestor !=
-            self
-                .data::<psp34::Data>()
-                ._owner_of(&position)
+            requestor != 
+                psp34::Internal
+                ::_owner_of(self, &position)
                 .unwrap()
+            // requestor !=
+            // self
+            //     .data::<psp34::Data>()
+            //     ._owner_of(&position)
+            //     .unwrap()
         {
             return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
         }
@@ -541,26 +556,32 @@ impl<
     #[modifiers(only_role(OPEN_REWARDS_ADMIN))]
     default fn add_open_rewards_manager(&mut self, new_pool_manager: AccountId) -> Result<(), ProtocolError> {
         ensure_address_is_not_zero_address(new_pool_manager)?;
-        if self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER, new_pool_manager) {
+
+        if MembersManager::_has_role(self, OPEN_REWARDS_MANAGER, &Some(new_pool_manager)) {
+        // Todo if self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER, new_pool_manager) {
             return Err(ProtocolError::AccountAlreadyPoolManager);
         }
-        self.data::<access_control::Data>().grant_role(OPEN_REWARDS_MANAGER, new_pool_manager)?;
+        AccessControlImpl::grant_role(self, OPEN_REWARDS_MANAGER, Some(new_pool_manager))?;
+        //Todo self.data::<access_control::Data>().grant_role(OPEN_REWARDS_MANAGER, new_pool_manager)?;
         Ok(())
     }
 
     #[modifiers(only_role(OPEN_REWARDS_ADMIN))]
     default  fn remove_open_rewards_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError> {
         ensure_address_is_not_zero_address(pool_manager)?;
-        if !self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER, pool_manager) {
+        if AccessControlImpl::has_role(self,OPEN_REWARDS_MANAGER, Some(pool_manager)){
+        //Todo if !self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER, pool_manager) {
             return Err(ProtocolError::AccountIsNotAPoolManager);
         }
-        self.data::<access_control::Data>().revoke_role(OPEN_REWARDS_MANAGER, pool_manager)?;
+        AccessControlImpl::revoke_role(self,OPEN_REWARDS_MANAGER, Some(pool_manager))?;
+        //Todo self.data::<access_control::Data>().revoke_role(OPEN_REWARDS_MANAGER, pool_manager)?;
         Ok(())
     }
 
     default  fn check_if_is_open_rewards_manager(&self, pool_manager: AccountId) -> Result<bool, ProtocolError> {
         ensure_address_is_not_zero_address(pool_manager)?;
-        let is_manager = self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER,pool_manager);
+        let is_manager = MembersManager::_has_role(self, OPEN_REWARDS_MANAGER,&Some(pool_manager));
+        //Todo let is_manager = self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER,pool_manager);
         Ok(is_manager)
     }
 
@@ -850,9 +871,10 @@ impl<
         &self,
         position: u128
     ) -> Result<(Balance, Balance), ProtocolError> {
-        self
-            .data::<psp34::Data<>>()
-            ._check_token_exists(&Id::U128(position))?;
+        psp34::Internal::_check_token_exists(self, &Id::U128(position))?;
+        // todo  self
+        //     .data::<psp34::Data<>>()
+        //     ._check_token_exists(&Id::U128(position))?;
 
         let current_position_data = self
             .data::<Position>()
@@ -866,23 +888,29 @@ impl<
         requestor: AccountId,
         index: u128
     ) -> Result<Id, ProtocolError> {
-        let total_number_of_positions = self
-            .data::<psp34::Data>()
-            .balance_of(requestor);
+        let total_number_of_positions = BalancesManagerImpl::_balance_of(self, &requestor);
+        //todo let total_number_of_positions = self
+        //     .data::<psp34::Data>()
+        //     .balance_of(requestor);
         if index > total_number_of_positions.into() {
             return Err(ProtocolError::InvalidPositionIndex);
         }
-        let position = self
-            .data::<psp34::Data>()
-            .owners_token_by_index(requestor, index)
+
+        let position = PSP34EnumerableImpl
+            ::owners_token_by_index(self, requestor, index)
             .unwrap();
+        // let position = self
+        //     .data::<psp34::Data>()
+        //     .owners_token_by_index(requestor, index)
+        //     .unwrap();
         Ok(position)
     }
 
    default fn get_all_positions(&self, requestor: AccountId) -> Result<Vec<Id>, ProtocolError> {
-        let total_number_of_positions = self
-            .data::<psp34::Data>()
-            .balance_of(requestor);
+        let total_number_of_positions = BalancesManagerImpl::_balance_of(self, &requestor);
+        // Todo let total_number_of_positions = self
+        //     .data::<psp34::Data>()
+        //     .balance_of(requestor);
         if total_number_of_positions == 0 {
             return Err(ProtocolError::RequestorHasNoPosition);
         }
@@ -892,10 +920,13 @@ impl<
         let mut positions = Vec::new();
         for i in 0..total_number_of_positions {
             positions.push(
-                self
-                    .data::<psp34::Data<>>()
-                    .owners_token_by_index(requestor, i.into())
-                    .unwrap()
+                PSP34EnumerableImpl
+                ::owners_token_by_index(self, requestor, i.into())
+                .unwrap()
+                // Todo self
+                //     .data::<psp34::Data<>>()
+                //     .owners_token_by_index(requestor, i.into())
+                //     .unwrap()
             );
         }
         Ok(positions)
