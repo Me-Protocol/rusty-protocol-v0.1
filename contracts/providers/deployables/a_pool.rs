@@ -22,21 +22,6 @@ use openbrush::{
     traits::{ Balance, Storage },
 };
 
-// impl<
-//     T:  Storage<PoolState> +
-//         Storage<PoolConfig> +
-//         Storage<access_control::Data> +
-//         Storage<psp34::Data<>> +
-//         Storage<Position> +
-//         Storage<reentrancy_guard::Data> +
-//         Internal +
-//         psp34::Internal +
-//         PSP34EnumerableImpl +
-//         BalancesManagerImpl +
-//         MembersManager +
-//         AccessControlImpl
-// > PoolController  for T {
-
     pub trait PoolImpl:  Storage<PoolState> +
     Storage<PoolConfig> +
     Storage<Position> +

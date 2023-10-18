@@ -284,18 +284,11 @@ pub mod pool {
 
             access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
 
-            // instance._init_with_admin(caller);
-
             access_control::InternalImpl::_setup_role(&mut instance,OPEN_REWARDS_ADMIN, Some(caller));
 
-            // instance._setup_role(OPEN_REWARDS_ADMIN,caller);
-
             access_control::InternalImpl::_setup_role(&mut instance,OPEN_REWARDS_MANAGER, Some(caller));
-            
-            // instance._setup_role(OPEN_REWARDS_MANAGER, caller);
-            
+
             access_control::InternalImpl::_setup_role(&mut instance, PROTOCOL, Some(caller));
-            // instance._setup_role(PROTOCOL, caller);
             
             access_control::InternalImpl::_set_role_admin(&mut instance, OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN);
 
