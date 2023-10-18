@@ -8,7 +8,7 @@ use ink::{ prelude::vec::Vec };
 use crate::providers::{ common::errors::*, data::a_pool::* };
 
 #[openbrush::wrapper]
-pub type APoolRef = dyn PoolController + AccessControl + PSP34 + Pausable;
+pub type APoolRef = dyn PoolController + AccessControl + PSP34 + Pausable ;
 
 #[openbrush::trait_definition]
 pub trait PoolController {
