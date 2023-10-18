@@ -29,7 +29,7 @@ pub mod pool {
         pub access: access_control::Data,
 
         #[storage_field]
-        pub psp34: psp34::Data<enumerable::Balances>,
+        pub psp34: psp34::Data<>,
 
         #[storage_field]
         pub guard: reentrancy_guard::Data,
