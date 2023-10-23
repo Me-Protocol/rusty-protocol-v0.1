@@ -557,7 +557,7 @@ use openbrush::{
     #[modifiers(only_role(OPEN_REWARDS_ADMIN))]
        fn remove_open_rewards_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError> {
         ensure_address_is_not_zero_address(pool_manager)?;
-        if AccessControlImpl::has_role(self,OPEN_REWARDS_MANAGER, Some(pool_manager)){
+        if !MembersManager::_has_role(self,OPEN_REWARDS_MANAGER, &Some(pool_manager)){
              return Err(ProtocolError::AccountIsNotAPoolManager);
         }
         AccessControlImpl::revoke_role(self,OPEN_REWARDS_MANAGER, Some(pool_manager))?;
