@@ -1,5 +1,8 @@
-#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(feature = "std"), no_std, no_main)]
+#![no_main]
 #![feature(min_specialization)]
+
+
 
 #[openbrush::implementation(PSP22, Ownable, PSP22Metadata, PSP22Mintable)]
 #[openbrush::contract]
@@ -64,9 +67,6 @@ pub mod reward {
         }
     }
 
-    // impl PSP22Metadata for Reward {}
-
-    // impl Ownable for Reward {}
 
     impl Reward {
         fn _emit_transfer_event(

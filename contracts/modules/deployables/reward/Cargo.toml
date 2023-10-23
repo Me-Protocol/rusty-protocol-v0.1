@@ -18,10 +18,10 @@ global = {path = "../../../", default-features = false}
 [lib]
 name = "reward"
 path = "reward.rs"
-crate-type = [
-    # Used for normal contract Wasm blobs.
-    "cdylib","rlib"
-]
+# crate-type = [
+#     # Used for normal contract Wasm blobs.
+#     "cdylib","rlib"
+# ]
 
 [features]
 default = ["std"]

@@ -5,7 +5,7 @@ authors = ["paul_oamen <paul@myai.life>"]
 edition = "2021"
 
 [dependencies]
-ink = { version = "4.2.1", default-features = false }
+ink = { version = "4.3.0", default-features = false }
 
 
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
@@ -18,10 +18,10 @@ openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", versi
 [lib]
 name = "global"
 path = "global.rs"
-crate-type = [
-    # Used for normal contract Wasm blobs.
-    "rlib",
-]
+# crate-type = [
+#     # Used for normal contract Wasm blobs.
+#     "rlib",
+# ]
 
 [features]
 default = ["std"]

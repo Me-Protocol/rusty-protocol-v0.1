@@ -391,24 +391,16 @@ use openbrush::{
                     })
                 );
             }
-            //Todo self.data::<psp34::Data>()._mint_to(to, Id::U128(id))?;
+
             psp34::Internal::_mint_to(self, to, Id::U128(id))?;
         }
         else{
             position = positions[0].clone();
             psp34::Internal::_check_token_exists(self, &position)?;
-            // Todo self
-            // .data::<psp34::Data>()
-            // ._check_token_exists(&position)?;
         if
         requestor != 
             psp34::Internal
             ::_owner_of(self, &position).unwrap()
-            //Todo requestor !=
-            // self
-            //     .data::<psp34::Data>()
-            //     ._owner_of(&position)
-            //     .unwrap()
         {
             return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
         }
@@ -556,11 +548,9 @@ use openbrush::{
         ensure_address_is_not_zero_address(new_pool_manager)?;
 
         if MembersManager::_has_role(self, OPEN_REWARDS_MANAGER, &Some(new_pool_manager)) {
-        // Todo if self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER, new_pool_manager) {
-            return Err(ProtocolError::AccountAlreadyPoolManager);
+             return Err(ProtocolError::AccountAlreadyPoolManager);
         }
         AccessControlImpl::grant_role(self, OPEN_REWARDS_MANAGER, Some(new_pool_manager))?;
-        //Todo self.data::<access_control::Data>().grant_role(OPEN_REWARDS_MANAGER, new_pool_manager)?;
         Ok(())
     }
 
@@ -568,19 +558,16 @@ use openbrush::{
        fn remove_open_rewards_manager(&mut self, pool_manager: AccountId) -> Result<(), ProtocolError> {
         ensure_address_is_not_zero_address(pool_manager)?;
         if AccessControlImpl::has_role(self,OPEN_REWARDS_MANAGER, Some(pool_manager)){
-        //Todo if !self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER, pool_manager) {
-            return Err(ProtocolError::AccountIsNotAPoolManager);
+             return Err(ProtocolError::AccountIsNotAPoolManager);
         }
         AccessControlImpl::revoke_role(self,OPEN_REWARDS_MANAGER, Some(pool_manager))?;
-        //Todo self.data::<access_control::Data>().revoke_role(OPEN_REWARDS_MANAGER, pool_manager)?;
         Ok(())
     }
 
        fn check_if_is_open_rewards_manager(&self, pool_manager: AccountId) -> Result<bool, ProtocolError> {
         ensure_address_is_not_zero_address(pool_manager)?;
         let is_manager = MembersManager::_has_role(self, OPEN_REWARDS_MANAGER,&Some(pool_manager));
-        //Todo let is_manager = self.data::<access_control::Data>().has_role(OPEN_REWARDS_MANAGER,pool_manager);
-        Ok(is_manager)
+         Ok(is_manager)
     }
 
         fn get_liquidity_ratios(&self) -> (u128, u128) {
@@ -870,10 +857,7 @@ use openbrush::{
         position: u128
     ) -> Result<(Balance, Balance), ProtocolError> {
         psp34::Internal::_check_token_exists(self, &Id::U128(position))?;
-        // todo  self
-        //     .data::<psp34::Data<>>()
-        //     ._check_token_exists(&Id::U128(position))?;
-
+      
         let current_position_data = self
             .data::<Position>()
             .position_metadata.get(&Id::U128(position))
@@ -887,9 +871,7 @@ use openbrush::{
         index: u128
     ) -> Result<Id, ProtocolError> {
         let total_number_of_positions = BalancesManagerImpl::_balance_of(self, &requestor);
-        //todo let total_number_of_positions = self
-        //     .data::<psp34::Data>()
-        //     .balance_of(requestor);
+  
         if index > total_number_of_positions.into() {
             return Err(ProtocolError::InvalidPositionIndex);
         }
@@ -897,18 +879,13 @@ use openbrush::{
         let position = PSP34EnumerableImpl
             ::owners_token_by_index(self, requestor, index)
             .unwrap();
-        // let position = self
-        //     .data::<psp34::Data>()
-        //     .owners_token_by_index(requestor, index)
-        //     .unwrap();
+
         Ok(position)
     }
 
      fn get_all_positions(&self, requestor: AccountId) -> Result<Vec<Id>, ProtocolError> {
         let total_number_of_positions = BalancesManagerImpl::_balance_of(self, &requestor);
-        // Todo let total_number_of_positions = self
-        //     .data::<psp34::Data>()
-        //     .balance_of(requestor);
+
         if total_number_of_positions == 0 {
             return Err(ProtocolError::RequestorHasNoPosition);
         }
@@ -921,10 +898,6 @@ use openbrush::{
                 PSP34EnumerableImpl
                 ::owners_token_by_index(self, requestor, i.into())
                 .unwrap()
-                // Todo self
-                //     .data::<psp34::Data<>>()
-                //     .owners_token_by_index(requestor, i.into())
-                //     .unwrap()
             );
         }
         Ok(positions)
