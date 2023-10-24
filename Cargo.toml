@@ -14,6 +14,7 @@ scale-info = { version = "2.3", default-features = false, features = ["derive"],
 openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "4.0.0-beta.1", default-features = false }
 reward = {path = "contracts/modules/deployables/reward", default-features = false }
 pool = {path = "contracts/modules/deployables/pool", default-features = false }
+treasury ={path = "contracts/modules/pheripherals/treasury"}
 global = {path = "contracts", default-features = false}
 
 [dev-dependencies]
