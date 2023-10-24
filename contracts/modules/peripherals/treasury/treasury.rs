@@ -13,8 +13,8 @@ pub mod treasury {
     }};
 
     use openbrush::{
-        contracts::{ access_control::{*, self}, reentrancy_guard::*, traits::ownable, psp22::extensions::metadata },
-        traits::{ Storage },
+        contracts::{ access_control::{*, self}, reentrancy_guard::*, traits::ownable },
+        traits::{ Storage, String },
     };
 
   
