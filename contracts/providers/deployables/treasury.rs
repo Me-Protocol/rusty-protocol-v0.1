@@ -15,9 +15,14 @@ use openbrush::{
     traits::{ Balance, Storage },
 };
 
-impl<
-    T: Storage<TreasuryRecord> + Storage<access_control::Data> + Storage<reentrancy_guard::Data>
-> TreasuryController for T {
+    pub trait TreasuryImpl: Storage<TreasuryRecord> + 
+    Storage<access_control::Data> + 
+    Storage<reentrancy_guard::Data> +
+    MembersManager +
+    AccessControlImpl
+    {
+
+
     #[modifiers(only_role(PROTOCOL))]
     fn deposit_reward_and_or_me(
         &mut self,
