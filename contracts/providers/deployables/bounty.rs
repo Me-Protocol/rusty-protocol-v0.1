@@ -15,9 +15,12 @@ use openbrush::{
     traits::{ Balance, Storage },
 };
 
-impl<
-    T: Storage<BountyRecord> + Storage<access_control::Data> + Storage<reentrancy_guard::Data> + Internal
-> BountyController for T {
+pub trait BountyImpl: Storage<BountyRecord> + 
+Storage<access_control::Data> + 
+Storage<reentrancy_guard::Data> +   
+MembersManager +
+AccessControlImpl
+ {
     #[modifiers(only_role(PROTOCOL))]
     fn deposit_bounty(
         &mut self,

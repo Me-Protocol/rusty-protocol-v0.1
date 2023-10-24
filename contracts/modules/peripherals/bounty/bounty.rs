@@ -36,6 +36,45 @@ pub mod bounty {
 
     impl BountyController for Bounty {
 
+        #[ink(message)] 
+        fn deposit_bounty(
+            &mut self,
+            reward: AccountId,
+            amount: Balance,
+            requestor: AccountId
+        ) -> Result<bool, ProtocolError> {
+            BountyImpl::deposit_bounty(self,reward,amount, requestor)
+        }
+
+        #[ink(message)]
+        fn withdraw_bounty(
+            &mut self,
+            reward: AccountId,
+            amount: Balance,
+            requestor: AccountId,
+            to: AccountId
+        ) -> Result<bool, ProtocolError> {
+            BountyImpl::withdraw_bounty(self, reward, amount, requestor, to)
+        }
+
+        #[ink(message)]
+        fn set_trigger_limit(
+            &mut self,
+            reward: AccountId,
+            new_trigger_limit: Balance,
+            requestor: AccountId
+        ) -> Result<bool, ProtocolError> {
+            BountyImpl::set_trigger_limit(self,reward, new_trigger_limit, requestor)
+        }
+
+        #[ink(message)]
+        fn get_trigger_limit(
+            &mut self,
+            reward: AccountId,
+            requestor: AccountId
+        ) -> Result<u128, ProtocolError> {
+            BountyImpl::get_trigger_limit(self,reward,requestor)
+        }
     }
 
 
