@@ -15,11 +15,12 @@ openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", versi
 global = {path = "../../../", default-features = false}
 
 
-[dev-dependencies]
-ink_e2e = "4.2.0"
+# [dev-dependencies]
+# ink_e2e = "4.2.0"
 
 [lib]
-path = "lib.rs"
+name = "treasury"
+path = "treasury.rs"
 
 [features]
 default = ["std"]
@@ -33,3 +34,10 @@ std = [
 ]
 ink-as-dependency = []
 e2e-tests = []
+
+
+[profile.dev]
+
+panic = "abort"
+lto = false
+overflow-checks = false
