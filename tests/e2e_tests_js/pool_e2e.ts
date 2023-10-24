@@ -17,6 +17,7 @@ describe( "Pool Test", () => {
         const admin = signers[0]
         const brandA = signers[1]
         const brandB = signers[2]
+        const user1 = signers[3]
 
      
         const rewardFactory = new rewardConstructor(api, admin)
@@ -72,6 +73,7 @@ describe( "Pool Test", () => {
           rewardAAddress,
           rewardBAddress,
           me,
+          user1,
           close: async () => {
             await api.disconnect()
           }
@@ -90,6 +92,9 @@ describe( "Pool Test", () => {
                 await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
                 
                 let result =  await poolA.withSigner(admin).tx.startOpenRewards();
+
+                let res = (await poolA.query.getOpenRewardsState()).value.unwrapRecursively()[1]
+                console.log("The res", res)
         
                 expect((await poolA.query.getOpenRewardsState()).value.unwrapRecursively()[1]).to.be.eq(true)
                 
@@ -393,16 +398,35 @@ describe( "Pool Test", () => {
               const response =  (await poolA.query.getOpenRewardsConfigurations()).value.unwrapRecursively();
               expect([response[0], response[1], response[2], response[3], response[4], response[5], response[6], response[7]].toString()).to.be.eq([1000000,10000000,0,0,0,0,0,false].toString())
               });
+              
 
 
-              // config.r_optimal,
-              // config.maximum_r_limit,
-              // config.minimum_reward_amount_for_conversation,
-              // config.minimum_me_amount_for_conversation,
-              // config.notify_reward_amount,
-              // config.notify_me_amount,
-              // config.default_slippage_in_precision,
-              // config.allow_internal_swap,
+    it("Should initiate outgoing conversation", async function () {
 
-     }
-);
+      const { poolA,poolB, rewardA,rewardB, me, brandA, brandB, admin,user1, close } = await pool_fixture();
+            
+      await rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+     
+      await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
+
+      await rewardB.withSigner(brandB).tx.transfer(poolB.address, 100, []);
+
+      await me.withSigner(brandB).tx.transfer(poolB.address, 100, []);
+      
+      await poolA.tx.recordLiquidityProvided(100,100,brandA.address,brandA.address);
+
+      await poolB.tx.recordLiquidityProvided(100,100,brandA.address,brandA.address);
+
+      await poolA.withSigner(admin).tx.startOpenRewards();
+
+      await poolB.withSigner(admin).tx.startOpenRewards();
+
+      const needReward = await poolA.query.determineNeededRewardAmountGivenMeAmount(10, 12)
+      
+      // console.log("neededReward", needReward)
+    });
+
+
+     });
+
+

@@ -45,9 +45,6 @@ pub mod reward {
         value: Balance,
     }
 
-    // impl PSP22Impl for Reward {}
-
-
 
     impl RewardController for Reward {
         #[ink(message)]
