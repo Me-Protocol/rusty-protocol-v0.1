@@ -5,7 +5,6 @@ use crate::providers::common::{ database::*, types::* };
 pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
 
 #[derive(Debug)]
-// #[openbrush::upgradeable_storage(TREASURY_RECORD)]
 #[openbrush::storage_item(TREASURY_RECORD)]
 pub struct TreasuryRecord {
     pub me_id: AccountId,
