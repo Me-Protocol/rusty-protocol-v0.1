@@ -7,9 +7,7 @@ pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
 
 
 #[derive(Debug, Clone, Copy)]
-// #[openbrush::upgradeable_storage(A_POOL_STATE)]
 #[openbrush::storage_item(A_POOL_STATE)]
-
 pub struct PoolState {
     pub started: bool,
     pub active: bool,
@@ -24,8 +22,7 @@ pub struct PoolState {
 }
 
 #[derive(Debug, Clone, Copy)]
-// #[openbrush::upgradeable_storage(A_POOL_CONFIG)]
-#[openbrush::storage_item]
+#[openbrush::storage_item(A_POOL_CONFIG)]
 pub struct PoolConfig {
     pub r_optimal: u128,
     pub maximum_r_limit: u128,
