@@ -13,8 +13,8 @@ pub mod bounty {
     }};
 
     use openbrush::{
-        contracts::{ access_control::{*, self}, reentrancy_guard::*, traits::ownable },
-        traits::{ Storage, String },
+        contracts::{ access_control::{*, self}, reentrancy_guard::* },
+        traits::{ Storage },
     };
 
 
@@ -87,6 +87,17 @@ pub mod bounty {
         pub fn new() -> Self {
             let mut instance = Self::default();
             let caller = instance.env().caller();
+
+            access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
+
+            access_control::InternalImpl::_setup_role(&mut instance,OPEN_REWARDS_ADMIN, Some(caller));
+
+            access_control::InternalImpl::_setup_role(&mut instance,OPEN_REWARDS_MANAGER, Some(caller));
+
+            access_control::InternalImpl::_setup_role(&mut instance, PROTOCOL, Some(caller));
+            
+            access_control::InternalImpl::_set_role_admin(&mut instance, OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN);
+
 
             instance
         }
