@@ -13,8 +13,8 @@ pub mod bounty {
     }};
 
     use openbrush::{
-        contracts::{ access_control::{*, self}, reentrancy_guard::*, traits::ownable },
-        traits::{ Storage, String },
+        contracts::{ access_control::{*, self}, reentrancy_guard::* },
+        traits::{ Storage },
     };
 
 

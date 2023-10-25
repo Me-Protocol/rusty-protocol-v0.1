@@ -6,6 +6,7 @@ pub use crate::{
     },
     controllers::deployables::treasury::*,
 };
+use openbrush::traits::String;
 
 use ink::{ prelude::vec::Vec, primitives::AccountId };
 use openbrush::{

@@ -2,6 +2,7 @@ use openbrush::{
     contracts::traits::{ access_control::*, psp22::* },
     traits::{ AccountId, Balance },
 };
+use openbrush::traits::String;
 
 use ink::{ prelude::vec::Vec };
 
