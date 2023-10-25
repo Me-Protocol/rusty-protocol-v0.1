@@ -49,7 +49,7 @@ describe( "Bounty Test", () => {
      
             console.log("balance of bounty", resss)
             
-            await bounty.withSigner(admin).tx.depositBounty(reward.address, 100, admin.address)
+            expect(await bounty.withSigner(admin).tx.depositBounty(reward.address, 100, admin.address)).to.ok
      
             await close();
           });
@@ -123,6 +123,42 @@ describe( "Bounty Test", () => {
         });
     });
 
+
+    describe("setBountyTriggerLimit", function () {
+        it("Should successfully set bounty_reward trigger limit", async function () {
+            const {reward, bounty, admin, close } = await pool_fixture();
+
+            await reward.tx.transfer(bounty.address, 100, []);
+     
+            let rewardBal = await reward.query.balanceOf(bounty.address)
+    
+            let resss = await rewardBal.value.unwrapRecursively().rawNumber.toString()
+    
+           console.log("balance of bounty", resss)
+           
+           await bounty.withSigner(admin).tx.depositBounty(reward.address, 100, admin.address)
+
+           expect(await bounty.withSigner(admin).tx.setTriggerLimit(reward.address, 100, admin.address)).to.ok
+        });
+
+        it("Should fail because caller is not protocol", async function () {
+            
+            const {reward, bounty, admin,user, close } = await pool_fixture();
+
+            await reward.tx.transfer(bounty.address, 100, []);
+     
+            let rewardBal = await reward.query.balanceOf(bounty.address)
+    
+            let resss = await rewardBal.value.unwrapRecursively().rawNumber.toString()
+    
+           console.log("balance of bounty", resss)
+           
+           await bounty.withSigner(admin).tx.depositBounty(reward.address, 100, admin.address)
+
+           await expect( bounty.withSigner(user).tx.setTriggerLimit(reward.address, 100, admin.address)).to.eventually.be.rejected
+        });
+
+    });
 
 
 })

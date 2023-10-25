@@ -77,6 +77,7 @@ AccessControlImpl
     // #[ink(message)]
     // fn distribute_bounty(&mut self, reward:AccountId, amount:Balance, requestor: AccountId) -> Result<bool, ProtocolError>;
 
+    #[modifiers(only_role(PROTOCOL))]
     fn set_trigger_limit(
         &mut self,
         reward: AccountId,
