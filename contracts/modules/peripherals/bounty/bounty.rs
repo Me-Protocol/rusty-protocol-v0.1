@@ -8,7 +8,7 @@ pub mod bounty {
 
     use global::{providers::{
         data::{bounty::*},
-        deployables::{bounty::{ *,BountyImpl }, bounty::{OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN}},
+        deployables::{bounty::{ *,BountyImpl }, bounty::{OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN, BOUNTY_MANAGER}},
         common::{types::BRAND_ID_TYPE},
     }};
 
@@ -75,7 +75,12 @@ pub mod bounty {
         ) -> Result<u128, ProtocolError> {
             BountyImpl::get_trigger_limit(self,reward,requestor)
         }
+
+        
+
     }
+
+
 
 
 
@@ -84,20 +89,18 @@ pub mod bounty {
     impl Bounty {
       
         #[ink(constructor)]
-        pub fn new() -> Self {
+        pub fn new(me_token: AccountId,) -> Self {
             let mut instance = Self::default();
             let caller = instance.env().caller();
 
+            
             access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
-
-            access_control::InternalImpl::_setup_role(&mut instance,OPEN_REWARDS_ADMIN, Some(caller));
-
-            access_control::InternalImpl::_setup_role(&mut instance,OPEN_REWARDS_MANAGER, Some(caller));
 
             access_control::InternalImpl::_setup_role(&mut instance, PROTOCOL, Some(caller));
             
-            access_control::InternalImpl::_set_role_admin(&mut instance, OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN);
-
+            access_control::InternalImpl::_setup_role(&mut instance,BOUNTY_MANAGER, Some(caller));
+            
+            BountyImpl::set_up_bounty(&mut instance, me_token);
 
             instance
         }

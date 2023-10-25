@@ -13,26 +13,116 @@ describe( "Bounty Test", () => {
         const api = await ApiPromise.create()
         const signers = getSigners()
         const admin = signers[0]
-        const brandA = signers[1]
-        const brandB = signers[2]
-        const user1 = signers[3]
+        const user = signers[1]
+
+        const rewardFactory = new rewardConstructor(api, admin)
+        const rewardAddress = (await rewardFactory.new(admin.address,"A","A",2,10000)).address
+        const reward = new rewardContract(rewardAddress, admin, api)
+        const bountyFactory = new bountyConstructor(api, admin)
+        const bountyAddress = (await bountyFactory.new(rewardAddress)).address
+        const bounty = new bountyContract(bountyAddress, admin, api)
 
      
         return {
           api,
           admin,
-          brandA,
-          brandB,
-          user1,
+          reward,
+          bounty,
+          user,
           close: async () => {
             await api.disconnect()
           }
         }
     }
 
-              it('Should successfully record bounty amount', async () => {
-                const { brandA, brandB, admin, close } = await pool_fixture();
+
+    describe("recordDepositedBountyRewards", function () {
+        
+        it('Should successfully record bounty amount', async () => {
+            const {reward, bounty, admin, close } = await pool_fixture();
+     
+            await reward.tx.transfer(bounty.address, 100, []);
+     
+             let rewardBal = await reward.query.balanceOf(bounty.address)
+     
+             let resss = await rewardBal.value.unwrapRecursively().rawNumber.toString()
+     
+            console.log("balance of bounty", resss)
             
-                await close();
-              });
+            await bounty.withSigner(admin).tx.depositBounty(reward.address, 100, admin.address)
+     
+            await close();
+          });
+     
+     
+          it("Should fail because your are trying to record an amount you didn't deposit", async () => {
+             const {reward, bounty, admin, close } = await pool_fixture();
+      
+              let rewardBal = await reward.query.balanceOf(bounty.address)
+      
+              let resss = await rewardBal.value.unwrapRecursively().rawNumber.toString()
+      
+             console.log("balance of bounty", resss)
+             
+             await expect(bounty.withSigner(admin).tx.depositBounty(reward.address, 100, admin.address)).to.eventually.be.rejected
+     
+             await close()
+     
+         });
+    });
+
+
+    describe("withdrawBountyRewards", function () {
+        it("Should successfully withdraw from bounty pool", async function () {
+          
+            const {reward, bounty, admin, close } = await pool_fixture();
+     
+            await reward.tx.transfer(bounty.address, 100, []);
+            
+            await bounty.withSigner(admin).tx.depositBounty(reward.address, 100, admin.address)
+            
+            let rewardBal = await reward.query.balanceOf(admin.address)
+    
+            let balanceBeforeWithdrawal = await rewardBal.value.unwrapRecursively().rawNumber.toString()
+    
+            console.log("balance of bounty before withdrawal", balanceBeforeWithdrawal)
+        
+            await bounty.withSigner(admin).tx.withdrawBounty(reward.address, 100, admin.address, admin.address)
+
+            let balanceAfterWithdraw = await reward.query.balanceOf(admin.address)
+
+            expect(Number(balanceAfterWithdraw.value.unwrapRecursively().rawNumber.toString())).to.eq(Number(balanceBeforeWithdrawal) + 100)
+            
+            await close()
+        });
+
+        it("Should fail because caller is not a me-protocol admin", async function () {
+            
+            const {reward, bounty, admin, user,close } = await pool_fixture();
+     
+            await reward.withSigner(admin).tx.transfer(bounty.address, 100, []);
+            
+            await bounty.withSigner(admin).tx.depositBounty(reward.address, 100, admin.address)
+
+            await expect( bounty.withSigner(user).tx.depositBounty(reward.address, 100, admin.address)).to.eventually.be.rejected
+            
+            await close()
+        });
+
+        it("Should fail because caller is trying to withdraw out of range", async function () {
+          
+            const {reward, bounty, admin, close } = await pool_fixture();
+     
+            await reward.tx.transfer(bounty.address, 100, []);
+            
+            await bounty.withSigner(admin).tx.depositBounty(reward.address, 100, admin.address)
+  
+            await expect( bounty.withSigner(admin).tx.withdrawBounty(reward.address, 1000, admin.address, admin.address)).to.eventually.be.rejected
+
+            await close()
+        });
+    });
+
+
+
 })
