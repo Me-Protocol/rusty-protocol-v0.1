@@ -1,7 +1,7 @@
 use crate::providers::{ common::{ constants::PRECISION, types::* }, data::treasury::* };
 pub use crate::{
     providers::{
-        data::{ bounty::* },
+        data::{ treasury::* },
         common::{ roles::*, errors::ProtocolError, eunice::*, validator::* },
     },
     controllers::deployables::treasury::*,
@@ -212,6 +212,15 @@ use openbrush::{
     fn get_me_notify_limit(&mut self, requestor: AccountId) -> Result<Balance, ProtocolError> {
         Ok(get_me_notify_limit(self))
     }
+
+
+    fn set_up_treasury(
+        &mut self,
+        me_token: AccountId,
+    ) {
+        update_me_id(self, me_token);
+    }
+
 }
 
 fn withdraw_reward_and_or_me<T>(

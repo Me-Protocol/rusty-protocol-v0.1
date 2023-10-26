@@ -1,4 +1,4 @@
-use crate::providers::{ common::constants::PRECISION, data::bounty::BountyRecord };
+use crate::providers::{ common::constants::PRECISION, data::{bounty::BountyRecord, protocol::update_editable_protocol_config} };
 pub use crate::{
     providers::{
         data::bounty::*,
@@ -7,7 +7,7 @@ pub use crate::{
     controllers::deployables::bounty::*,
 };
 
-use ink::{ prelude::vec::Vec, primitives::AccountId };
+use ink::{ prelude::vec::Vec, primitives::AccountId, env::call::ConstructorReturnType };
 use openbrush::{
     modifier_definition,
     contracts::{ access_control::*, traits::{ psp22::PSP22Ref }, reentrancy_guard::* },
@@ -77,6 +77,7 @@ AccessControlImpl
     // #[ink(message)]
     // fn distribute_bounty(&mut self, reward:AccountId, amount:Balance, requestor: AccountId) -> Result<bool, ProtocolError>;
 
+    #[modifiers(only_role(PROTOCOL))]
     fn set_trigger_limit(
         &mut self,
         reward: AccountId,
@@ -104,5 +105,13 @@ AccessControlImpl
             return Err(ProtocolError::RewardIsNotBountyReward);
         }
         Ok(get_trigger_limit(self, reward))
+    }
+
+
+    fn set_up_bounty(
+        &mut self,
+        me_token: AccountId,
+    ) {
+        update_me_id(self, me_token);
     }
 }
