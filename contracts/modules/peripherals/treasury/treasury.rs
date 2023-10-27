@@ -2,6 +2,35 @@
 #![no_main]
 #![feature(min_specialization)]
 
+
+/// 
+/// 
+///           /////   THE TREASURY CONTRACT /////
+/// 
+///     
+/// 
+/// This is the main entry into the treasury contract 
+/// 
+/// Understanding the tresury contract 
+/// 
+/// The treasury contract serves that record book for all tokens owned by all business owners. 
+/// All tokens sent in and out from pool from the business owners are accounted for in the treasury. 
+/// 
+/// 
+/// Treasury FLow
+/// 
+/// deposit_reward_and_or_me: Called after a reward and me token as a pair as been deposited into the treasury.
+/// It serves as a function that records the deposited pair token. 
+/// 
+/// withdraw_reward_and_or_me: serves as the function that withdraws both the reward token and the me token
+/// 
+/// pay_for_some_costs: Function called to pay for certain costs inquired in the protocol 
+/// 
+/// top_up_pool_with_reward_and_or_me: Called to add more me token and reward token to the tresury 
+/// 
+/// set_reward_notify_limit: Used to set up the reward notify limits 
+
+
 #[openbrush::implementation(AccessControl)]
 #[openbrush::contract]
 pub mod treasury {

@@ -3,6 +3,61 @@
 #![feature(min_specialization)]
 
 
+///
+/// 
+///       /////  THE POOL CONTRACT /////
+/// 
+/// 
+/// 
+/// This is the entry to the full Pool contract 
+/// 
+/// Pool project structure: 
+/// 
+/// Implemented traits as interfaces: Found in the controllers folder. The file is named a_pool inside the deployables folder.
+/// 
+/// Contract Storage Structure: The contrcat have two main storage structures called: 
+/// 1) PoolState
+/// 2)PoolConfig
+/// Both are found in a folder called data inside the file named a_pool
+/// 
+/// Contract Implemetations:  The implementations are found inside a trait called PoolImpl in a folder
+/// the providers with the file name called a_pool.
+/// 
+/// 
+/// Understanding the Pool contract 
+/// 
+/// The idea of the pool contract could be compared to the known AMM (Automated market maker). Different pools are depolyed based on different
+/// rewards. Pools contains a reward token and the protocol token called Me token.
+/// The pool implementation is different from the Automated market maker implementation, refer to MY AI. inc documentation to get access to the 
+/// formula implemented. The pool implements the following from openbrush: AccessControl, Psp34 (Just like ERC721).
+/// The PSP34 token is minted whenever liquidity is provided into the pool. It is minted to the liquidity provider, for that position.
+/// 
+/// POOL FLOW 
+/// The pool contains the following implementation:
+/// 
+/// start_open_rewards: Respensible for starting the pool, this cannot start until both reward token and me token have been deposited into the pool.
+/// This function basically starts up the pool to allow for pool conversation (literally swapping in the literal term).
+/// 
+/// pause_open_rewards: This function is responsible for pausing the pool, during pool pause there is no conversation(swapping) allowed between this 
+/// pool and any othe pool.
+/// 
+/// resume_open_rewards: This function resumes the pool back to continue conversations. 
+/// 
+/// check_open_rewards_state: Checks the state of the pool if it is paused or it is in service.
+/// 
+/// get_liquidity_ratios: Returns the liquidity ratio between the me token and the reward token in the pool .
+/// 
+/// withdraw_liquidity: Used to the withdraw liquidity provided into the pool 
+///
+/// record_liquidity_provided: Call to record the liquidity provided into the pool. 
+///
+/// initiate_outgoing_conversation: This fuunction is the entry point to conversing with another pool. It can be said in 
+/// simple terms that this is where the swapping occurs alltogether 
+/// 
+/// 
+/// 
+
+
 #[openbrush::implementation(AccessControl, PSP34, PSP34Enumerable, PSP34Mintable, PSP34Burnable)]
 #[openbrush::contract]
 pub mod pool {
@@ -22,22 +77,22 @@ pub mod pool {
        
         #[storage_field]
         pub pool_state: PoolState,
-
+    
         #[storage_field]
         pub pool_config: PoolConfig,
-
+    
         #[storage_field]
         pub position: Position,
-
+    
         #[storage_field]
         pub access: access_control::Data,
-
+    
         #[storage_field]
         pub psp34: psp34::Data<>,
-
+    
         #[storage_field]
         enumerable: enumerable::Data,
-
+    
         #[storage_field]
         pub guard: reentrancy_guard::Data,
     }
