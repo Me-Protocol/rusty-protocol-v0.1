@@ -2,6 +2,30 @@
 #![no_main]
 #![feature(min_specialization)]
 
+
+///
+/// 
+/// 
+///        /////   THE BOUNTY CONTRACT /////
+/// 
+/// 
+///  This is the main entry to the bounty contract
+/// 
+/// Understanding the contract
+/// 
+/// The bounty contract houses rewards to be distributed to users after performing certain tasks 
+/// 
+/// Bounty Flow 
+/// 
+/// deposit_bounty: Called to record deposited reward in the bounty contract 
+/// 
+/// withdraw_bounty: Called to withdraw the bounty  rewards deposited into the contract 
+/// 
+/// set_trigger_limit: Called to set the trigger limit when the the bounty would be distributed to users who
+/// successfully complete certainn tasks 
+/// 
+/// get_trigger_limit: returns the trigger limit set by the "set_trigger_limit" function 
+
 #[openbrush::implementation(AccessControl)]
 #[openbrush::contract]
 pub mod bounty {
