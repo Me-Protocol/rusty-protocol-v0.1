@@ -1,27 +1,25 @@
 [package]
-name = "global"
+name = "bounty"
 version = "0.1.0"
-authors = ["paul_oamen, adebara_ayomide <paul@myai.life, ayomideadebarafestus@gmail.com>"]
+authors =  ["paul_oamen, adebara_ayomide <paul@myai.life, ayomideadebarafestus@gmail.com>"]
 edition = "2021"
 
 [dependencies]
-ink = { version = "4.3.0", default-features = false }
-
+ink = { version = "4.2.0", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
-scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
+scale-info = { version = "2.6", default-features = false, features = ["derive"], optional = true }
 
 # These dependencies
 openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "4.0.0-beta.1", default-features = false, features = ["psp22","ownable","access_control", "psp34", "reentrancy_guard", "pausable"] }
+global = {path = "../../../", default-features = false}
 
+
+# [dev-dependencies]
+# ink_e2e = "4.2.0"
 
 [lib]
-name = "global"
-path = "global.rs"
-# crate-type = [
-#     # Used for normal contract Wasm blobs.
-#     "rlib",
-# ]
+path = "bounty.rs"
 
 [features]
 default = ["std"]
@@ -29,11 +27,20 @@ std = [
     "ink/std",
     "scale/std",
     "scale-info/std",
-    # These dependencies
+     # These dependencies
     "openbrush/std",
+    "global/std"
 ]
-
 ink-as-dependency = []
+e2e-tests = []
+
+
+[profile.release]
+panic = "abort"
+lto = false
 
 [profile.dev]
-codegen-units = 16
+
+panic = "abort"
+lto = false
+overflow-checks = false

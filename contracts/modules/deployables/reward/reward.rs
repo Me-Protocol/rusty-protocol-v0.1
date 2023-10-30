@@ -1,13 +1,17 @@
-#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(feature = "std"), no_std, no_main)]
+#![no_main]
 #![feature(min_specialization)]
 
+
+
+#[openbrush::implementation(PSP22, Ownable, PSP22Metadata, PSP22Mintable)]
 #[openbrush::contract]
 pub mod reward {
     use ink::codegen::{ EmitEvent, Env };
     use global::{ controllers::deployables::reward::*, providers::common::errors::* };
 
     use openbrush::{
-        contracts::{ ownable::*, psp22::extensions::{ mintable::*, metadata::*, burnable::* } },
+        contracts::{ ownable::{*, OwnableImpl}, psp22::{extensions::{ mintable::*, metadata::*, burnable::* }, self}, access_control::Internal },
         modifiers,
         traits::{ Storage, String },
     };
@@ -41,13 +45,12 @@ pub mod reward {
         value: Balance,
     }
 
-    impl PSP22 for Reward {}
 
     impl RewardController for Reward {
         #[ink(message)]
         #[modifiers(only_owner)]
         default fn mint_to(&mut self, account: AccountId, amount: Balance) -> Result<(), ProtocolError> {
-            self.mint(account, amount)?;
+            psp22::InternalImpl::_mint_to(self, account, amount)?;
             Ok(())
         }
 
@@ -55,17 +58,14 @@ pub mod reward {
         #[ink(message)]
         #[modifiers(only_owner)]
         default fn burn_rewards(&mut self, amount: Balance) -> Result<(), ProtocolError> {
-            let owner = self.owner();
-            self.burn(owner, amount)?;
+            let owner = OwnableImpl::owner(self);
+            psp22::InternalImpl::_burn_from(self, owner.unwrap(), amount)?;
             Ok(())
         }
     }
 
-    impl PSP22Metadata for Reward {}
 
-    impl Ownable for Reward {}
-
-    impl psp22::Internal for Reward {
+    impl Reward {
         fn _emit_transfer_event(
             &self,
             _from: Option<AccountId>,
@@ -98,11 +98,11 @@ pub mod reward {
             total_supply: Balance
         ) -> Self {
             let mut instance = Self::default();
-            instance.metadata.name = name;
-            instance.metadata.symbol = symbol;
-            instance.metadata.decimals = decimal;
-            instance._init_with_owner(brand);
-            assert!(instance._mint_to(brand, total_supply).is_ok());
+            instance.metadata.name.set(&name);
+            instance.metadata.symbol.set(&symbol);
+            instance.metadata.decimals.set(&decimal);
+            ownable::InternalImpl::_init_with_owner(&mut instance, brand);
+            assert!(psp22::InternalImpl::_mint_to(&mut instance, brand, total_supply).is_ok());
             instance
         }
     }

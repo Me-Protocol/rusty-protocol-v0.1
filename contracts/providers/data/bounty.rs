@@ -1,9 +1,12 @@
-use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS, Storage } };
+use openbrush::{ traits::{ AccountId, Balance, Storage } };
 use ink::{ storage::{ Mapping } };
 use crate::providers::common::database::*;
 
+
+pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
+
 #[derive(Debug)]
-#[openbrush::upgradeable_storage(BOUNTY_RECORD)]
+#[openbrush::storage_item(BOUNTY_RECORD)]
 pub struct BountyRecord {
     pub me_id: AccountId,
     pub total_number_of_bounty_rewards: u128,

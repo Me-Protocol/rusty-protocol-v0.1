@@ -1,13 +1,13 @@
-use crate::providers::{ common::constants::PRECISION, data::bounty::BountyRecord };
+use crate::providers::{ common::constants::PRECISION, data::{bounty::BountyRecord, protocol::update_editable_protocol_config} };
 pub use crate::{
     providers::{
-        data::{ bounty::* },
+        data::bounty::*,
         common::{ roles::*, errors::ProtocolError, eunice::*, validator::* },
     },
     controllers::deployables::bounty::*,
 };
 
-use ink::{ prelude::vec::Vec, primitives::AccountId };
+use ink::{ prelude::vec::Vec, primitives::AccountId, env::call::ConstructorReturnType };
 use openbrush::{
     modifier_definition,
     contracts::{ access_control::*, traits::{ psp22::PSP22Ref }, reentrancy_guard::* },
@@ -15,9 +15,12 @@ use openbrush::{
     traits::{ Balance, Storage },
 };
 
-impl<
-    T: Storage<BountyRecord> + Storage<access_control::Data> + Storage<reentrancy_guard::Data>
-> BountyController for T {
+pub trait BountyImpl: Storage<BountyRecord> + 
+Storage<access_control::Data> + 
+Storage<reentrancy_guard::Data> +   
+MembersManager +
+AccessControlImpl
+ {
     #[modifiers(only_role(PROTOCOL))]
     fn deposit_bounty(
         &mut self,
@@ -74,6 +77,7 @@ impl<
     // #[ink(message)]
     // fn distribute_bounty(&mut self, reward:AccountId, amount:Balance, requestor: AccountId) -> Result<bool, ProtocolError>;
 
+    #[modifiers(only_role(PROTOCOL))]
     fn set_trigger_limit(
         &mut self,
         reward: AccountId,
@@ -101,5 +105,13 @@ impl<
             return Err(ProtocolError::RewardIsNotBountyReward);
         }
         Ok(get_trigger_limit(self, reward))
+    }
+
+
+    fn set_up_bounty(
+        &mut self,
+        me_token: AccountId,
+    ) {
+        update_me_id(self, me_token);
     }
 }

@@ -1,8 +1,8 @@
 use openbrush::{
-    contracts::traits::{
+    contracts::{traits::{
         ownable::*,
         psp22::{ extensions::{ burnable::*, metadata::*, mintable::* }, * },
-    },
+    }, psp22::PSP22Impl},
     traits::{ AccountId, Balance },
 };
 
@@ -17,7 +17,7 @@ pub type RewardRef = dyn RewardController +
     Ownable;
 
 #[openbrush::trait_definition]
-pub trait RewardController: PSP22 + PSP22Metadata + Ownable {
+pub trait RewardController: PSP22 + PSP22Metadata + PSP22Mintable {
     #[ink(message)]
     fn mint_to(&mut self, account: AccountId, amount: Balance) -> Result<(), ProtocolError>;
 

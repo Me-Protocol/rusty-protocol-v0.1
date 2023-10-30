@@ -1,9 +1,9 @@
-use openbrush::{ traits::{ AccountId, Balance, ZERO_ADDRESS, String, Storage } };
+use openbrush::{ traits::{ AccountId, Balance, String, Storage } };
 use ink::{ storage::{ traits::StorageLayout, Mapping } };
 use crate::providers::common::{ database::*, types::* };
 
 #[derive(Debug)]
-#[openbrush::upgradeable_storage(PROTOCOL_CONFIG)]
+#[openbrush::storage_item(PROTOCOL_CONFIG)]
 pub struct ProtocolConfig {
     pub default_minimum_me_for_conversation: Balance,
     pub default_minimum_reward_for_conversation_in_percent: u8,
@@ -17,7 +17,7 @@ pub struct ProtocolConfig {
 }
 
 #[derive(Debug)]
-#[openbrush::upgradeable_storage(PROTOCOL_RECORDS)]
+#[openbrush::storage_item(PROTOCOL_RECORDS)]
 pub struct ProtocolRecords {
     pub me: AccountId,
     pub bounty: AccountId,

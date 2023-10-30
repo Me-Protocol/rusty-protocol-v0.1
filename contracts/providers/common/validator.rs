@@ -1,6 +1,8 @@
-use openbrush::{ traits::{ AccountId, ZERO_ADDRESS, String } };
+use openbrush::traits::{ AccountId, String };
 
 use crate::providers::common::{ errors::*, types::*, constants::* };
+
+pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
 
 pub fn ensure_address_is_not_zero_address(address: AccountId) -> Result<(), ProtocolError> {
     if address == ZERO_ADDRESS.into() {

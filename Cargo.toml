@@ -1,7 +1,7 @@
 [package]
 name = "meprotocol"
 version = "0.1.0"
-authors = ["paul_oamen <paul@myai.life>"]
+authors = ["paul_oamen, adebara_ayomide <paul@myai.life, ayomideadebarafestus@gmail.com>"]
 edition = "2021"
 
 [dependencies]
@@ -11,9 +11,11 @@ scale = { package = "parity-scale-codec", version = "3", default-features = fals
 scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
 
 # These dependencies
-openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "3.1.1", default-features = false }
+openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "4.0.0-beta.1", default-features = false }
 reward = {path = "contracts/modules/deployables/reward", default-features = false }
 pool = {path = "contracts/modules/deployables/pool", default-features = false }
+treasury ={path = "contracts/modules/peripherals/treasury", default-features = false}
+bounty ={path = "contracts/modules/peripherals/bounty", default-features = false}
 global = {path = "contracts", default-features = false}
 
 [dev-dependencies]
