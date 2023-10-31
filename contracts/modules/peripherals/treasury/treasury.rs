@@ -35,14 +35,14 @@
 #[openbrush::contract]
 pub mod treasury {
 
-    use global::{providers::{
-        data::{treasury::*},
-        deployables::{treasury::{ *, TreasuryImpl, }, treasury::{OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN}},
-        common::{types::BRAND_ID_TYPE},
-    }};
+    use global::providers::{
+        data::treasury::*,
+        deployables::treasury::{ *, TreasuryImpl, },
+        common::types::BRAND_ID_TYPE,
+    };
 
     use openbrush::{
-        contracts::{ access_control::{*, self}, reentrancy_guard::*, traits::ownable },
+        contracts::{ access_control::{*, self}, reentrancy_guard::* },
         traits::{ Storage, String },
     };
 
