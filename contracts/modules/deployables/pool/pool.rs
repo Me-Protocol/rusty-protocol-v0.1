@@ -304,40 +304,40 @@ pub mod pool {
     }
 
 
-    impl Pool {
-        #[ink(constructor)]
-        pub fn new(
-            reward: AccountId,
-            me_token: AccountId,
-            config: PoolSetUpConfig
+    impl Pool { 
+        #[ink(constructor)] 
+        pub fn new( 
+            reward: AccountId, 
+            me_token: AccountId,  
+            config: PoolSetUpConfig 
         ) -> Self {
-            let mut instance = Self::default();
-
-            let caller = instance.env().caller();
+            let mut instance = Self::default(); 
+ 
+            let caller = instance.env().caller(); 
          
-            instance.pool_state = PoolState {
-                started: false,
-                active: false,
-                busy: false,
-                initiator: caller,
-                reward,
-                me_token,
-                last_reward_amount: 0,
-                last_me_amount: 0,
-                protocol_me_offset: 0,
-                last_transaction_time: 0,
+            instance.pool_state = PoolState { 
+                started: false, 
+                active: false, 
+                busy: false, 
+                initiator: caller, 
+                reward, 
+                me_token, 
+                last_reward_amount: 0, 
+                last_me_amount: 0, 
+                protocol_me_offset: 0, 
+                last_transaction_time: 0, 
             };
 
-            instance.pool_config = PoolConfig {
-                r_optimal: config.r_optimal,
-                maximum_r_limit: config.maximum_r_limit,
-                minimum_reward_amount_for_conversation: config.minimum_reward_amount_for_conversation,
-                minimum_me_amount_for_conversation: config.minimum_me_amount_for_conversation,
-                notify_reward_amount: config.notify_reward_amount,
-                notify_me_amount: config.notify_me_amount,
-                default_slippage_in_precision: config.default_slippage_in_precision,
-                allow_internal_swap: config.allow_internal_swap,
-            };
+            instance.pool_config = PoolConfig { 
+                r_optimal: config.r_optimal, 
+                maximum_r_limit: config.maximum_r_limit, 
+                minimum_reward_amount_for_conversation: config.minimum_reward_amount_for_conversation, 
+                minimum_me_amount_for_conversation: config.minimum_me_amount_for_conversation, 
+                notify_reward_amount: config.notify_reward_amount, 
+                notify_me_amount: config.notify_me_amount, 
+                default_slippage_in_precision: config.default_slippage_in_precision, 
+                allow_internal_swap: config.allow_internal_swap, 
+            }; 
 
             access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
 
@@ -350,7 +350,7 @@ pub mod pool {
             
             access_control::InternalImpl::_set_role_admin(&mut instance, OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN);
 
-            instance
-        }
-    }
+            instance 
+        } 
+    } 
 }

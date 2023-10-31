@@ -2,7 +2,7 @@ use crate::providers::common::constants::PRECISION;
 pub use crate::{
     providers::{
         data::{ a_pool::*, a_position::* },
-        common::{context::*},
+        common::context::*,
         deployables::a_pool,
         common::{ roles::*, errors::ProtocolError, eunice::*, validator::* },
     },
@@ -465,9 +465,6 @@ use openbrush::{
 
         ink::env::debug_println!("checking token");
         psp34::Internal::_check_token_exists(self, &Id::U128(1))?;
-        // self
-        //     .data::<psp34::Data>()
-        //     ._check_token_exists(&Id::U128(1))?;
 
             ink::env::debug_println!("token exists");
         if
@@ -475,11 +472,6 @@ use openbrush::{
                 psp34::Internal
                 ::_owner_of(self, &position)
                 .unwrap()
-            // requestor !=
-            // self
-            //     .data::<psp34::Data>()
-            //     ._owner_of(&position)
-            //     .unwrap()
         {
             return Err(ProtocolError::RequestorIsNotOwnerOfThePosition);
         }
@@ -614,7 +606,7 @@ use openbrush::{
             config.minimum_me_amount_for_conversation,
             config.notify_reward_amount,
             config.notify_me_amount,
-            config. default_slippage_in_precision,
+            config.default_slippage_in_precision,
             config.allow_internal_swap,
         )
     }

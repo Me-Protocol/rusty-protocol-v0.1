@@ -2,7 +2,7 @@
 [package]
 name = "admin"
 version = "0.1.0"
-authors = ["paul_oamen, adebara_ayomide <paul@myai.life, ayomideadebarafestus@gmail.com>"]
+authors = ["paul_oamen, adebara_ayomide <paul@myai.life, adebaraayomidefestus@gmail.com>"]
 edition = "2021"
 
 [dependencies]
