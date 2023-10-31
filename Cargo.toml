@@ -1,7 +1,7 @@
 [package]
 name = "meprotocol"
 version = "0.1.0"
-authors = ["paul_oamen, adebara_ayomide <paul@myai.life, ayomideadebarafestus@gmail.com>"]
+authors = ["paul_oamen, adebara_ayomide <paul@myai.life, adebaraayomidefestus@gmail.com>"]
 edition = "2021"
 
 [dependencies]
@@ -16,6 +16,7 @@ reward = {path = "contracts/modules/deployables/reward", default-features = fals
 pool = {path = "contracts/modules/deployables/pool", default-features = false }
 treasury ={path = "contracts/modules/peripherals/treasury", default-features = false}
 bounty ={path = "contracts/modules/peripherals/bounty", default-features = false}
+oracle = {path = "contracts/modules/services/oracle"}
 global = {path = "contracts", default-features = false}
 
 [dev-dependencies]
@@ -43,6 +44,8 @@ std = [
     "openbrush/std",
     "reward/std",
     "pool/std",
+    "treasury/std",
+    "bounty/std",
     "global/std",
 ]
 ink-as-dependency = []
@@ -57,3 +60,4 @@ lto = false
 panic = "abort"
 lto = false
 overflow-checks = false
+

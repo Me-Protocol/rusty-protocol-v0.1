@@ -30,15 +30,14 @@
 #[openbrush::contract]
 pub mod bounty {
 
-    use global::{providers::{
-        data::{bounty::*},
-        deployables::{bounty::{ *,BountyImpl }, bounty::{OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN, BOUNTY_MANAGER}},
-        common::{types::BRAND_ID_TYPE},
-    }};
+    use global::providers::{
+        data::bounty::*,
+        deployables::{bounty::{ *,BountyImpl }, bounty::BOUNTY_MANAGER},
+    };
 
     use openbrush::{
         contracts::{ access_control::{*, self}, reentrancy_guard::* },
-        traits::{ Storage },
+        traits::Storage,
     };
 
 
