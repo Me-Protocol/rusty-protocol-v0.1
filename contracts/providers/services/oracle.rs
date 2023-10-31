@@ -1,15 +1,11 @@
 
 pub use crate::{
-    providers::{
-        common::{ roles::*, errors::ProtocolError, eunice::*, validator::* },
-    },
+    providers::common::{ roles::*, errors::ProtocolError, eunice::*, validator::* },
     controllers::deployables::a_pool::*,
 };
 
-use ink::{ primitives::AccountId };
-use openbrush::{
-    traits::{ Balance },
-};
+use ink::primitives::AccountId;
+use openbrush::traits::Balance;
 
 
 pub trait OracleImpl {

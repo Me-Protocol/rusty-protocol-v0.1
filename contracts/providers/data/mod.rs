@@ -5,4 +5,3 @@ pub mod brand;
 pub mod protocol;
 pub mod bounty;
 pub mod treasury;
-pub mod oracle;
