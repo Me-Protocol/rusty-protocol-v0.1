@@ -59,7 +59,7 @@ pub fn update_brand_me_balances<T>(
     instance.data::<PaymentStorage>().brand_me_balances.insert(&brand_id, &new_brand_me_balance);
 }
 
-pub fn get_treasury_me_balance_for_brand<T>(instance: &mut T, brand: BRAND_ID_TYPE) -> Balance
+pub fn get_brand_me_balance<T>(instance: &mut T, brand: BRAND_ID_TYPE) -> Balance
     where T: Storage<PaymentStorage>
 {
     instance.data::<PaymentStorage>().brand_me_balances.get(&brand).unwrap_or_default()

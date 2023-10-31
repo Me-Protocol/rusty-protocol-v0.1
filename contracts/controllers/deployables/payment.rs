@@ -21,7 +21,6 @@ pub trait PaymentController {
         me_amount: Balance,
         brand_id: BRAND_ID_TYPE,
         requestor: AccountId,
-        metadata: Option<String>
     ) -> Result<bool, ProtocolError>;
 
     #[ink(message)]
@@ -37,7 +36,6 @@ pub trait PaymentController {
         me_amount: Balance,
         brand_id: BRAND_ID_TYPE,
         requestor: AccountId,
-        metadata: Option<String>
     ) -> Result<bool, ProtocolError>;
 
     #[ink(message)]
@@ -50,17 +48,10 @@ pub trait PaymentController {
     fn protocol_withdraw_me(
         &mut self,
         me_amount: Balance,
-        brand_id: BRAND_ID_TYPE,
         requestor: AccountId,
-        metadata: Option<String>
     ) -> Result<bool, ProtocolError>;
 
     #[ink(message)]
     fn protocol_me_balance (&mut self) -> Balance;
-
-    #[ink(message)]
-    fn total_me_in_payment(&mut self) -> Result<Balance, ProtocolError>;
-
-
 
 }
