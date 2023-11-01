@@ -9,7 +9,7 @@ import rewardContract from '../../typechain-generated/contracts/reward'
 
 describe( "Bounty Test", () => {
 
-    let pool_fixture = async() => { 
+    let bounty_fixture = async() => { 
         const api = await ApiPromise.create()
         const signers = getSigners()
         const admin = signers[0]
@@ -22,7 +22,7 @@ describe( "Bounty Test", () => {
         const bountyAddress = (await bountyFactory.new(rewardAddress)).address
         const bounty = new bountyContract(bountyAddress, admin, api)
 
-     
+        
         return {
           api,
           admin,
@@ -39,7 +39,7 @@ describe( "Bounty Test", () => {
     describe("recordDepositedBountyRewards", function () {
         
         it('Should successfully record bounty amount', async () => {
-            const {reward, bounty, admin, close } = await pool_fixture();
+            const {reward, bounty, admin, close } = await bounty_fixture();
      
             await reward.tx.transfer(bounty.address, 100, []);
      
@@ -56,7 +56,7 @@ describe( "Bounty Test", () => {
      
      
           it("Should fail because your are trying to record an amount you didn't deposit", async () => {
-             const {reward, bounty, admin, close } = await pool_fixture();
+             const {reward, bounty, admin, close } = await bounty_fixture();
       
               let rewardBal = await reward.query.balanceOf(bounty.address)
       
@@ -75,7 +75,7 @@ describe( "Bounty Test", () => {
     describe("withdrawBountyRewards", function () {
         it("Should successfully withdraw from bounty pool", async function () {
           
-            const {reward, bounty, admin, close } = await pool_fixture();
+            const {reward, bounty, admin, close } = await bounty_fixture();
      
             await reward.tx.transfer(bounty.address, 100, []);
             
@@ -98,7 +98,7 @@ describe( "Bounty Test", () => {
 
         it("Should fail because caller is not a me-protocol admin", async function () {
             
-            const {reward, bounty, admin, user,close } = await pool_fixture();
+            const {reward, bounty, admin, user,close } = await bounty_fixture();
      
             await reward.withSigner(admin).tx.transfer(bounty.address, 100, []);
             
@@ -111,7 +111,7 @@ describe( "Bounty Test", () => {
 
         it("Should fail because caller is trying to withdraw out of range", async function () {
           
-            const {reward, bounty, admin, close } = await pool_fixture();
+            const {reward, bounty, admin, close } = await bounty_fixture();
      
             await reward.tx.transfer(bounty.address, 100, []);
             
@@ -126,7 +126,7 @@ describe( "Bounty Test", () => {
 
     describe("setBountyTriggerLimit", function () {
         it("Should successfully set bounty_reward trigger limit", async function () {
-            const {reward, bounty, admin, close } = await pool_fixture();
+            const {reward, bounty, admin, close } = await bounty_fixture();
 
             await reward.tx.transfer(bounty.address, 100, []);
      
@@ -143,7 +143,7 @@ describe( "Bounty Test", () => {
 
         it("Should fail because caller is not protocol", async function () {
             
-            const {reward, bounty, admin,user, close } = await pool_fixture();
+            const {reward, bounty, admin,user, close } = await bounty_fixture();
 
             await reward.tx.transfer(bounty.address, 100, []);
      

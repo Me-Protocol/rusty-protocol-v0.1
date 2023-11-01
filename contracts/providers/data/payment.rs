@@ -6,7 +6,7 @@ pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
 
 
 #[derive(Debug)]
-#[openbrush::storage_item(PAYMENT)]
+#[openbrush::storage_item(PAYMENT_STATE)]
 pub struct PaymentStorage {
     pub active: bool,
     pub me_id: AccountId,
@@ -64,4 +64,3 @@ pub fn get_brand_me_balance<T>(instance: &mut T, account: AccountId) -> Balance
 {
     instance.data::<PaymentStorage>().brand_me_balances.get(&account).unwrap_or_default()
 }
-

@@ -27,6 +27,7 @@ pub enum ProtocolError {
     OpenRewardsAlreadyStarted,
     PoolAlreadyInActive,
     PoolIsActive,
+    TopUpToPayForService,
     PoolNotActive,
     PoolAlreadyActive,
     ConversationsShouldBeStartedAtOptimalRatioOrLess,

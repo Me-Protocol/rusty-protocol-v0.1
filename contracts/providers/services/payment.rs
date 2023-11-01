@@ -26,7 +26,6 @@ AccessControlImpl
     fn brand_deposit_me(
         &mut self,
         me_amount: Balance,
-    
         requestor: AccountId,
     ) -> Result<bool, ProtocolError>{
 
@@ -41,7 +40,7 @@ AccessControlImpl
 
         PSP22Ref::transfer_from(&me, caller, payment_contract, me_amount, Vec::<u8>::new())?;
 
-        update_brand_me_balances(self, caller, me_amount);
+        update_brand_me_balances(self, requestor, me_amount);
 
         Ok(true)
     }
@@ -60,6 +59,10 @@ AccessControlImpl
 
         if brand_bal == 0 {
             return Err(ProtocolError::PaymentBalanceIsZero);
+        }
+
+        if brand_bal < me_amount {
+            return Err(ProtocolError::TopUpToPayForService);
         }
 
         if brand_bal >= me_amount {
@@ -144,6 +147,10 @@ AccessControlImpl
 
         let me = get_me(self);
 
+        if me_amount >  protocol_me_bal {
+            return Err(ProtocolError::YouCannotWithdrawWhatYouDontHave);
+        }
+
         if me_amount <=  protocol_me_bal {
             let new_protocol_bal = protocol_me_bal - me_amount;
             update_protocol_me_balance(self, new_protocol_bal);
@@ -158,12 +165,15 @@ AccessControlImpl
         get_protocol_me_balance(self)
     }
 
-    fn set_up_bounty(
+    fn set_up_payment(
         &mut self,
         me_token: AccountId,
     ) {
         update_me_id(self, me_token);
     }
 
+    fn get_me_id(&mut self) -> Result<AccountId, ProtocolError> {
+        Ok(get_me(self))
+    }
 
 }

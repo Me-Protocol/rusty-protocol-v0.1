@@ -5,10 +5,11 @@
 mod payment {
 
     use global::providers::{
-        data::payment::*,
+        data::payment::{*, PaymentStorage},
         services::{payment::{ *,PaymentImpl }, brands::BRAND_ID_TYPE}
     };
 
+    use ink::storage::Mapping;
     use openbrush::{
         contracts::{ access_control::{*, self}, reentrancy_guard::* },
         traits::Storage,
@@ -19,7 +20,7 @@ mod payment {
     #[derive(Default, Storage)]
     pub struct Payment {
         #[storage_field]
-        payment_state: PaymentStorage,
+        pub payment_state: PaymentStorage,
     
         #[storage_field]
         pub access: access_control::Data,
@@ -78,6 +79,11 @@ mod payment {
         fn protocol_me_balance (&mut self) -> Balance{
             PaymentImpl::protocol_me_balance(self)
         }
+
+        #[ink(message)]
+        fn get_me_id(&mut self) -> Result<AccountId, ProtocolError> {
+           PaymentImpl::get_me_id(self)
+        }
     
 
     }
@@ -90,12 +96,12 @@ mod payment {
         pub fn new(me_token: AccountId) -> Self {
             let mut instance = Self::default();
             let caller = instance.env().caller();
-      
+
             access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
 
             access_control::InternalImpl::_setup_role(&mut instance, PROTOCOL, Some(caller));
 
-            PaymentImpl::set_up_bounty(&mut instance, me_token);
+            PaymentImpl::set_up_payment(&mut instance, me_token);
 
             instance
         }

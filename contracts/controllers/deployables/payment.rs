@@ -50,4 +50,8 @@ pub trait PaymentController {
     #[ink(message)]
     fn protocol_me_balance (&mut self) -> Balance;
 
+    #[ink(message)]
+    fn get_me_id(&mut self) -> Result<AccountId, ProtocolError>;
+
+
 }
