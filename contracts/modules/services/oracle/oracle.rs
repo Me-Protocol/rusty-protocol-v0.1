@@ -1,6 +1,6 @@
 #![cfg_attr(not(feature = "std"), no_std, no_main)]
 
-#[ink::contract]
+#[openbrush::contract]
 mod oracle {
 
     use global::providers::{
@@ -12,7 +12,6 @@ mod oracle {
 
     #[ink(storage)]
     pub struct Oracle {
-        /// Stores a single `bool` started on the storage.
         started: bool,
     }
 
@@ -23,10 +22,6 @@ mod oracle {
             Self { started: init_started }
         }
 
-        #[ink(constructor)]
-        pub fn default() -> Self {
-            Self::new(Default::default())
-        }
 
         #[ink(message)]
         pub fn determine_needed_reward_b_given_reward_a

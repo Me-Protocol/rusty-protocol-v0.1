@@ -11,7 +11,7 @@ pub struct PaymentStorage {
     pub active: bool,
     pub me_id: AccountId,
     pub protocol_me_balance: Balance,
-    pub brand_me_balances: Mapping<BRAND_ID_TYPE, Balance>,
+    pub brand_me_balances: Mapping<AccountId, Balance>,
 }
 
 impl  Default for PaymentStorage {
@@ -51,17 +51,17 @@ pub fn update_protocol_me_balance<T>(instance: &mut T, protocol_me_balance: Bala
 
 pub fn update_brand_me_balances<T>(
     instance: &mut T,
-    brand_id: BRAND_ID_TYPE,
+    account: AccountId,
     new_brand_me_balance: Balance
 )
     where T: Storage<PaymentStorage>
 {
-    instance.data::<PaymentStorage>().brand_me_balances.insert(&brand_id, &new_brand_me_balance);
+    instance.data::<PaymentStorage>().brand_me_balances.insert(&account, &new_brand_me_balance);
 }
 
-pub fn get_brand_me_balance<T>(instance: &mut T, brand: BRAND_ID_TYPE) -> Balance
+pub fn get_brand_me_balance<T>(instance: &mut T, account: AccountId) -> Balance
     where T: Storage<PaymentStorage>
 {
-    instance.data::<PaymentStorage>().brand_me_balances.get(&brand).unwrap_or_default()
+    instance.data::<PaymentStorage>().brand_me_balances.get(&account).unwrap_or_default()
 }
 

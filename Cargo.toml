@@ -16,7 +16,8 @@ reward = {path = "contracts/modules/deployables/reward", default-features = fals
 pool = {path = "contracts/modules/deployables/pool", default-features = false }
 treasury ={path = "contracts/modules/peripherals/treasury", default-features = false}
 bounty ={path = "contracts/modules/peripherals/bounty", default-features = false}
-oracle = {path = "contracts/modules/services/oracle"}
+oracle = {path = "contracts/modules/services/oracle",  default-features = false}
+payment = { path = "contracts/modules/services/payment",  default-features = false}
 global = {path = "contracts", default-features = false}
 
 [dev-dependencies]

@@ -26,22 +26,22 @@ AccessControlImpl
     fn brand_deposit_me(
         &mut self,
         me_amount: Balance,
-        brand_id: BRAND_ID_TYPE,
+    
         requestor: AccountId,
     ) -> Result<bool, ProtocolError>{
 
         ensure_address_is_not_zero_address(requestor)?;
         let payment_contract = Self::env().account_id();
-        let brand = Self::env().caller();
+        let caller = Self::env().caller();
         let me = get_me(self);
 
         if me_amount == 0 {
             return Err(ProtocolError::PaymentCanNotBeZero);
         }
 
-        PSP22Ref::transfer_from(&me, brand, payment_contract, me_amount, Vec::<u8>::new())?;
+        PSP22Ref::transfer_from(&me, caller, payment_contract, me_amount, Vec::<u8>::new())?;
 
-        update_brand_me_balances(self, brand_id, me_amount);
+        update_brand_me_balances(self, caller, me_amount);
 
         Ok(true)
     }
@@ -50,10 +50,13 @@ AccessControlImpl
     fn brand_service_payment(
         &mut self,
         me_amount: Balance,
-        brand_id: BRAND_ID_TYPE,
+    
     ) -> Result<bool, ProtocolError>{
 
-        let brand_bal = get_brand_me_balance(self, brand_id);
+        let caller = Self::env().caller();
+
+        let brand_bal = get_brand_me_balance(self, caller);
+
 
         if brand_bal == 0 {
             return Err(ProtocolError::PaymentBalanceIsZero);
@@ -68,7 +71,7 @@ AccessControlImpl
 
             update_protocol_me_balance(self, new_protocol_new_bal);
 
-            update_brand_me_balances(self, brand_id, new_brand_bal);
+            update_brand_me_balances(self, caller, new_brand_bal);
         }
 
         Ok(true)
@@ -78,12 +81,13 @@ AccessControlImpl
     fn brand_withdraw_me(
         &mut self,
         me_amount: Balance,
-        brand_id: BRAND_ID_TYPE,
+    
         requestor: AccountId,
     ) -> Result<bool, ProtocolError>{
 
         ensure_address_is_not_zero_address(requestor)?;
-
+        
+        let caller = Self::env().caller();
 
         if me_amount == 0 {
             return Err(ProtocolError::PaymentCanNotBeZero);
@@ -91,7 +95,7 @@ AccessControlImpl
 
         let me = get_me(self);
 
-        let brand_bal = get_brand_me_balance(self, brand_id);
+        let brand_bal = get_brand_me_balance(self, caller);
 
         if brand_bal == 0 {
             return Err(ProtocolError::YouCannotWithdrawWhatYouDontHave);
@@ -101,7 +105,7 @@ AccessControlImpl
 
             let new_brand_bal = brand_bal - me_amount;
 
-            update_brand_me_balances(self, brand_id, new_brand_bal);
+            update_brand_me_balances(self, caller, new_brand_bal);
 
             PSP22Ref::transfer(&me, requestor, me_amount, Vec::<u8>::new())?;
 
@@ -114,9 +118,12 @@ AccessControlImpl
    
     fn brand_me_balance(
         &mut self,
-        brand_id: BRAND_ID_TYPE,
+    
     ) -> Balance {
-        get_brand_me_balance(self, brand_id)
+
+        let caller = Self::env().caller();
+
+        get_brand_me_balance(self, caller)
     }
 
     #[modifiers(only_role(PROTOCOL))]
@@ -149,6 +156,13 @@ AccessControlImpl
 
     fn protocol_me_balance (&mut self) -> Balance {
         get_protocol_me_balance(self)
+    }
+
+    fn set_up_bounty(
+        &mut self,
+        me_token: AccountId,
+    ) {
+        update_me_id(self, me_token);
     }
 
 

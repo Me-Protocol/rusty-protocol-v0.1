@@ -18,30 +18,26 @@ pub trait PaymentController {
     #[ink(message)]
     fn brand_deposit_me(
         &mut self,
-        me_amount: Balance,
-        brand_id: BRAND_ID_TYPE,
+        me_amount: Balance,    
         requestor: AccountId,
     ) -> Result<bool, ProtocolError>;
 
     #[ink(message)]
     fn brand_service_payment(
         &mut self,
-        me_amount: Balance,
-        brand_id: BRAND_ID_TYPE,
+        me_amount: Balance, 
     ) -> Result<bool, ProtocolError>;
 
     #[ink(message)]
     fn brand_withdraw_me(
         &mut self,
         me_amount: Balance,
-        brand_id: BRAND_ID_TYPE,
         requestor: AccountId,
     ) -> Result<bool, ProtocolError>;
 
     #[ink(message)]
     fn brand_me_balance(
         &mut self,
-        brand_id: BRAND_ID_TYPE,
     ) -> Balance;
 
     #[ink(message)]
