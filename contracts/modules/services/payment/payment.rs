@@ -1,15 +1,28 @@
 #![cfg_attr(not(feature = "std"), no_std, no_main)]
 
+
+///  The payment contract 
+/// 
+/// The payment contract is resposible for the following:
+/// 
+/// 1) Allow brands deposit and have shares in the payment contract
+/// 
+/// 2) Allow brands pay for any service with their shares in the payment contract 
+/// 
+/// 3) Allow brands to withdraw their shares from the service payemnt contract 
+/// 
+/// 4) Allow admins to withdraw payemts for services done 
+
 #[openbrush::implementation(AccessControl)]
 #[openbrush::contract]
 mod payment {
 
     use global::providers::{
-        data::payment::{*, PaymentStorage},
-        services::{payment::{ *,PaymentImpl }, brands::BRAND_ID_TYPE}
+        data::payment::PaymentStorage,
+        services::payment::{ *,PaymentImpl }
     };
 
-    use ink::storage::Mapping;
+    
     use openbrush::{
         contracts::{ access_control::{*, self}, reentrancy_guard::* },
         traits::Storage,
