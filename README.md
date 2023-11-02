@@ -124,3 +124,74 @@ The Bounty contract primarily manages the following functionalities:
 The Bounty contract plays a vital role in the Me Protocol ecosystem by facilitating the transparent distribution of rewards to users. As users complete specific tasks, the Bounty contract records and manages these rewards, ensuring a seamless process for the entire ecosystem.
 
 For more comprehensive information on the Bounty contract and its functionalities, please refer to the official documentation or MY AI, Inc.'s educational materials.
+
+# Payment Contract Documentation
+
+## Introduction
+
+The Payment contract serves as a fundamental component of the Me Protocol, offering a range of features and functions aimed at facilitating transactions between brands and other users. The core functionality of the Payment contract includes:
+
+1. **Brand Deposits:** Enabling brands to deposit and acquire shares in the Payment contract.
+2. **Payment for Services:** Allowing brands to use their deposited shares to pay for various services within the Me Protocol.
+3. **Withdrawals:** Brands can withdraw their shares from the Payment contract, providing a flexible approach to managing their holdings.
+4. **Admin Withdrawals:** Admins have the capability to withdraw payments for services rendered within the Me Protocol.
+
+## Payment Flow
+
+The Payment contract implements a set of methods to manage these functionalities:
+
+1. **Brand Deposit of Me Tokens**
+   - **brand_deposit_me**: This function facilitates the deposit of Me tokens into the Payment contract, allowing brands to acquire shares.
+
+2. **Brand Payment for Services**
+   - **brand_service_payment**: Brands can use this function to pay for services with their Me token shares.
+
+3. **Brand Withdrawal of Me Tokens**
+   - **brand_withdraw_me**: Brands can withdraw Me tokens from the contract after successful transactions or service payments.
+
+4. **Retrieving Brand Me Token Balance**
+   - **brand_me_balance**: This function provides the current Me token balance of a brand within the Payment contract.
+
+5. **Protocol Withdrawal of Me Tokens**
+   - **protocol_withdraw_me**: Admins or protocol-level users can withdraw Me tokens from the Payment contract.
+
+6. **Retrieving Protocol Me Token Balance**
+   - **protocol_me_balance**: This function returns the current Me token balance at the protocol level.
+
+7. **Setting Up Payment Contract**
+   - **set_up_payment**: Admins can configure the Me token contract for the Payment contract.
+
+8. **Retrieving Me Token Address**
+   - **get_me_id**: This function allows users to retrieve the address of the Me token contract.
+
+## Conclusion
+
+The Payment contract is a crucial element of the Me Protocol, serving as the gateway for brands to engage in transactions and payments. Brands can deposit, use, and withdraw their Me token shares, while administrators can manage payments for services. The Payment contract plays a pivotal role in ensuring a smooth and secure payment process within the Me Protocol ecosystem.
+
+For detailed information on the Payment contract and its functions, refer to the official documentation or educational materials provided by MY AI, Inc.
+
+
+# Oracle Contract Documentation
+
+## Introduction
+
+The Oracle contract is a critical component of the Me Protocol, dedicated to a singular function that plays a vital role in ensuring smooth cross-pool interactions. This function is designed to obtain the equivalent value of a reward token from one pool to another. Just like a conventional price oracle, the Oracle contract excels in calculating the corresponding amount of reward between two pools: Pool A and Pool B.
+
+## Oracle Functionality
+
+The Oracle contract implements a single function:
+
+1. **Determine Needed Reward B Given Reward A**
+   - **Function Name:** `determine_needed_reward_b_given_reward_a`
+   - **Parameters:**
+     - `reward_a`: The AccountId of the source pool (Pool A).
+     - `reward_b`: The AccountId of the destination pool (Pool B).
+     - `amount`: The specified amount in Me tokens.
+   - **Return Type:** A `u128` value representing the required amount of the target reward token (Reward B).
+   - **Error Handling:** The function returns a `Result` that includes the calculated amount or an error if the operation encounters any issues.
+
+## Conclusion
+
+The Oracle contract serves as a crucial bridge for Me Protocol users, enabling them to seamlessly determine the equivalent value of reward tokens when moving assets between different pools. The Oracle function, `determine_needed_reward_b_given_reward_a`, ensures efficient and accurate conversions, making it an essential tool for users operating within the Me Protocol ecosystem.
+
+For comprehensive information regarding the Oracle contract and its function, please refer to the official documentation or educational resources provided by MY AI, Inc.
