@@ -104,11 +104,6 @@ pub mod bounty {
     }
 
 
-
-
-
-
-
     impl Bounty {
       
         #[ink(constructor)]
@@ -116,7 +111,6 @@ pub mod bounty {
             let mut instance = Self::default();
             let caller = instance.env().caller();
 
-            
             access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
 
             access_control::InternalImpl::_setup_role(&mut instance, PROTOCOL, Some(caller));

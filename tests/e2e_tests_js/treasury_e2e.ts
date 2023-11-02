@@ -9,7 +9,7 @@ import rewardContract from '../../typechain-generated/contracts/reward'
 
 describe( "Treasury Test", () => {
 
-    let pool_fixture = async() => { 
+    let treasury_fixture = async() => { 
         const api = await ApiPromise.create()
         const signers = getSigners()
         const admin = signers[0]
@@ -52,7 +52,7 @@ describe( "Treasury Test", () => {
     describe("recordDepositedRewardAndOrMe", function () {
 
         it("Should successfully deposit tokens to the treasury", async function () {
-            const { treasury, rewardA, rewardB, brandA, protocol, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, rewardA, rewardB, brandA, protocol, brandId,admin,me, close } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 100, []);
 
@@ -72,7 +72,7 @@ describe( "Treasury Test", () => {
 
         it("Should fail because you are trying to deposit zero tokens", async function () {
             
-            const { treasury, rewardA, rewardB, brandA, protocol, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, rewardA, rewardB, brandA, protocol, brandId,admin,me, close } = await treasury_fixture();
 
             const treasuryMeBal = await me.query.balanceOf(treasury.address)
 
@@ -87,7 +87,7 @@ describe( "Treasury Test", () => {
 
         it("Should fail because you are trying to record less me tokens than deposited", async function () {
            
-            const { treasury, rewardA, rewardB, brandA, protocol, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, rewardA, rewardB, brandA, protocol, brandId,admin,me, close } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 100, []);
 
@@ -104,7 +104,7 @@ describe( "Treasury Test", () => {
 
         it("Should fail because you are trying to record less reward tokens than deposited", async function () {
           
-            const { treasury, rewardA, rewardB, brandA, protocol, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, rewardA, rewardB, brandA, protocol, brandId,admin,me, close } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 50, []);
 
@@ -124,7 +124,7 @@ describe( "Treasury Test", () => {
 
         it("Should successfully call the recordDepositedCai to record tokens deposited into the treasury", async function () {
             
-            const { treasury, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, brandId,admin,me, close } = await treasury_fixture();
 
             await me.tx.transfer(treasury.address, 100, []);
 
@@ -135,7 +135,7 @@ describe( "Treasury Test", () => {
         it("Should fail because you are trying to record zero me tokens", async function () {
             
              
-            const { treasury, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, brandId,admin,me, close } = await treasury_fixture();
 
             await me.tx.transfer(treasury.address, 100, []);
 
@@ -144,7 +144,7 @@ describe( "Treasury Test", () => {
 
         it("Should fail because you are trying to record less me tokens than deposited", async function () {
                  
-            const { treasury, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, brandId,admin,me, close } = await treasury_fixture();
 
             await me.tx.transfer(treasury.address, 50, []);
 
@@ -157,7 +157,7 @@ describe( "Treasury Test", () => {
     describe("withdrawRewardAndOrMe", function () {
         it("Should successfully withdraw tokens from the treasury after depositing", async function () {
              
-            const { treasury, rewardA, rewardB, brandA, protocol, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, rewardA, rewardB, brandA, protocol, brandId,admin,me, close } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 100, []);
 
@@ -194,7 +194,7 @@ describe( "Treasury Test", () => {
 
         it("Should fail because you are trying to withdraw zero tokens", async function () {
            
-            const { treasury, rewardA, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, rewardA, brandId,admin,me, close } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 100, []);
 
@@ -208,7 +208,7 @@ describe( "Treasury Test", () => {
 
         it("Should fail because you are trying to withdraw more me tokens than deposited", async function () {
             
-            const { treasury, rewardA, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, rewardA, brandId,admin,me, close } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 100, []);
 
@@ -221,7 +221,7 @@ describe( "Treasury Test", () => {
         });
 
         it("Should fail because you are trying to withdraw less reward tokens than deposited", async function () {
-            const { treasury, rewardA, brandId,admin,me, close } = await pool_fixture();
+            const { treasury, rewardA, brandId,admin,me, close } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 50, []);
 
@@ -235,7 +235,7 @@ describe( "Treasury Test", () => {
 
         it("Should fail because caller is not allowed to make this call (not admin)", async function () {
            
-            const { treasury, rewardA, brandA,brandId,admin,me, close } = await pool_fixture();
+            const { treasury, rewardA, brandA,brandId,admin,me, close } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 50, []);
 
@@ -253,7 +253,7 @@ describe( "Treasury Test", () => {
         
         it("Should successfully deposit tokens and pay for some cost (something)", async function () {
             
-            const { treasury, rewardA, brandA,brandId,admin,me, close, protocol } = await pool_fixture();
+            const { treasury, rewardA, brandA,brandId,admin,me, close, protocol } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 100, []);
 
@@ -271,7 +271,7 @@ describe( "Treasury Test", () => {
 
         it("Should fail because you are trying to deposit zero me tokens", async function () {
             
-            const { treasury, rewardA, brandA,brandId,admin,me, close, protocol } = await pool_fixture();
+            const { treasury, rewardA, brandA,brandId,admin,me, close, protocol } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 100, []);
 
@@ -285,7 +285,7 @@ describe( "Treasury Test", () => {
 
         it("Should fail because you are trying to pay more me tokens than the deposited", async function () {
             
-            const { treasury, rewardA, brandA,brandId,admin,me, close, protocol } = await pool_fixture();
+            const { treasury, rewardA, brandA,brandId,admin,me, close, protocol } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 100, []);
 
@@ -298,7 +298,7 @@ describe( "Treasury Test", () => {
         });
 
         it("Should fail because you are not ant admin", async function () {
-            const { treasury, rewardA, brandA,brandId,admin,me, close, protocol } = await pool_fixture();
+            const { treasury, rewardA, brandA,brandId,admin,me, close, protocol } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 100, []);
 
