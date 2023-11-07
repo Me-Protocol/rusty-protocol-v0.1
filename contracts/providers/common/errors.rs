@@ -26,6 +26,7 @@ pub enum ProtocolError {
     OpenRewardsNotStarted,
     OpenRewardsAlreadyStarted,
     PoolAlreadyInActive,
+    PairInstantiationFailed,
     PoolIsActive,
     TopUpToPayForService,
     PoolNotActive,

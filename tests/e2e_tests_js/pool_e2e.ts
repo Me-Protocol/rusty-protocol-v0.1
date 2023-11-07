@@ -16,16 +16,17 @@ describe( "Pool Test", () => {
         const signers = getSigners()
         const admin = signers[0]
         const brandA = signers[1]
-        const brandB = signers[2]
+        // const brandB = signers[2]
         const user1 = signers[3]
+
 
      
         const rewardFactory = new rewardConstructor(api, admin)
         const rewardAAddress = (await rewardFactory.new(brandA.address,"A","A",2,10000)).address
-        const rewardBAddress = (await rewardFactory.new(brandB.address,"B","B",2,10000)).address
+        const rewardBAddress = (await rewardFactory.new(admin.address,"B","B",2,10000)).address
         const  meAddress = (await rewardFactory.new(admin.address,"Me","Me",2,10000)).address
         const rewardA = new rewardContract(rewardAAddress, brandA, api)
-        const rewardB = new rewardContract(rewardBAddress, brandB, api)
+        const rewardB = new rewardContract(rewardBAddress,admin,api)
         const me = new rewardContract(meAddress, admin, api)
         const poolFactory = new poolConstructor(api, admin);
 
@@ -56,13 +57,13 @@ describe( "Pool Test", () => {
         const poolA = new poolContract(poolAAddress, admin, api)
         const poolB = new poolContract(poolBAddress, admin, api)
         me.tx.transfer(brandA.address, 1000, []);
-        me.tx.transfer(brandB.address, 1000, []);
+        // me.tx.transfer(brandB.address, 1000, []);
 
         return {
           api,
           admin,
           brandA,
-          brandB,
+          // 
           poolA,
           poolB,
           rewardA,
@@ -83,7 +84,7 @@ describe( "Pool Test", () => {
 
 
               it('should start open rewards with correct R value and Signer', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA, admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
@@ -104,7 +105,7 @@ describe( "Pool Test", () => {
 
              
               it('should pause open rewards with correct Signer and State', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
@@ -123,7 +124,7 @@ describe( "Pool Test", () => {
 
 
               it('should resume open rewards with correct Signer and State', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
@@ -143,7 +144,7 @@ describe( "Pool Test", () => {
 
 
               it('should provide open rewards state', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close, rewardAAddress, meAddress } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close, rewardAAddress, meAddress } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
@@ -164,7 +165,7 @@ describe( "Pool Test", () => {
 
 
               it('should record added liquidity', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
@@ -194,7 +195,7 @@ describe( "Pool Test", () => {
 
 
               it('should record added liqudity to the same position', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
              
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
  
@@ -225,7 +226,7 @@ describe( "Pool Test", () => {
  
  
               it('should withdraw the liqudity provided', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
  
@@ -263,7 +264,7 @@ describe( "Pool Test", () => {
 
 
               it('should add_open_rewards_manager', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
              
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
  
@@ -307,7 +308,7 @@ describe( "Pool Test", () => {
 
 
               it('should remove_open_rewards_manager', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
@@ -333,7 +334,7 @@ describe( "Pool Test", () => {
 
 
               it('should get the liquidity ratios in the pool', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
@@ -352,7 +353,7 @@ describe( "Pool Test", () => {
 
 
               it('should get the addresses of the pool initiator and the tokens in the pool', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
@@ -366,7 +367,7 @@ describe( "Pool Test", () => {
               });
 
               it('should get the state of the pool', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
@@ -384,7 +385,7 @@ describe( "Pool Test", () => {
 
 
               it('should get the configuration of the pool', async () => {
-                const { poolA, rewardA, me, brandA, brandB, admin, close } = await pool_fixture();
+                const { poolA, rewardA, me, brandA,  admin, close } = await pool_fixture();
             
                 await  rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
@@ -403,23 +404,23 @@ describe( "Pool Test", () => {
 
     it("Should initiate outgoing conversation", async function () {
 
-      const { poolA,poolB, rewardA,rewardB, me, brandA, brandB, admin,user1, close } = await pool_fixture();
+      const { poolA, rewardA, me, brandA,poolB, rewardB, admin,user1, close } = await pool_fixture();
             
       await rewardA.withSigner(brandA).tx.transfer(poolA.address, 100, []);
      
       await me.withSigner(brandA).tx.transfer(poolA.address, 100, []);
 
-      await rewardB.withSigner(brandB).tx.transfer(poolB.address, 100, []);
+      await rewardB.withSigner(admin).tx.transfer(poolB.address, 100, []);
 
-      await me.withSigner(brandB).tx.transfer(poolB.address, 100, []);
+      await me.withSigner(admin).tx.transfer(poolB.address, 100, []);
       
       await poolA.tx.recordLiquidityProvided(100,100,brandA.address,brandA.address);
 
-      await poolB.tx.recordLiquidityProvided(100,100,brandA.address,brandA.address);
+      // await poolB.tx.recordLiquidityProvided(100,100,brandA.address,brandA.address);
 
       await poolA.withSigner(admin).tx.startOpenRewards();
 
-      await poolB.withSigner(admin).tx.startOpenRewards();
+      // await poolB.withSigner(admin).tx.startOpenRewards();
 
       const needReward = await poolA.query.determineNeededRewardAmountGivenMeAmount(10, 12)
       
