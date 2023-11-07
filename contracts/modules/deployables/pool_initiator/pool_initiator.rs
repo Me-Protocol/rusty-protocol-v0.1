@@ -4,7 +4,7 @@
 #[openbrush::contract]
 mod pool_initiator {
 
-    use global::providers::{data::{pool_initiator::{*}, brand},services::brands::BRAND_ID_TYPE};
+    use global::providers::{data::{pool_initiator::{*}, brand},services::{brands::BRAND_ID_TYPE, payment::ProtocolError}};
     use pool::pool::PoolRef;
     use ink::ToAccountId;
     use global::controllers::deployables::pool_initiator::*;
@@ -15,7 +15,7 @@ mod pool_initiator {
     };
     use openbrush::{
         contracts::access_control::{*, self},
-        traits::{ Storage },
+        traits::{ Storage }, modifiers,
     };
     use ink::{ prelude::vec::Vec};
     use ink::env;
@@ -34,6 +34,7 @@ mod pool_initiator {
 
 
         #[ink(message)]
+        #[modifiers(only_role(PROTOCOL))]
         pub fn create_new_pool(
             &mut self,
             reward: AccountId, 
@@ -41,7 +42,7 @@ mod pool_initiator {
             config: PoolSetUpConfig,
             salt_bytes: Vec<u8>, 
             brand: BRAND_ID_TYPE
-        ) -> AccountId  {
+        ) -> Result<AccountId, ProtocolError>  {
             let hash = get_hash(self);
 
             let new_pool=  PoolRef::new(reward, me_token, config)
@@ -54,15 +55,14 @@ mod pool_initiator {
             
             update_brand_pool(self, pool_address,brand);
 
-            pool_address
-
+            Ok(pool_address)
         }
 
-
         #[ink(message)]
-        pub fn update_pool_hash(&mut self, hash: Hash)-> bool{
+        #[modifiers(only_role(PROTOCOL))]
+        pub fn update_pool_hash(&mut self, hash: Hash)-> Result<bool, ProtocolError>{
              update_hash(self, hash);
-             true
+             Ok(true)
          }
 
          #[ink(message)]
@@ -85,7 +85,7 @@ mod pool_initiator {
     impl PoolInitiator {
      
         #[ink(constructor)]
-        pub fn new() -> Self {
+        pub fn new( hash: Hash) -> Self {
            let mut instance = Self::default();
 
            let caller = instance.env().caller();
@@ -93,6 +93,8 @@ mod pool_initiator {
            access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
 
            access_control::InternalImpl::_setup_role(&mut instance, PROTOCOL, Some(caller));
+
+           update_hash(&mut instance, hash);
 
            instance
         }
