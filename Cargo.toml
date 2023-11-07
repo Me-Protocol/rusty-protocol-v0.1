@@ -15,6 +15,7 @@ openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", versi
 reward = {path = "contracts/modules/deployables/reward", default-features = false }
 pool = {path = "contracts/modules/deployables/pool", default-features = false }
 pool_initiator = {path = "contracts/modules/deployables/pool_initiator", default-features = false }
+reward_initiator = {path = "contracts/modules/deployables/reward_initiator", default-features = false }
 treasury ={path = "contracts/modules/peripherals/treasury", default-features = false}
 bounty ={path = "contracts/modules/peripherals/bounty", default-features = false}
 oracle = {path = "contracts/modules/services/oracle",  default-features = false}
@@ -50,6 +51,7 @@ std = [
     "bounty/std",
     "oracle/std",
     "payment/std",
+    "reward_initiator/std",
     "global/std",
 ]
 ink-as-dependency = []
