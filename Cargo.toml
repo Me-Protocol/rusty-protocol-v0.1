@@ -51,7 +51,7 @@ std = [
     "bounty/std",
     "oracle/std",
     "payment/std",
-    "reward_initiator/std",
+    # "reward_initiator/std",
     "global/std",
 ]
 ink-as-dependency = []

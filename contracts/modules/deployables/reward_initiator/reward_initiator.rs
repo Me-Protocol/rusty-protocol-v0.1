@@ -3,7 +3,7 @@
 #[openbrush::implementation(AccessControl)]
 #[openbrush::contract]
 mod reward_initiator {
-    use global::providers::{services::brands::BRAND_ID_TYPE, data::reward_initiator::{add_new_reward, get_all_rewards}};
+    use global::providers::{services::brands::BRAND_ID_TYPE};
     use reward::reward::RewardRef;
     use ink::ToAccountId;
     pub use global::providers::{
@@ -16,7 +16,7 @@ mod reward_initiator {
     };
     use ink::{ prelude::vec::Vec};
     use ink::env;
-
+    use openbrush::traits::String;
 
   
     #[ink(storage)]
