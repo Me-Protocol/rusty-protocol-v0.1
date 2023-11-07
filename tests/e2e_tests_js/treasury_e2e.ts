@@ -297,7 +297,7 @@ describe( "Treasury Test", () => {
 
         });
 
-        it("Should fail because you are not ant admin", async function () {
+        it("Should fail because you are not an admin", async function () {
             const { treasury, rewardA, brandA,brandId,admin,me, close, protocol } = await treasury_fixture();
 
             await rewardA.tx.transfer(treasury.address, 100, []);

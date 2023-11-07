@@ -1,7 +1,7 @@
 [package]
-name = "oracle"
+name = "reward_initiator"
 version = "0.1.0"
-authors = ["paul_oamen, adebara_ayomide <paul@myai.life, adebaraayomidefestus@gmail.com>"]
+authors = ["[your_name] <[your_email]>"]
 edition = "2021"
 
 [dependencies]
@@ -10,17 +10,16 @@ ink = { version = "4.2.0", default-features = false }
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
 scale-info = { version = "2.6", default-features = false, features = ["derive"], optional = true }
 
-# These dependencies
-openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "4.0.0-beta.1", default-features = false, features = ["psp22","ownable","access_control", "psp34", "reentrancy_guard", "pausable"] }
+reward ={ path = "../reward" , default-features = false,  features = ["ink-as-dependency"]}
+openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "4.0.0-beta.1", default-features = false, features = ["psp22", "ownable"] }
 global = {path = "../../../", default-features = false}
-
 
 [dev-dependencies]
 ink_e2e = "4.2.0"
 
 [lib]
-path = "oracle.rs"
-name = "oracle"
+name = "reward_initiator"
+path = "reward_initiator.rs"
 
 [features]
 default = ["std"]
@@ -28,7 +27,6 @@ std = [
     "ink/std",
     "scale/std",
     "scale-info/std",
-    "global/std"
 ]
 ink-as-dependency = []
 e2e-tests = []
