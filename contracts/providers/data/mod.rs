@@ -6,3 +6,5 @@ pub mod protocol;
 pub mod bounty;
 pub mod treasury;
 pub mod payment;
+pub mod pool_initiator;
+pub mod reward_initiator;

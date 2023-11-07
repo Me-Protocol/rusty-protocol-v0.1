@@ -195,3 +195,20 @@ The Oracle contract implements a single function:
 The Oracle contract serves as a crucial bridge for Me Protocol users, enabling them to seamlessly determine the equivalent value of reward tokens when moving assets between different pools. The Oracle function, `determine_needed_reward_b_given_reward_a`, ensures efficient and accurate conversions, making it an essential tool for users operating within the Me Protocol ecosystem.
 
 For comprehensive information regarding the Oracle contract and its function, please refer to the official documentation or educational resources provided by MY AI, Inc.
+
+
+### Docker Environment Setup
+
+1. Build a Docker image with the required dependencies using the provided Dockerfile:
+
+    ```bash
+    docker build -t my-rust-environment .
+    ```
+
+2. Run the Docker container:
+
+    ```bash
+    docker run -it my-rust-environment
+    ```
+
+   You now have a container with the necessary dependencies to build and test your contracts.

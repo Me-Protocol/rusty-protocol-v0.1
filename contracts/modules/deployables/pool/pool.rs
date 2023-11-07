@@ -61,7 +61,7 @@
 #[openbrush::implementation(AccessControl, PSP34, PSP34Enumerable, PSP34Mintable, PSP34Burnable)]
 #[openbrush::contract]
 pub mod pool {
-    use global::providers::{
+    pub use global::providers::{
         data::{a_pool::*},
         deployables::{a_pool::{ *, PoolSetUpConfig, PoolConfig, POOL_ADMIN, POOL_MANAGER, PoolImpl }, bounty::{OPEN_REWARDS_MANAGER, OPEN_REWARDS_ADMIN}},
         common::roles::*,
@@ -74,7 +74,6 @@ pub mod pool {
     #[ink(storage)]
     #[derive(Default, Storage)]
     pub struct Pool {
-       
         #[storage_field]
         pub pool_state: PoolState,
     

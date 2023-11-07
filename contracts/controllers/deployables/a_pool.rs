@@ -1,9 +1,9 @@
 use openbrush::{
-    contracts::traits::{ access_control::*, psp34::*, pausable::* },
+    contracts::{traits::{ access_control::*, psp22::*, psp34::*, pausable::* }, psp34::extensions::enumerable},
     traits::{ AccountId, Balance },
 };
 
-use ink::prelude::vec::Vec;
+use ink::{ prelude::vec::Vec };
 
 use crate::providers::{ common::errors::*, data::a_pool::* };
 

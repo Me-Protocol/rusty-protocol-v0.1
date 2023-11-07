@@ -16,7 +16,6 @@
 //         let pool = Pool::new(
 //             a,
 //             b,
-//             a,
 //             PoolSetUpConfig {
 //                 r_optimal: 0,
 //                 maximum_r_limit: 12,
@@ -29,6 +28,6 @@
 //             }
 //         );
 
-//         assert_eq!(pool.provide_pool_state(), (false, false, a, b, a, 0, 0, 0, 0, 0));
+//         assert_eq!(pool.check_open_rewards_state(), (false, false, a, b, a, 0, 0, 0, 0, 0));
 //     }
 // }
