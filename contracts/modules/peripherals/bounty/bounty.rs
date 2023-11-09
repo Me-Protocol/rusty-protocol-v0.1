@@ -30,9 +30,9 @@
 #[openbrush::contract]
 pub mod bounty {
 
-    use global::providers::{
+  pub  use global::providers::{
         data::bounty::*,
-        deployables::{bounty::{ *,BountyImpl }, bounty::BOUNTY_MANAGER},
+        deployables::{bounty::{ *,BountyImpl }, bounty::{BOUNTY_MANAGER}},
     };
 
     use openbrush::{
@@ -99,6 +99,10 @@ pub mod bounty {
             BountyImpl::get_trigger_limit(self,reward,requestor)
         }
 
+
+        fn get_me(&mut self)-> Result<AccountId, ProtocolError> {
+            BountyImpl::get_me(self)
+        }
         
 
     }

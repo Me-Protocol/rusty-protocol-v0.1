@@ -114,4 +114,8 @@ AccessControlImpl
     ) {
         update_me_id(self, me_token);
     }
+
+    fn get_me(&mut self)-> Result<AccountId, ProtocolError> {
+        Ok(get_me_id( self))
+    }
 }

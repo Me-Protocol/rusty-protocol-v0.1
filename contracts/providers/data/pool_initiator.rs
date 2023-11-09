@@ -21,6 +21,8 @@ impl Default for PoolInitiatorStorage {
     }
 }
 
+pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
+
 
 pub fn get_hash<T>(instance: &mut T) -> Hash where T: Storage<PoolInitiatorStorage> {
     instance.data::<PoolInitiatorStorage>().hash
@@ -43,5 +45,5 @@ pub fn update_brand_pool<T>(
 pub fn get_brand_pool<T>(instance: &mut T, brand: BRAND_ID_TYPE) -> AccountId
     where T: Storage<PoolInitiatorStorage>
 {
-    instance.data::<PoolInitiatorStorage>().pools.get(&brand).unwrap()
+    instance.data::<PoolInitiatorStorage>().pools.get(&brand).unwrap_or(ZERO_ADDRESS.into())
 }

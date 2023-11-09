@@ -4,6 +4,9 @@ version = "0.1.1"
 authors = ["paul_oamen, adebara_ayomide <paul@myai.life, adebaraayomidefestus@gmail.com>"]
 edition = "2021"
 
+exclude = [
+   "global"
+]
 [dependencies]
 ink = { version = "4.2.1", default-features = false }
 
@@ -33,7 +36,10 @@ std = [
     "openbrush/std",
     "global/std"
 ]
+
 ink-as-dependency = []
+
+# test= ["pool"]
 
 [profile.release]
 panic = "abort"
