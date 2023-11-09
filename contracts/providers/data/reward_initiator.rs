@@ -24,6 +24,8 @@ impl Default for RewardInitiatorStorage {
     }
 }
 
+pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
+
 pub fn update_brand_reward<T>(
     instance: &mut T,
     brand: BRAND_ID_TYPE,
@@ -37,7 +39,7 @@ pub fn update_brand_reward<T>(
 pub fn get_brand_reward<T>(instance: &mut T, brand: BRAND_ID_TYPE) -> AccountId
     where T: Storage<RewardInitiatorStorage>
 {
-    instance.data::<RewardInitiatorStorage>().brand_reward.get(&brand).unwrap()
+    instance.data::<RewardInitiatorStorage>().brand_reward.get(&brand).unwrap_or(ZERO_ADDRESS.into())
 }
 
 pub fn get_all_rewards<'a, T>(instance: &'a T) -> &'a Vec<AccountId> where T: Storage<RewardInitiatorStorage>,
