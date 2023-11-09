@@ -81,22 +81,32 @@ describe( "Pool inititiator Test", () => {
     }
 
 
+            // it('Should be able to create a new pool', async () => {
+            //     const {  rewardA, me,  admin, poolInitiator,config, brand, close } = await pool_fixture();
+            
+            //    expect(await poolInitiator.tx.createNewPool(rewardA.address, me.address, config, [0xDE, 0xAD, 0xBE, 0xEF],brand)).to.be.ok
+
+             
+            // });
+
+
+            it('Should reject when called by unauthourized account ', async () => {
+                const {  rewardA, me,  admin, poolInitiator,config, brand,user, close } = await pool_fixture();
+            
+               await expect (poolInitiator.withSigner(user).tx.createNewPool(rewardA.address, me.address, config, [0xDE, 0xAD, 0xBE, 0xEF],brand)).to.be.eventually.rejected
+
+            });
+
             it('Should be able to create a new ', async () => {
                 const {  rewardA, me,  admin, poolInitiator,config, brand, close } = await pool_fixture();
             
                await poolInitiator.tx.createNewPool(rewardA.address, me.address, config, [0xDE, 0xAD, 0xBE, 0xEF],brand)
 
-               let res = (await poolInitiator.query.getBrandPool(brand)).value.unwrapRecursively()
+               let res = (await poolInitiator.query.getBrandPool(brand)).value.unwrapRecursively().length
+               let result = await res
+               console.log(result)
 
-               console.log(res)
-            });
-
-
-            it('Should reject when not call by none admin ', async () => {
-                const {  rewardA, me,  admin, poolInitiator,config, brand,user, close } = await pool_fixture();
-            
-               await expect (poolInitiator.withSigner(user).tx.createNewPool(rewardA.address, me.address, config, [0xDE, 0xAD, 0xBE, 0xEF],brand)).to.be.eventually.rejected
-
+               expect (result).to.be.eq(48) 
             });
 
 

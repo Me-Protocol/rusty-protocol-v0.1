@@ -3,7 +3,7 @@
 #[openbrush::implementation(AccessControl)]
 #[openbrush::contract]
 mod reward_initiator {
-    use global::providers::{services::brands::BRAND_ID_TYPE};
+    use global::providers::{services::{brands::BRAND_ID_TYPE, payment::ProtocolError}};
     use reward::reward::RewardRef;
     use ink::ToAccountId;
     pub use global::providers::{
@@ -12,7 +12,7 @@ mod reward_initiator {
     };
     use openbrush::{
         contracts::access_control::{*, self},
-        traits::{ Storage },
+        traits::{ Storage }, modifiers,
     };
     use ink::{ prelude::vec::Vec};
     use ink::env;
@@ -32,6 +32,7 @@ mod reward_initiator {
     impl RewardInitiator {
 
         #[ink(message)]
+        #[modifiers(only_role(PROTOCOL))]
         pub fn create_new_reward(
             &mut self,
             brand: AccountId,
@@ -41,7 +42,7 @@ mod reward_initiator {
             total_supply: Balance, 
             salt_bytes: Vec<u8>, 
             brand_id: BRAND_ID_TYPE
-        ) -> AccountId  {
+        ) -> Result<AccountId, ProtocolError>  {
             let hash = get_hash(self);
 
             let new_reward =  RewardRef::new(brand, name, symbol, decimal, total_supply)
@@ -56,15 +57,16 @@ mod reward_initiator {
 
             add_new_reward(self, reward_address);
 
-            reward_address
+            Ok(reward_address)
 
         }
 
 
         #[ink(message)]
-        pub fn update_pool_hash(&mut self, hash: Hash)-> bool{
+        #[modifiers(only_role(PROTOCOL))]
+        pub fn update_pool_hash(&mut self, hash: Hash)-> Result<bool, ProtocolError>{
              update_hash(self, hash);
-             true
+             Ok(true)
          }
 
          #[ink(message)]

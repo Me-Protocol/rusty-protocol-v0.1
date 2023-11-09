@@ -92,4 +92,7 @@ pub trait TreasuryController {
 
     #[ink(message)]
     fn get_me_notify_limit(&mut self, requestor: AccountId) -> Result<Balance, ProtocolError>;
+
+    #[ink(message)]
+    fn get_me_id(&mut self)-> Result<AccountId, ProtocolError>;
 }

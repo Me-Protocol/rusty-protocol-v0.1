@@ -13,7 +13,6 @@ WORKDIR /app
 COPY ./typechain-generated /app/typechain-generated
 COPY package.json /app/package.json
 COPY tsconfig.json /app/tsconfig.json
-COPY ./contracts /app/contracts
 
 # Copy your tests to the container
 COPY ./tests /app/tests
@@ -23,10 +22,6 @@ RUN curl -sSf https://sh.rustup.rs | sh -s -- -y
 RUN rustup component add rust-src
 RUN rustup target add wasm32-unknown-unknown
 RUN cargo install cargo-dylint dylint-link
-
-# Install protobuf-compiler (protoc)
-RUN apt-get update
-RUN apt-get install -y protobuf-compiler
 
 # Install contract tools
 RUN cargo install cargo-contract --version 4.0.0-alpha --force
