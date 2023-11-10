@@ -1,7 +1,7 @@
 import { consts } from './utils/constants'
 import { bnArg, expect, getSigners } from './utils/helpers'
 import BN from 'bn.js'
-import { ApiPromise } from '@polkadot/api'
+import { ApiPromise, WsProvider } from '@polkadot/api'
 import poolInitiatorConstructor from '../../typechain-generated/constructors/pool_initiator'
 import poolInitiatorContract from '../../typechain-generated/contracts/pool_initiator'
 import poolConstructor from '../../typechain-generated/constructors/pool'
@@ -13,7 +13,14 @@ import rewardContract from '../../typechain-generated/contracts/reward'
 describe( "Pool inititiator Test", () => {
 
     let pool_fixture = async() => { 
-        const api = await ApiPromise.create()
+
+        const substrateNodeUrl = process.env.SUBSTRATE_NODE_URL || 'ws://127.0.0.1:9944';
+
+        // initialise a provider with a specific endpoint
+        const provider = new WsProvider(substrateNodeUrl)
+
+        // initialise via isReady & new with specific provider
+        const api = await new ApiPromise({ provider: provider, initWasm: false }).isReady;
         const signers = getSigners()
         const admin = signers[0]
         const user = signers[1]
