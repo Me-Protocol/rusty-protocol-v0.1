@@ -3,7 +3,8 @@
 #[openbrush::implementation(AccessControl)]
 #[openbrush::contract]
 pub mod reward_initiator {
-    use global::providers::{services::{brands::BRAND_ID_TYPE, payment::ProtocolError}};
+    use global::providers::{services::{ payment::ProtocolError}};
+    use global::providers::common::types::BRAND_ID_TYPE;
     use reward::reward::RewardRef;
     use ink::ToAccountId;
     pub use global::providers::{
