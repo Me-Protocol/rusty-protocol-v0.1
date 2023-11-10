@@ -7,13 +7,11 @@
 mod reward_initiator_test {
     use core::convert::TryFrom;
 
-    use global::providers::services::brands::{BRAND_ID_TYPE, PoolSetUpConfig};
+    use global::providers::common::types::BRAND_ID_TYPE;
+    use global::providers::deployables::a_pool::PoolSetUpConfig;
     use ink::primitives::Hash;
     use reward_initiator::reward_initiator::*;
-    use global::{ providers::data::a_reward::* };
-    use global::providers::  common::{ roles::*, errors::ProtocolError, eunice::*, validator::* };
-    // use reward::reward::rewardImpl;
-    use openbrush::{ test_utils::*, traits::{ AccountId, Balance } };
+    use openbrush::test_utils::*;
 
     
 

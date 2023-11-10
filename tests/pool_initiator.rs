@@ -7,7 +7,7 @@
 mod pool_initiator_test {
     use core::convert::TryFrom;
 
-    use global::providers::services::brands::BRAND_ID_TYPE;
+    use global::providers::common::types::BRAND_ID_TYPE;
     use ink::primitives::Hash;
     use pool_initiator::pool_initiator::*;
     use global::{ providers::data::a_pool::* };
