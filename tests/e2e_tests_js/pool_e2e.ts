@@ -1,7 +1,7 @@
 import { consts } from './utils/constants'
 import { bnArg, expect, getSigners } from './utils/helpers'
 import BN from 'bn.js'
-import { ApiPromise } from '@polkadot/api'
+import { ApiPromise, WsProvider } from '@polkadot/api'
 import poolConstructor from '../../typechain-generated/constructors/pool'
 import poolContract from '../../typechain-generated/contracts/pool'
 import rewardConstructor from '../../typechain-generated/constructors/reward'
@@ -12,7 +12,15 @@ import { IdBuilder } from '../../typechain-generated/types-arguments/pool'
 describe( "Pool Test", () => {
 
     let pool_fixture = async() => { 
-        const api = await ApiPromise.create()
+        // const api = await ApiPromise.create()
+
+        const substrateNodeUrl = process.env.SUBSTRATE_NODE_URL || 'ws://127.0.0.1:9944';
+
+        // initialise a provider with a specific endpoint
+        const provider = new WsProvider(substrateNodeUrl)
+
+        // initialise via isReady & new with specific provider
+        const api = await new ApiPromise({ provider: provider, initWasm: false }).isReady;
         const signers = getSigners()
         const admin = signers[0]
         const brandA = signers[1]
