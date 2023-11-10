@@ -4,7 +4,7 @@
 #[openbrush::contract]
 pub mod pool_initiator {
 
-    use global::providers::{data::{pool_initiator::{*}, brand},services::{brands::BRAND_ID_TYPE, payment::ProtocolError}};
+    use global::providers::{data::{pool_initiator::{*}, brand},services::{ payment::ProtocolError}, common::types::BRAND_ID_TYPE};
     use pool::pool::PoolRef;
     use ink::ToAccountId;
     use global::controllers::deployables::pool_initiator::*;
