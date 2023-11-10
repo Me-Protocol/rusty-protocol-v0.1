@@ -1,9 +1,10 @@
 use openbrush::traits::{ AccountId, Balance };
 use openbrush::traits::Storage;
-use ink::{ storage::{ Mapping, traits::StorageLayout } };
+use ink::{ storage::{ Mapping, traits::StorageLayout } ,  prelude::vec::Vec,};
 use crate::providers::common::database::*;
 use crate::providers::common::types::BRAND_ID_TYPE;
 use ink::primitives::Hash;
+use openbrush::traits::String;
 
 #[derive(Debug)]
 #[openbrush::storage_item(REWARD_INITIATOR)]
@@ -23,6 +24,8 @@ impl Default for RewardInitiatorStorage {
     }
 }
 
+pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
+
 pub fn update_brand_reward<T>(
     instance: &mut T,
     brand: BRAND_ID_TYPE,
@@ -36,9 +39,8 @@ pub fn update_brand_reward<T>(
 pub fn get_brand_reward<T>(instance: &mut T, brand: BRAND_ID_TYPE) -> AccountId
     where T: Storage<RewardInitiatorStorage>
 {
-    instance.data::<RewardInitiatorStorage>().brand_reward.get(&brand).unwrap()
+    instance.data::<RewardInitiatorStorage>().brand_reward.get(&brand).unwrap_or(ZERO_ADDRESS.into())
 }
-
 
 pub fn get_all_rewards<'a, T>(instance: &'a T) -> &'a Vec<AccountId> where T: Storage<RewardInitiatorStorage>,
 {

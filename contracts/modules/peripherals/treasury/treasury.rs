@@ -35,7 +35,7 @@
 #[openbrush::contract]
 pub mod treasury {
 
-    use global::providers::{
+  pub  use global::providers::{
         data::treasury::*,
         deployables::treasury::{ *, TreasuryImpl, },
         common::types::BRAND_ID_TYPE,
@@ -161,6 +161,11 @@ pub mod treasury {
         #[ink(message)]
         fn get_me_notify_limit(&mut self, requestor: AccountId) -> Result<Balance, ProtocolError> {
             TreasuryImpl::get_me_notify_limit(self, requestor)
+        }
+
+        #[ink(message)]
+        fn get_me_id(&mut self)-> Result<AccountId, ProtocolError> {
+            TreasuryImpl::get_me_id(self)
         }
 }
 

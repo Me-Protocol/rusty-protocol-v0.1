@@ -2,7 +2,7 @@
 
 #[openbrush::implementation(AccessControl)]
 #[openbrush::contract]
-mod pool_initiator {
+pub mod pool_initiator {
 
     use global::providers::{data::{pool_initiator::{*}, brand},services::{brands::BRAND_ID_TYPE, payment::ProtocolError}};
     use pool::pool::PoolRef;

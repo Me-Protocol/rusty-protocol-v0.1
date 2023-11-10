@@ -1,5 +1,5 @@
 #![cfg_attr(not(feature = "std"), no_std, no_main)]
-#![no_main]
+// #![no_main]
 #![feature(min_specialization)]
 
 
@@ -340,7 +340,6 @@ pub mod pool {
 
             access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
 
-
             access_control::InternalImpl::_setup_role(&mut instance,OPEN_REWARDS_ADMIN, Some(caller));
 
             access_control::InternalImpl::_setup_role(&mut instance,OPEN_REWARDS_MANAGER, Some(caller));
@@ -352,4 +351,6 @@ pub mod pool {
             instance 
         } 
     } 
+
+
 }

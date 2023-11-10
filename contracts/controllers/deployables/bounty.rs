@@ -46,4 +46,6 @@ pub trait BountyController {
         reward: AccountId,
         requestor: AccountId
     ) -> Result<u128, ProtocolError>;
+
+    fn get_me(&mut self)-> Result<AccountId, ProtocolError>;
 }

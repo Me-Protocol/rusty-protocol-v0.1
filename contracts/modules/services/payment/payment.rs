@@ -15,9 +15,9 @@
 
 #[openbrush::implementation(AccessControl)]
 #[openbrush::contract]
-mod payment {
+pub mod payment {
 
-    use global::providers::{
+  pub  use global::providers::{
         data::payment::PaymentStorage,
         services::payment::{ *,PaymentImpl }
     };

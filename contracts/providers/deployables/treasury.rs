@@ -221,6 +221,10 @@ use openbrush::{
         update_me_id(self, me_token);
     }
 
+    fn get_me_id(&mut self)-> Result<AccountId, ProtocolError> {
+        Ok(get_me( self))
+    }
+
 }
 
 fn withdraw_reward_and_or_me<T>(
