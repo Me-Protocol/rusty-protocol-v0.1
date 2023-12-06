@@ -22,5 +22,5 @@ pub trait OracleImpl {
         let reward_b_amount = APoolRef::determine_needed_reward_amount_given_me_amount(&reward_b, me_needed, slippage_in_precision)?;
 
         Ok(reward_b_amount)
-    }
+     }
 }
