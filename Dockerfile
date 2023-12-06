@@ -6,6 +6,7 @@ ENV SUBSTRATE_NODE_URL=ws://host.docker.internal:9944
 # Copy your application code to the container
 COPY ./typechain-generated /app/typechain-generated
 COPY package.json /app/package.json
+COPY yarn.lock /app/yarn.lock
 COPY tsconfig.json /app/tsconfig.json
 
 # Copy your tests to the container
