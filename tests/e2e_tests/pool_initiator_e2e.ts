@@ -23,7 +23,7 @@ describe( "Pool inititiator Test", () => {
         const api = await new ApiPromise({ provider: provider, initWasm: false }).isReady;
         const signers = getSigners()
         const admin = signers[0]
-        const user = signers[1]
+        const user = signers[2]
 
 
      
@@ -104,7 +104,7 @@ describe( "Pool inititiator Test", () => {
 
             });
 
-            it('Should be able to create a new ', async () => {
+            it('Should be able to create a new pool', async () => {
                 const {  rewardA, me,  admin, poolInitiator,config, brand, close } = await pool_fixture();
             
                await poolInitiator.tx.createNewPool(rewardA.address, me.address, config, [0xDE, 0xAD, 0xBE, 0xEF],brand)
