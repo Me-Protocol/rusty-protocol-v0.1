@@ -1,4 +1,4 @@
-use openbrush::{ traits::{ AccountId, Balance, Storage } };
+use openbrush::traits::{ AccountId, Balance, Storage };
 use ink::{ storage::{ Mapping, traits::StorageLayout } };
 use crate::providers::common::{ database::*, types::* };
 
