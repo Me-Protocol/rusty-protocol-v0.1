@@ -33,6 +33,7 @@ pub enum ProtocolError {
     PoolAlreadyActive,
     ConversationsShouldBeStartedAtOptimalRatioOrLess,
     AccountAlreadyPoolManager,
+    EmptyBrand,
     AccountIsNotAPoolManager,
     ConversationWillCausePoolToGoOutOfRag,
     RequestIsNotWithInAccuracyRange,
