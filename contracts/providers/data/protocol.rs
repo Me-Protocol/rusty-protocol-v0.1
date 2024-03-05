@@ -28,6 +28,32 @@ pub struct ProtocolRecords {
     pub last_updated: u64,
 }
 
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
+pub struct ProtocolConfigClone {
+    pub default_minimum_me_for_conversation: Balance,
+    pub default_minimum_reward_for_conversation_in_percent: u8,
+    pub default_maximum_r_limit_for_conversation_in_precision: u128,
+    pub default_reward_notify_threshold_in_percent: u8,
+    pub default_notify_me_amount: Balance,
+    pub default_notify_reward_amount_in_percent: u8,
+    pub cai_in_me: Balance,
+    pub protocol_fee: Balance,
+    pub bounty_contribution_in_precision: u128,
+}
+
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
+pub struct ProtocolRecordsClone {
+    pub me: AccountId,
+    pub bounty: AccountId,
+    pub treasury: AccountId,
+    pub admin_id: BRAND_ID_TYPE,
+    pub total_number_of_brands: u128,
+    pub total_number_of_rewards: u128,
+    pub last_updated: u64,
+}
+
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
 #[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
@@ -41,6 +67,8 @@ pub struct EditableProtocolConfig {
     pub cai_in_me: Balance,
     pub protocol_fee: Balance,
     pub bounty_contribution_in_precision: u128,
+    pub conversions_slippage_in_precisiion: u128,
+    pub informations_slippage_in_precision: u128,
 }
 
 
@@ -50,6 +78,7 @@ pub struct EditableProtocolRecords {
     pub me: AccountId,
     pub bounty: AccountId,
     pub treasury: AccountId,
+    pub vault_id: AccountId,
     pub admin_id: BRAND_ID_TYPE,
 }
 

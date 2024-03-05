@@ -37,3 +37,12 @@ pub fn ensure_input_is_not_empty(string_opt: Option<String>) -> Result<(), Proto
         }
     }
 }
+
+
+pub fn is_empty (brand: BRAND_ID_TYPE) -> bool{
+    if brand.len() == 0 {
+       true
+    } else {
+        false
+    }
+} 
