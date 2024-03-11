@@ -15,7 +15,7 @@ const EMPTY_ACCESS: RoleType  = 0;
 #[derive(Debug)]
 #[openbrush::storage_item(PAYMENT_STATE)]
 pub struct RecordStorage {
-    records: BTreeMap<RoleType, AccessData>,
+    pub records: BTreeMap<RoleType, AccessData>,
 }
 
 #[derive(scale::Encode, scale::Decode, Debug,)]
@@ -390,7 +390,7 @@ fn synthesize_admin_and_access_key_for_reward (brand: BRAND_ID_TYPE, target: Acc
     access_key_u32
 }
 
-pub fn synthesize_access_key_for_reward(target: AccountId, seed: RoleType ) -> RoleType {
+fn synthesize_access_key_for_reward(target: AccountId, seed: RoleType ) -> RoleType {
     let admin_bytes = target.encode();
     let seed_bytes = seed.to_le_bytes();
     let combined_bytes: Vec<u8> = [&admin_bytes[..], &seed_bytes[..]].concat();

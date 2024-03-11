@@ -46,3 +46,10 @@ pub fn is_empty (brand: BRAND_ID_TYPE) -> bool{
         false
     }
 } 
+
+pub fn ensure_brand_is_not_empty(brand: BRAND_ID_TYPE) -> Result<(), ProtocolError> {
+    if is_empty(DEFAULT_BRAND_ID) {
+        return Err(ProtocolError::BrandCanNotBeEmpty);
+    }
+    Ok(())
+}

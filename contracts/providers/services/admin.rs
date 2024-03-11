@@ -1,4 +1,5 @@
 
+use crate::providers::common::roleguard::RecordStorage;
 pub use crate::{
     providers::{
         data::{ brand::*, a_pool::*, a_reward::*, protocol::* },
@@ -32,17 +33,20 @@ use openbrush::{
         psp34::Id,
     },
     modifiers,
-    traits::{ Balance, Storage, String, ZERO_ADDRESS },
+    traits::{ Balance, Storage, String },
 };
 use scale::KeyedVec;
 
-impl<
-    T: Storage<BrandRecords> +
+pub trait AdminController:
+        Storage<BrandRecords> +
         Storage<RewardRecords> +
         Storage<access_control::Data> +
         Storage<ProtocolRecords> +
-        Storage<ProtocolConfig>
-> BrandController for T {
+        Storage<ProtocolConfig> +
+        Storage<RecordStorage>
+{
+
+    
 
 
 }

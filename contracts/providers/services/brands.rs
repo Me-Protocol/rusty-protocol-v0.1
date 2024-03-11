@@ -17,195 +17,241 @@ pub use crate::{
     },
 };
 
-// use ink::{
-//     prelude::vec::Vec,
-//     primitives::AccountId,
-//     env::hash::{ Keccak256, CryptoHash, HashOutput },
-// };
+use ink::{
+    prelude::vec::Vec,
+    primitives::AccountId,
+    env::hash::{ Keccak256, CryptoHash, HashOutput },
+};
 
-// use openbrush::{
-//     modifier_definition,
-//     contracts::{
-//         access_control::*,
-//         traits::{ psp22::*, psp22::extensions::metadata::* },
-//         reentrancy_guard::*,
-//         psp34::Id,
-//     },
-//     modifiers,
-//     traits::{ Balance, Storage, String, ZERO_ADDRESS },
-// };
-// use scale::KeyedVec;
+use openbrush::{
+    modifier_definition,
+    contracts::{
+        access_control::*,
+        traits::{ psp22::*, psp22::extensions::metadata::* },
+        reentrancy_guard::*,
+        psp34::Id,
+    },
+    modifiers,
+    traits::{ Balance, Storage, String },
+};
+use scale::KeyedVec;
 
-// impl<
-//     T: Storage<BrandRecords> +
-//         Storage<RewardRecords> +
-//         Storage<access_control::Data> +
-//         Storage<ProtocolRecords>
-// > BrandController for T {
-//     default fn register(
-//         &mut self,
-//         name: Option<String>,
-//         online_presence: Option<String>
-//     ) -> Result<(), ProtocolError> {
-//         let requestor = Self::env().caller();
+pub trait BrandImpl: Storage<BrandRecords> +
+        Storage<RewardRecords> +
+        Storage<access_control::Data> +
+        Storage<ProtocolRecords>
+{
+     fn register(
+        &mut self,
+        name: Option<String>,                                              
+        online_presence: Option<String>,
+        requestor: AccountId,
+        brand_id: BRAND_ID_TYPE
+    ) -> Result<(), ProtocolError> {
 
-//         let mut details = BrandDetails::default();
-//         let config = GlobalBrandConfig::default();
-//         let mut id: BRAND_ID_TYPE = [0; 10];
+        let mut details = BrandDetails::default();
+        let config = GlobalBrandConfig::default();
 
-//         details.name = name.clone();
-//         details.online_presence = online_presence.clone();
-//         details.main_account = requestor;
-//         details.date_joined = Self::env().block_timestamp();
+        details.name = name.clone();
+        details.online_presence = online_presence.clone();
+        details.main_account = requestor;
+        details.date_joined = Self::env().block_timestamp();
+    
+        ensure_brand_is_not_empty(brand_id);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        self.data::<BrandRecords>().exists.insert(brand_id, &true);
+        self.data::<BrandRecords>().details.insert(brand_id, &details);
+        self.data::<BrandRecords>().global_config.insert(brand_id, &config);
+        self.data::<BrandRecords>().id.insert(requestor, &brand_id);
 
-//         // let concat: Vec<u8> = name
-//         //     .unwrap()
-//         //     .into_iter()
-//         //     .chain(online_presence.unwrap())
-//         //     .chain(requestor.to_keyed_vec(Default::default()))
-//         //     .chain(Self::env().block_timestamp().to_be_bytes())
-//         //     .collect();
+        Ok(())
+    }
 
-//         // let mut no_id = true;
-//         // let mut i: u64 = 1;
-//         // while no_id {
-//         //     id = generate_string_id(concat.to_owned(), i);
-//         //     if !self.data::<BrandRecords>().exists.get(id).unwrap() {
-//         //         no_id = false;
-//         //     }
-//         //     i = i + 1;
-//         // }
+    // fn create_new_reward(&mut self, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8, initial_reward_supply:Balance, use_global_config:bool, requestor: AccountId) -> Result<bool, ProtocolError>{
 
-//         // if id != [0; 10] {
-//         //     details.id = id;
-//         // } else {
-//         //     return Err(ProtocolError::FailedToGenerateId);
-//         // }
-//         self.data::<BrandRecords>().exists.insert(id, &true);
-//         self.data::<BrandRecords>().details.insert(id, &details);
-//         self.data::<BrandRecords>().global_config.insert(id, &config);
-//         self.data::<BrandRecords>().id.insert(requestor, &id);
+    //     if reward_name == None {return Err(ProtocolError::RewardNameCannotBeEmpty)}
+    //     if reward_symbol == None {return Err(ProtocolError::RewardSymbolCannotBeEmpty)}
+    //     ensure_address_is_not_zero_address(requestor);
+    //     ensure_value_is_not_zero(reward_type.into());
 
-//         Ok(())
-//     }
+    //    let mut reward_details: RewardDetails = Default::default();
+    //    let mut reward_config: RewardConfig = Default::default();
+    //    reward_details.name = reward_name;
+    //    reward_details.symbol = reward_symbol;
+    //    reward_details.description_link = reward_description_link;
+    //    reward_details.r_type = reward_type;
+    //    if reward_type == FUNGIBLE_REWARD{
+    //     RewardRef::new()
+    //    }
 
-//     // fn create_new_reward(&mut self, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8, initial_reward_supply:Balance, use_global_config:bool, requestor: AccountId) -> Result<bool, ProtocolError>{
+    //     Ok(true)
+    // }
 
-//     //     if reward_name == None {return Err(ProtocolError::RewardNameCannotBeEmpty)}
-//     //     if reward_symbol == None {return Err(ProtocolError::RewardSymbolCannotBeEmpty)}
-//     //     ensure_address_is_not_zero_address(requestor);
-//     //     ensure_value_is_not_zero(reward_type.into());
+    fn update_brand_details(
+        &mut self,
+        brand_details: EditableBrandDetails,
+        ignore_default: bool
+    ) -> Result<bool, ProtocolError> {
+        let requestor = Self::env().caller();
+        let brand_id = Self::get_self_id(self, requestor).unwrap();
+        let _ = ensure_brand_is_not_empty(brand_id);
+        let mut details: BrandDetails = self.data::<BrandRecords>().details.get(brand_id).unwrap();
 
-//     //    let mut reward_details: RewardDetails = Default::default();
-//     //    let mut reward_config: RewardConfig = Default::default();
-//     //    reward_details.name = reward_name;
-//     //    reward_details.symbol = reward_symbol;
-//     //    reward_details.description_link = reward_description_link;
-//     //    reward_details.r_type = reward_type;
-//     //    if reward_type == FUNGIBLE_REWARD{
-//     //     RewardRef::new()
-//     //    }
+        // Todo:: Add role Guard
+        if !ignore_default {
+            details.online_presence = brand_details.online_presence;
+            details.name = brand_details.name;
+        } else {
+            if brand_details.online_presence != Default::default() {
+                details.online_presence = brand_details.online_presence;
+            }
+            if brand_details.name != Default::default() {
+                details.name = brand_details.name;
+            }
+        }
+        self.data::<BrandRecords>().details.insert(brand_id, &details);
+        Ok(true)
+    }
 
-//     //     Ok(true)
-//     // }
+    fn update_brand_details_by_brand_id(
+        &mut self,
+        brand_details: EditableBrandDetails,
+        ignore_default: bool,
+        brand_id: BRAND_ID_TYPE
+    ) -> Result<bool, ProtocolError> {
+        let _ = ensure_brand_is_not_empty(brand_id);
+        let mut details: BrandDetails = self.data::<BrandRecords>().details.get(brand_id).unwrap();
 
-//     fn update_global_brand_config(
-//         &mut self,
-//         brand_config: GlobalBrandConfig,
-//         ignore_default: bool
-//     ) -> Result<bool, ProtocolError> {
-//         let requestor = Self::env().caller();
+        // Todo:: Add role Guard
+        if !ignore_default {
+            details.online_presence = brand_details.online_presence;
+            details.name = brand_details.name;
+        } else {
+            if brand_details.online_presence != Default::default() {
+                details.online_presence = brand_details.online_presence;
+            }
+            if brand_details.name != Default::default() {
+                details.name = brand_details.name;
+            }
+        }
+        self.data::<BrandRecords>().details.insert(brand_id, &details);
+        Ok(true)
+    }
 
-//         let id = get_self_id(self, requestor).unwrap();
 
-//         if !ignore_default {
-//             self.data::<BrandRecords>().global_config.insert(&id, &brand_config);
-//         } else {
-//             let mut previous_config: GlobalBrandConfig = self
-//                 .data::<BrandRecords>()
-//                 .global_config.get(&id)
-//                 .unwrap();
 
-//             if brand_config.enable_bounty_rewards != Default::default() {
-//                 previous_config.enable_bounty_rewards = brand_config.enable_bounty_rewards;
-//             }
-//             if brand_config.enable_cais != Default::default() {
-//                 previous_config.enable_cais = brand_config.enable_cais;
-//             }
-//             if brand_config.pay_incoming_gas_fees != Default::default() {
-//                 previous_config.pay_incoming_gas_fees = brand_config.pay_incoming_gas_fees;
-//             }
-//             if brand_config.pay_outgoing_gas_fees != Default::default() {
-//                 previous_config.pay_outgoing_gas_fees = brand_config.pay_outgoing_gas_fees;
-//             }
-//             self.data::<BrandRecords>().global_config.insert(&id, &previous_config);
-//         }
 
-//         Ok(true)
-//     }
+    fn update_brand_config(
+        &mut self,
+        brand_config: GlobalBrandConfig,
+        ignore_default: bool
+    ) -> Result<bool, ProtocolError> {
+        let requestor = Self::env().caller();
 
-//     fn update_reward_config(
-//         &mut self,
-//         reward: AccountId,
-//         reward_config: RewardConfig,
-//         ignore_default: bool
-//     ) -> Result<bool, ProtocolError> {
-//         let requestor = Self::env().caller();
-//         ensure_is_issuing_brand(self, reward, requestor)?;
-//         if !ignore_default {
-//             self.data::<RewardRecords>().config.insert(reward, &reward_config);
-//         } else {
-//             let mut previous_config = self.data::<RewardRecords>().config.get(&reward).unwrap();
+         // Todo:: Add role Guard
 
-//             if reward_config.specific_exceptions != Default::default() {
-//                 previous_config.specific_exceptions = reward_config.specific_exceptions;
-//             }
-//             if reward_config.bounty_enabled != Default::default() {
-//                 previous_config.bounty_enabled = reward_config.bounty_enabled;
-//             }
-//             if reward_config.cai_enabled != Default::default() {
-//                 previous_config.cai_enabled = reward_config.cai_enabled;
-//             }
-//             if reward_config.bounty_trigger_limit != Default::default() {
-//                 previous_config.bounty_trigger_limit = reward_config.bounty_trigger_limit;
-//             }
+        let id = Self::get_self_id(self, requestor).unwrap();
 
-//             if reward_config.pay_incoming_gas_fee != Default::default() {
-//                 previous_config.pay_incoming_gas_fee = reward_config.pay_incoming_gas_fee;
-//             }
+        if !ignore_default {
+            self.data::<BrandRecords>().global_config.insert(&id, &brand_config);
+        } else {
+            let mut previous_config: GlobalBrandConfig = self
+                .data::<BrandRecords>()
+                .global_config.get(&id)
+                .unwrap();
 
-//             if reward_config.pay_outgoing_gas_fee != Default::default() {
-//                 previous_config.pay_outgoing_gas_fee = reward_config.pay_outgoing_gas_fee;
-//             }
+            if brand_config.enable_bounty_rewards != false {
+                previous_config.enable_bounty_rewards = brand_config.enable_bounty_rewards;
+            }
+            if brand_config.enable_cais != false {
+                previous_config.enable_cais = brand_config.enable_cais;
+            }
+            if brand_config.pay_incoming_gas_fees != false {
+                previous_config.pay_incoming_gas_fees = brand_config.pay_incoming_gas_fees;
+            }
+            if brand_config.pay_outgoing_gas_fees != false {
+                previous_config.pay_outgoing_gas_fees = brand_config.pay_outgoing_gas_fees;
+            }
+            self.data::<BrandRecords>().global_config.insert(&id, &previous_config);
+        }
 
-//             self.data::<RewardRecords>().config.insert(reward, &previous_config);
-//         }
-//         Ok(true)
-//     }
+        Ok(true)
+    }
 
-//     fn update_details(
-//         &mut self,
-//         brand_details: EditableBrandDetails,
-//         ignore_default: bool
-//     ) -> Result<bool, ProtocolError> {
-//         let requestor = Self::env().caller();
-//         let id = get_self_id(self, requestor).unwrap();
-//         let mut details: BrandDetails = self.data::<BrandRecords>().details.get(id).unwrap();
+    fn update_brand_config_by_brand_id(
+        &mut self,
+        brand_config: GlobalBrandConfig,
+        ignore_default: bool,
+        brand_id: BRAND_ID_TYPE
+    ) -> Result<bool, ProtocolError> {
 
-//         if !ignore_default {
-//             details.online_presence = brand_details.online_presence;
-//             details.name = brand_details.name;
-//         } else {
-//             if brand_details.online_presence != Default::default() {
-//                 details.online_presence = brand_details.online_presence;
-//             }
-//             if brand_details.name != Default::default() {
-//                 details.name = brand_details.name;
-//             }
-//         }
-//         self.data::<BrandRecords>().details.insert(id, &details);
-//         Ok(true)
-//     }
+        let _ = ensure_brand_is_not_empty(brand_id);
+        
+          // Todo:: Add role Guard
+        if !ignore_default {
+            self.data::<BrandRecords>().global_config.insert(&brand_id, &brand_config);
+        } else {
+            let mut previous_config: GlobalBrandConfig = self
+                .data::<BrandRecords>()
+                .global_config.get(&brand_id)
+                .unwrap();
+
+            if brand_config.enable_bounty_rewards != false {
+                previous_config.enable_bounty_rewards = brand_config.enable_bounty_rewards;
+            }
+            if brand_config.enable_cais != false {
+                previous_config.enable_cais = brand_config.enable_cais;
+            }
+            if brand_config.pay_incoming_gas_fees != false {
+                previous_config.pay_incoming_gas_fees = brand_config.pay_incoming_gas_fees;
+            }
+            if brand_config.pay_outgoing_gas_fees != false {
+                previous_config.pay_outgoing_gas_fees = brand_config.pay_outgoing_gas_fees;
+            }
+            self.data::<BrandRecords>().global_config.insert(&brand_id, &previous_config);
+        }
+
+        Ok(true)
+    }
+
+    fn update_reward_config(
+        &mut self,
+        reward: AccountId,
+        reward_config: RewardConfig,
+        ignore_default: bool
+    ) -> Result<bool, ProtocolError> {
+        let requestor = Self::env().caller();
+        Self::ensure_is_issuing_brand(self, reward, requestor)?;
+        if !ignore_default {
+            self.data::<RewardRecords>().config.insert(reward, &reward_config);
+        } else {
+            let mut previous_config = self.data::<RewardRecords>().config.get(&reward).unwrap();
+
+            if reward_config.specific_exceptions != false {
+                previous_config.specific_exceptions = reward_config.specific_exceptions;
+            }
+            if reward_config.bounty_enabled != false {
+                previous_config.bounty_enabled = reward_config.bounty_enabled;
+            }
+            if reward_config.cai_enabled != false {
+                previous_config.cai_enabled = reward_config.cai_enabled;
+            }
+            if reward_config.bounty_trigger_limit != Default::default() {
+                previous_config.bounty_trigger_limit = reward_config.bounty_trigger_limit;
+            }
+
+            if reward_config.pay_incoming_gas_fee != false {
+                previous_config.pay_incoming_gas_fee = reward_config.pay_incoming_gas_fee;
+            }
+
+            if reward_config.pay_outgoing_gas_fee !=false {
+                previous_config.pay_outgoing_gas_fee = reward_config.pay_outgoing_gas_fee;
+            }
+
+            self.data::<RewardRecords>().config.insert(reward, &previous_config);
+        }
+        Ok(true)
+    }
+
 
 //     // to consider
 //     fn update_reward_details(
@@ -578,37 +624,39 @@ pub use crate::{
 //     concatenated
 // }
 
-// pub fn get_self_id<T>(
-//     instance: &mut T,
-//     requestor: AccountId
-// ) -> Result<BRAND_ID_TYPE, ProtocolError>
-//     where T: Storage<BrandRecords>
-// {
-//     if instance.data::<BrandRecords>().id.contains(requestor) {
-//         let id = instance.data::<BrandRecords>().id.get(requestor).unwrap();
-//         Ok(id)
-//     } else {
-//         return Err(ProtocolError::BrandDoesNotExist);
-//     }
-// }
+ fn get_self_id<T>(
+    instance: &mut T,
+    requestor: AccountId
+) -> Result<BRAND_ID_TYPE, ProtocolError>
+    where T: Storage<BrandRecords>
+{
+    if instance.data::<BrandRecords>().id.contains(requestor) {
+        let id = instance.data::<BrandRecords>().id.get(requestor).unwrap();
+        Ok(id)
+    } else {
+        return Err(ProtocolError::BrandDoesNotExist);
+    }
+}
 
-// pub fn ensure_is_issuing_brand<T>(
-//     instance: &mut T,
-//     reward: AccountId,
-//     requestor: AccountId
-// ) -> Result<bool, ProtocolError>
-//     where T: Storage<RewardRecords> + Storage<BrandRecords>
-// {
-//     let issuing_brand = instance
-//         .data::<RewardRecords>()
-//         .details.get(&reward)
-//         .unwrap().issuing_brand;
+fn ensure_is_issuing_brand<T>(
+    instance: &mut T,
+    reward: AccountId,
+    requestor: AccountId
+) -> Result<bool, ProtocolError>
+    where T: Storage<RewardRecords> + Storage<BrandRecords>
+{
+    let issuing_brand = instance
+        .data::<RewardRecords>()
+        .details.get(&reward)
+        .unwrap().issuing_brand;
 
-//     let requesting_brand = get_self_id(instance, requestor).unwrap();
+    let requesting_brand = Self::get_self_id(instance, requestor).unwrap();
 
-//     if issuing_brand != requesting_brand {
-//         return Err(ProtocolError::RequestorIsNotIssuingBrand);
-//     }
+    if issuing_brand != requesting_brand {
+        return Err(ProtocolError::RequestorIsNotIssuingBrand);
+    }
 
-//     Ok(true)
-// }
+    Ok(true)
+}
+
+}
