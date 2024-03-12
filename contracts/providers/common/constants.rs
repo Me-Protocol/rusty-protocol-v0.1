@@ -7,3 +7,5 @@ pub const EXCHANGE_SLOPE: u128 = GOLDEN_RATIO_IN_PRECISION / 2;
 pub const FUNGIBLE_REWARD: u8 = 1;
 
 pub const DEFAULT_BRAND_ID: [u8; 10] = [0; 10];
+
+pub const EMPTY_AMOUNT: u128 = 0;

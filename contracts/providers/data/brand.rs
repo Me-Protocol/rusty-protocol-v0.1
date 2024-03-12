@@ -22,6 +22,7 @@ pub struct BrandRecords {
     pub exists: Mapping<BRAND_ID_TYPE, bool>,
     pub details: Mapping<BRAND_ID_TYPE, BrandDetails>,
     pub global_config: Mapping<BRAND_ID_TYPE, GlobalBrandConfig>,
+    // pub acount_managers: Mapping<AccountId, AccountId>,
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
