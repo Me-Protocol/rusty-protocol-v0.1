@@ -25,15 +25,9 @@ use ink::{
 };
 
 use openbrush::{
-    modifier_definition,
     contracts::{
-        access_control::*,
-        traits::{ psp22::*, psp22::extensions::metadata::* },
-        reentrancy_guard::*,
-        psp34::Id,
-    },
-    modifiers,
-    traits::{ Balance, Storage, String },
+        access_control::*, psp22::PSP22TransferImpl, psp34::Id, reentrancy_guard::*, traits::psp22::{extensions::metadata::*, *}
+    }, modifier_definition, modifiers, traits::{ Balance, Storage, String }
 };
 use scale::KeyedVec;
 
@@ -43,7 +37,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
         Storage<RewardRecords> +
         Storage<access_control::Data> +
         Storage<ProtocolRecords> + 
-        AccessControlImpl
+        AccessControlImpl 
 {
      fn register(
         &mut self,
@@ -382,6 +376,80 @@ pub trait BrandImpl: Storage<BrandRecords> +
 
         TreasuryRef::deposit_reward_and_or_me(&treasury, reward, amount,  EMPTY_AMOUNT, DEFAULT_BRAND_ID, requestor, Some("".to_string()) )
     }
+
+    fn add_liquidity_for_open_rewards (
+        &mut self,
+        reward: AccountId,
+        reward_amount: Balance,
+        me_amount: Balance
+    ) -> Result<bool, ProtocolError> {
+        ensure_address_is_not_zero_address(reward)?;
+        ensure_value_is_not_zero(reward_amount)?;
+        ensure_value_is_not_zero(me_amount)?;
+        let requestor = Self::env().caller();
+        let open_reward_id =  self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
+        let me_id = get_me(self);
+        ensure_address_is_not_zero_address(open_reward_id).unwrap();
+
+        if reward_amount > 0 {
+            PSP22Ref::transfer_from(&reward, requestor, open_reward_id, reward_amount, Vec::<u8>::new())?;
+        }
+        
+        if me_amount > 0 {
+            PSP22Ref::transfer_from(&me_id, requestor, open_reward_id, me_amount, Vec::<u8>::new())?;
+        }
+
+        let existing_positions: Vec<Id> = APoolRef::get_all_positions(&open_reward_id, requestor)?;
+        
+        let position = match is_empty_positions(&existing_positions) {
+            true => &EMPTY_POSITION,
+            false => &existing_positions[0]
+        };
+
+
+        APoolRef::record_liquidity_provided(&open_reward_id,reward_amount, me_amount, requestor, requestor)?;
+        
+        Ok(true)
+    }
+
+
+    fn add_liquidity_for_open_rewards_from_treasury_add_start_pool(
+        &mut self,
+        reward: AccountId,
+        reward_amount: Balance,
+        me_amount: Balance
+    ) -> Result<(Balance, Balance, Balance), ProtocolError> {
+      
+      let treasury_id = get_treasury_id(self);
+      let requestor = Self::env().caller();
+      let open_reward_id =  self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
+
+      ensure_address_is_not_zero_address(reward)?;
+      ensure_address_is_not_zero_address(treasury_id)?;
+      ensure_address_is_not_zero_address(open_reward_id)?;
+
+      ensure_value_is_not_zero(reward_amount)?;
+      ensure_value_is_not_zero(me_amount)?;
+
+     let requestor_id = self.data::<BrandRecords>().id.get(requestor).unwrap_or_default();
+
+     let brand_id = self.data::<RewardRecords>().details.get(reward).unwrap_or_default().issuing_brand;
+
+     TreasuryRef::withdraw_reward_and_or_me(&treasury_id, reward,reward_amount, me_amount, brand_id, open_reward_id,requestor)?;
+     
+     let existing_positions: Vec<Id> = APoolRef::get_all_positions(&open_reward_id, requestor)?;
+
+     let position = match is_empty_positions(&existing_positions) {
+        true => &EMPTY_POSITION,
+        false => &existing_positions[0]
+     }; 
+
+     APoolRef::record_liquidity_provided(&open_reward_id,reward_amount, me_amount, requestor, requestor)?;
+        
+     self.activate_open_rewards(reward)?;   
+
+      Ok((100, 100, 100))
+    }   
 
 //     fn fund_bounty_pool(
 //         &mut self,
