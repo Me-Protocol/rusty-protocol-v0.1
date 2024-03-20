@@ -1,5 +1,5 @@
 
-use crate::controllers::deployables::treasury;
+use crate::controllers::deployables::{reward, treasury};
 pub use crate::{
     providers::{
         data::{ brand::*, a_pool::*, a_reward::*, protocol::* },
@@ -83,6 +83,17 @@ pub trait BrandImpl: Storage<BrandRecords> +
 
     //     Ok(true)
     // }
+
+    fn create_more_rewards(&mut self, _amount: Balance, _reward_address: AccountId, _to: AccountId) -> Result<bool, ProtocolError> {
+
+        let requestor = Self::env().caller();
+        let requestor_id = self.data::<BrandRecords>().id.get(&requestor).unwrap();
+        // Todo: no create more rewards
+        // RewardRef::create_more_rewards(&_reward_address, _to, _amount);
+        Ok(true)
+    }
+
+
 
    // Todo: Implement Role Guard
     fn update_brand_details(
@@ -418,7 +429,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
         reward: AccountId,
         reward_amount: Balance,
         me_amount: Balance
-    ) -> Result<(Balance, Balance, Balance), ProtocolError> {
+    ) -> Result<bool, ProtocolError> {
       
       let treasury_id = get_treasury_id(self);
       let requestor = Self::env().caller();
@@ -448,8 +459,76 @@ pub trait BrandImpl: Storage<BrandRecords> +
         
      self.activate_open_rewards(reward)?;   
 
-      Ok((100, 100, 100))
+      Ok(true)
     }   
+
+    fn add_liquidity_for_open_rewards_from_treasury (&mut self, reward: AccountId, reward_amount: Balance, me_amount: Balance) -> Result<bool, ProtocolError> {
+
+      let treasury_id = get_treasury_id(self);
+      let open_reward_id =  self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
+
+      ensure_address_is_not_zero_address(reward)?;
+      ensure_address_is_not_zero_address(treasury_id)?;
+      ensure_address_is_not_zero_address(open_reward_id)?;
+
+      ensure_value_is_not_zero(reward_amount)?;
+      ensure_value_is_not_zero(me_amount)?;
+
+      let requestor = Self::env().caller();
+
+      let brand_id = self.data::<RewardRecords>().details.get(reward).unwrap_or_default().issuing_brand;
+        
+      TreasuryRef::withdraw_reward_and_or_me(&treasury_id, reward,reward_amount, me_amount, brand_id, open_reward_id,requestor)?;
+     
+      let existing_positions: Vec<Id> = APoolRef::get_all_positions(&open_reward_id, requestor)?;
+ 
+      let position = match is_empty_positions(&existing_positions) {
+         true => &EMPTY_POSITION,
+         false => &existing_positions[0]
+      }; 
+ 
+      APoolRef::record_liquidity_provided(&open_reward_id,reward_amount, me_amount, requestor, requestor)?;
+
+    Ok(true) 
+      
+    }
+
+
+
+    fn withdraw_open_rewards_liquidity_to_treasury(&mut self, reward: AccountId, liquidity_position: Id, reward_amount: Balance, me_amount: Balance) -> Result<bool, ProtocolError> {
+
+      let to = get_treasury_id(self);
+      let open_reward_id =  self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
+      ensure_address_is_not_zero_address(reward)?;
+      ensure_address_is_not_zero_address(to)?;
+      ensure_address_is_not_zero_address(open_reward_id)?;
+
+    ensure_value_is_not_zero(reward_amount)?;
+    ensure_value_is_not_zero(me_amount)?;
+
+    let requestor = Self::env().caller();
+
+    let brand_id = self.data::<RewardRecords>().details.get(reward).unwrap_or_default().issuing_brand;
+    
+    APoolRef::withdraw_liquidity(&open_reward_id, liquidity_position, reward_amount, me_amount,requestor,  to)?;
+
+    TreasuryRef::deposit_reward_and_or_me(&to, reward,reward_amount, me_amount,brand_id, requestor, Some("".to_string()))?;
+    
+    Ok(true)
+    }
+
+
+    fn update_r_optimal (&mut self, reward: AccountId, new_r_optimal: Balance) -> Result<bool, ProtocolError> {
+        ensure_address_is_not_zero_address(reward)?;
+        ensure_value_is_not_zero(new_r_optimal)?;
+        let requestor = Self::env().caller();
+        let requestor_id = self.data::<BrandRecords>().id.get(requestor).unwrap_or_default();
+        
+       Ok(true)
+    }
+
+
+
 
 //     fn fund_bounty_pool(
 //         &mut self,
@@ -503,6 +582,39 @@ pub trait BrandImpl: Storage<BrandRecords> +
 
         Ok(true)
     }
+
+
+
+    fn change_brand_main_account(&mut self, _new_account: AccountId, requestor: AccountId) -> Result<bool, ProtocolError> {
+
+        let brand_record = self.data::<BrandRecords>();
+        
+        let mut  brand_id = brand_record.id.get(&requestor).unwrap_or_default();
+
+        if brand_id == DEFAULT_BRAND_ID {
+            return Err(ProtocolError::BrandDoesNotExist);
+        }
+        let name = brand_record.details.get(&brand_id).unwrap().name;
+        let id = brand_record.details.get(&brand_id).unwrap().id;
+        let online_presence = brand_record.details.get(&brand_id).unwrap().online_presence;
+        let date_joined = brand_record.details.get(&brand_id).unwrap().date_joined;
+
+        let brandtails = BrandDetails {
+             name,
+             id,
+             main_account: _new_account,
+             online_presence,
+             date_joined,
+        }; 
+
+        brand_record.details.insert(brand_id, &brandtails);
+        
+        brand_record.id.insert(requestor, &DEFAULT_BRAND_ID);
+        brand_record.id.insert(_new_account, &brand_id);
+
+        Ok(true)
+    }
+
 
 //     // #[ink(message)]
 //     // fn create_a_type_a_pool(&mut self, reward_address: AccountId, initial_reward_deposit:Balance, initial_me_deposit: Balance,  pool_config: PoolSetUpConfig,  use_global_config:bool, auto_start_conversations:bool) -> Result<bool, ProtocolError>;
@@ -582,6 +694,29 @@ pub trait BrandImpl: Storage<BrandRecords> +
         APoolRef::resume_open_rewards(&reward)?;
         Ok(true)
     }
+
+    fn get_brand_config_by_address (
+        &self,
+        brand_address: AccountId
+    ) -> Result<BrandDetails, ProtocolError> {
+        ensure_address_is_not_zero_address(brand_address)?;
+        let brand_id = self.data::<BrandRecords>().id.get(&brand_address).unwrap();
+        let brand = self.data::<BrandRecords>().details.get(&brand_id).unwrap();
+        Ok(brand)
+    }
+
+    fn get_brand_config_by_id (
+        &self,
+        brand_id: BRAND_ID_TYPE
+    ) -> Result<BrandDetails, ProtocolError> {
+        let brand = self.data::<BrandRecords>().details.get(&brand_id).unwrap();
+        Ok(brand)
+    }
+
+    
+
+
+
 
 //     fn top_up_pool_balances(
 //         &mut self,
