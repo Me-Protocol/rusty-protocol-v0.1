@@ -530,18 +530,18 @@ pub trait BrandImpl: Storage<BrandRecords> +
 
 
 
-//     fn fund_bounty_pool(
-//         &mut self,
-//         reward: AccountId,
-//         amount: Balance
-//     ) -> Result<bool, ProtocolError> {
-//         ensure_address_is_not_zero_address(reward)?;
-//         ensure_value_is_not_zero(amount)?;
-//         let bounty = get_bount_id(self);
-//         let requestor = Self::env().caller();
-//         BountyRef::deposit_bounty(&bounty, reward, amount, requestor)?;
-//         Ok(true)
-//     }
+    fn fund_bounty_pool(
+        &mut self,
+        reward: AccountId,
+        amount: Balance
+    ) -> Result<bool, ProtocolError> {
+        ensure_address_is_not_zero_address(reward)?;
+        ensure_value_is_not_zero(amount)?;
+        let bounty = get_bount_id(self);
+        let requestor = Self::env().caller();
+        BountyRef::deposit_bounty(&bounty, reward, amount, requestor)?;
+        Ok(true)
+    }
 
     fn integrate_existing_reward(
         &mut self,
@@ -614,10 +614,6 @@ pub trait BrandImpl: Storage<BrandRecords> +
 
         Ok(true)
     }
-
-
-//     // #[ink(message)]
-//     // fn create_a_type_a_pool(&mut self, reward_address: AccountId, initial_reward_deposit:Balance, initial_me_deposit: Balance,  pool_config: PoolSetUpConfig,  use_global_config:bool, auto_start_conversations:bool) -> Result<bool, ProtocolError>;
 
     fn change_optimal_valuation(
         &mut self,
@@ -713,10 +709,6 @@ pub trait BrandImpl: Storage<BrandRecords> +
         Ok(brand)
     }
 
-    
-
-
-
 
 //     fn top_up_pool_balances(
 //         &mut self,
@@ -745,33 +737,33 @@ pub trait BrandImpl: Storage<BrandRecords> +
 //         Ok(true)
 //     }
 
-//     fn reduce_pool_balances(
-//         &mut self,
-//         reward: AccountId,
-//         position: u128,
-//         reward_amount: Balance,
-//         me_amount: Balance
-//     ) -> Result<bool, ProtocolError> {
-//         ensure_address_is_not_zero_address(reward)?;
-//         if reward_amount == 0 && me_amount == 0 {
-//             return Err(ProtocolError::BothWithdrawalsCanNotBeZero);
-//         }
-//         let requestor = Self::env().caller();
-//         ensure_is_issuing_brand(self, reward, requestor)?;
-//         let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
-//         if pool_id == ZERO_ADDRESS.into() {
-//             return Err(ProtocolError::RewardHasNoPool);
-//         }
-//         APoolRef::withdraw_assets_from_position(
-//             &pool_id,
-//             position,
-//             reward_amount,
-//             me_amount,
-//             requestor,
-//             requestor
-//         )?;
-//         Ok(true)
-//     }
+    // fn reduce_pool_balances(
+    //     &mut self,
+    //     reward: AccountId,
+    //     position: u128,
+    //     reward_amount: Balance,
+    //     me_amount: Balance
+    // ) -> Result<bool, ProtocolError> {
+    //     ensure_address_is_not_zero_address(reward)?;
+    //     if reward_amount == 0 && me_amount == 0 {
+    //         return Err(ProtocolError::BothWithdrawalsCanNotBeZero);
+    //     }
+    //     let requestor = Self::env().caller();
+    //     Self::ensure_is_issuing_brand(self, reward, requestor)?;
+    //     let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
+    //     if pool_id == ZERO_ADDRESS.into() {
+    //         return Err(ProtocolError::RewardHasNoPool);
+    //     }
+    //     APoolRef::withdraw_assets_from_position(
+    //         &pool_id,
+    //         position,
+    //         reward_amount,
+    //         me_amount,
+    //         requestor,
+    //         requestor
+    //     )?;
+    //     Ok(true)
+    // }
 
     fn top_up_treasury_balances(
         &mut self,
@@ -826,24 +818,6 @@ pub trait BrandImpl: Storage<BrandRecords> +
         )?;
         Ok(true)
     }
-// }
-
-// pub fn generate_string_id(mut input: String, seed: u64) -> BRAND_ID_TYPE {
-//     // input = concatenate_bytes_and_u64(input, seed);
-//     let mut id: BRAND_ID_TYPE = [0; 10];
-//     // let mut output = <Keccak256 as HashOutput>::Type::default();
-//     // Keccak256::hash(input.as_slice(), &mut output);
-//     // id.copy_from_slice(&output[..10]);
-//     id
-// }
-
-// pub fn concatenate_bytes_and_u64(bytes: Vec<u8>, num: u64) -> Vec<u8> {
-//     let num_bytes: [u8; 8] = num.to_le_bytes();
-//     let mut concatenated: Vec<u8> = Vec::new();
-//     concatenated.extend_from_slice(&bytes);
-//     concatenated.extend_from_slice(&num_bytes);
-//     concatenated
-// }
 
  fn get_self_id<T>(
     instance: &mut T,

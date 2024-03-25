@@ -1,8 +1,12 @@
+use core::clone;
+
 use openbrush::{ traits::{ AccountId, Balance, String, Storage } };
 use ink::{ storage::{ traits::StorageLayout, Mapping } };
 use crate::providers::common::{ database::*, types::* };
 
-#[derive(Debug)]
+use super::a_pool::ZERO_ADDRESS;
+
+#[derive(Debug, Clone, Copy, Default)]
 #[openbrush::storage_item(PROTOCOL_CONFIG)]
 pub struct ProtocolConfig {
     pub default_minimum_me_for_conversation: Balance,
@@ -16,7 +20,7 @@ pub struct ProtocolConfig {
     pub bounty_contribution_in_precision: u128,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 #[openbrush::storage_item(PROTOCOL_RECORDS)]
 pub struct ProtocolRecords {
     pub me: AccountId,
@@ -26,6 +30,20 @@ pub struct ProtocolRecords {
     pub total_number_of_brands: u128,
     pub total_number_of_rewards: u128,
     pub last_updated: u64,
+}
+
+impl  Default for ProtocolRecords {
+    fn default() -> Self {
+        Self { 
+            me: ZERO_ADDRESS.into(),
+            bounty: ZERO_ADDRESS.into(),
+            treasury: ZERO_ADDRESS.into(),
+            admin_id: BRAND_ID_TYPE::default(),
+            total_number_of_brands: Default::default(),
+            total_number_of_rewards: Default::default(),
+            last_updated: Default::default(),
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]

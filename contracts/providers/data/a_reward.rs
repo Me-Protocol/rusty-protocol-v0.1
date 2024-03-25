@@ -33,7 +33,7 @@ pub struct RewardConfig {
     pub pay_outgoing_gas_fee: bool,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 #[openbrush::storage_item(REWARD_RECORDS)]
 pub struct RewardRecords {
     pub details: Mapping<AccountId, RewardDetails>,

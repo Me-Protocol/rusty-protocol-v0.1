@@ -15,7 +15,7 @@ pub struct BrandDetails {
     pub date_joined: u64,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 #[openbrush::storage_item(BRAND_RECORDS)]
 pub struct BrandRecords {
     pub id: Mapping<AccountId, BRAND_ID_TYPE>,
