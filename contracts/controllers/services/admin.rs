@@ -27,7 +27,7 @@ pub trait AdminController {
     fn update_treasury_address(&mut self, address: AccountId) -> Result<bool, ProtocolError> ;
 
     #[ink(message)]
-    fn register_brand(&mut self, brand_name: String, brand_online_presence: String , brand_account: AccountId, brand_id: BRAND_ID_TYPE) -> Result<bool, ProtocolError>;
+    fn register_brand(&mut self, brand_name: Option<String>, brand_online_presence: Option<String> , brand_account: AccountId, brand_id: BRAND_ID_TYPE) -> Result<bool, ProtocolError> ;
 
     #[ink(message)]
     fn get_me_address(&self) -> Result<AccountId, ProtocolError>;

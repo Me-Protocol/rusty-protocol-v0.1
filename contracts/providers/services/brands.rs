@@ -39,30 +39,30 @@ pub trait BrandImpl: Storage<BrandRecords> +
         Storage<ProtocolRecords> + 
         AccessControlImpl 
 {
-     fn register(
-        &mut self,
-        name: Option<String>,                                              
-        online_presence: Option<String>,
-        requestor: AccountId,
-        brand_id: BRAND_ID_TYPE
-    ) -> Result<(), ProtocolError> {
+    //  fn register(
+    //     &mut self,
+    //     name: Option<String>,                                              
+    //     online_presence: Option<String>,
+    //     requestor: AccountId,
+    //     brand_id: BRAND_ID_TYPE
+    // ) -> Result<(), ProtocolError> {
 
-        let mut details = BrandDetails::default();
-        let config = GlobalBrandConfig::default();
+    //     let mut details = BrandDetails::default();
+    //     let config = GlobalBrandConfig::default();
 
-        details.name = name.clone();
-        details.online_presence = online_presence.clone();
-        details.main_account = requestor;
-        details.date_joined = Self::env().block_timestamp();
+    //     details.name = name.clone();
+    //     details.online_presence = online_presence.clone();
+    //     details.main_account = requestor;
+    //     details.date_joined = Self::env().block_timestamp();
     
-        ensure_brand_is_not_empty(brand_id);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-        self.data::<BrandRecords>().exists.insert(brand_id, &true);
-        self.data::<BrandRecords>().details.insert(brand_id, &details);
-        self.data::<BrandRecords>().global_config.insert(brand_id, &config);
-        self.data::<BrandRecords>().id.insert(requestor, &brand_id);
+    //     ensure_brand_is_not_empty(brand_id);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    //     self.data::<BrandRecords>().exists.insert(brand_id, &true);
+    //     self.data::<BrandRecords>().details.insert(brand_id, &details);
+    //     self.data::<BrandRecords>().global_config.insert(brand_id, &config);
+    //     self.data::<BrandRecords>().id.insert(requestor, &brand_id);
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 
     // fn create_new_reward(&mut self, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8, initial_reward_supply:Balance, use_global_config:bool, requestor: AccountId) -> Result<bool, ProtocolError>{
 

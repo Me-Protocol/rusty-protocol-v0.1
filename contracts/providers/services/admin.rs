@@ -37,17 +37,41 @@ pub trait AdminImpl:
         Storage<ProtocolRecords> +
         Storage<ProtocolConfig> +
         Storage<RecordStorage> +
-        BrandImpl + 
         AccessControlImpl
 {
 
 
-    fn get_protocol_config(&self) -> Result<ProtocolConfig, ProtocolError> {
-        Ok(self.data::<ProtocolConfig>().clone())
+    fn get_protocol_config(&self) -> Result<ProtocolConfigClone, ProtocolError> {
+       let config = self.data::<ProtocolConfig>().clone();
+
+        Ok (ProtocolConfigClone{
+            default_minimum_me_for_conversation: config.default_minimum_me_for_conversation,
+            default_minimum_reward_for_conversation_in_percent: config.default_minimum_reward_for_conversation_in_percent,
+            default_maximum_r_limit_for_conversation_in_precision: config.default_maximum_r_limit_for_conversation_in_precision,
+            default_reward_notify_threshold_in_percent: config.default_reward_notify_threshold_in_percent,
+            default_notify_me_amount: config.default_notify_me_amount,
+            default_notify_reward_amount_in_percent: config.default_notify_reward_amount_in_percent,
+            cai_in_me: config.cai_in_me,
+            protocol_fee: config.protocol_fee,
+            bounty_contribution_in_precision: config.bounty_contribution_in_precision,
+        })
     }
 
-    fn get_protocol_records(&self) -> Result<ProtocolRecords, ProtocolError> {
-        Ok(self.data::<ProtocolRecords>().clone())
+    fn get_protocol_records(&self) -> Result<ProtocolRecordsClone, ProtocolError> {
+        let protocol = self.data::<ProtocolRecords>().clone();
+
+        Ok(
+            ProtocolRecordsClone{
+                me: protocol.me,
+                bounty: protocol.bounty,
+                treasury: protocol.treasury,
+                admin_id: protocol.admin_id,
+                total_number_of_brands: protocol.total_number_of_brands,
+                total_number_of_rewards: protocol.total_number_of_rewards,
+                last_updated: protocol.last_updated,
+            }
+        )
+
     }
 
     #[modifiers(only_role(PROTOCOL_ADMIN))]
@@ -69,9 +93,24 @@ pub trait AdminImpl:
     }
 
     #[modifiers(only_role(ONBOARDING_MANAGER))]
-    fn register_brand(&mut self, brand_name: String, brand_online_presence: String , brand_account: AccountId, brand_id: BRAND_ID_TYPE) -> Result<bool, ProtocolError> {
+    fn register_brand(&mut self, brand_name: Option<String>, brand_online_presence: Option<String> , brand_account: AccountId, brand_id: BRAND_ID_TYPE) -> Result<bool, ProtocolError> {
 
-        let _ = BrandImpl::register(self, Some(brand_name), Some(brand_online_presence), brand_account, brand_id);
+       
+        let mut details = BrandDetails::default();
+        let config = GlobalBrandConfig::default();
+
+        details.name = brand_name.clone();
+        details.online_presence = brand_online_presence.clone();
+        details.main_account = brand_account;
+        details.date_joined = Self::env().block_timestamp();
+    
+        ensure_brand_is_not_empty(brand_id).unwrap();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        self.data::<BrandRecords>().exists.insert(brand_id, &true);
+        self.data::<BrandRecords>().details.insert(brand_id, &details);
+        self.data::<BrandRecords>().global_config.insert(brand_id, &config);
+        self.data::<BrandRecords>().id.insert(brand_account, &brand_id);
+
+       
         Ok(true)
     }
 

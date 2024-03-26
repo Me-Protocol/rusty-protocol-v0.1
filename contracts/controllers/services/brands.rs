@@ -10,12 +10,12 @@ pub type BrandRef = dyn BrandController + AccessControl;
 
 #[openbrush::trait_definition]
 pub trait BrandController {
-    #[ink(message)]
-    fn register(
-        &mut self,
-        name: Option<String>,
-        online_presence: Option<String>
-    ) -> Result<(), ProtocolError>;
+    // #[ink(message)]
+    // fn register(
+    //     &mut self,
+    //     name: Option<String>,
+    //     online_presence: Option<String>
+    // ) -> Result<(), ProtocolError>;
 
     // #[ink(message)]
     // fn create_new_reward(&mut self, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8, initial_reward_supply:Balance, use_global_config:bool) -> Result<bool, ProtocolError>;

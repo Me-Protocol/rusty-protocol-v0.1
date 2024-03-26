@@ -4,13 +4,16 @@
 #[openbrush::contract]
 mod services {
 
-    use global::{controllers::services::customers, providers::{data::{a_reward::RewardRecords, brand::BrandRecords, protocol::{ProtocolConfig, ProtocolRecords}}, services::customers::CustomerImpl}};
+    use global::{controllers::services::customers, providers::{common::roleguard::RecordStorage, data::{a_reward::RewardRecords, brand::BrandRecords, protocol::{ProtocolConfig, ProtocolRecords}}, services::{admin::{AdminImpl, BrandImpl}, customers::CustomerImpl}}};
     use openbrush::{
         contracts::access_control::{*, self},
         traits::Storage,
     };
 
     pub use global::providers::services::{customers::*, admin::*};
+    use global::controllers::services::admin::admincontroller_external;
+    // use global::controllers::services::admin::admincontroller_external::AdminController;
+    use global::controllers::services::admin::AdminController;
 
 
     #[ink(storage)]
@@ -31,6 +34,10 @@ mod services {
 
         #[storage_field]
         pub brands_records: BrandRecords,
+
+        #[storage_field]
+        pub record_storage: RecordStorage,  
+
     }
 
 
@@ -58,6 +65,54 @@ mod services {
 
     impl AdminController for Services {
         
+        #[ink(message)]
+        fn get_protocol_config(&self) -> Result<ProtocolConfigClone, ProtocolError> {
+            AdminImpl::get_protocol_config(self)
+        }
+
+        #[ink(message)]
+        fn get_protocol_records(&self) -> Result<ProtocolRecordsClone, ProtocolError> {
+            AdminImpl::get_protocol_records(self)
+        }
+
+        #[ink(message)]
+        fn update_protocol_configurations(&mut self, config: EditableProtocolConfig) -> Result<bool, ProtocolError> {
+            AdminImpl::update_protocol_configurations(self, config)
+        }
+
+        #[ink(message)]
+        fn update_protocol_records(&mut self, records: EditableProtocolRecords) -> Result<bool, ProtocolError> { 
+            AdminImpl::update_protocol_records(self, records)
+        }
+
+        #[ink(message)]
+        fn update_treasury_address(&mut self, address: AccountId) -> Result<bool, ProtocolError> {
+            AdminImpl::update_treasury_address(self, address)
+        }
+
+        #[ink(message)]
+        fn register_brand(&mut self, brand_name: Option<String>, brand_online_presence: Option<String> , brand_account: AccountId, brand_id: BRAND_ID_TYPE) -> Result<bool, ProtocolError> {
+            AdminImpl::register_brand(self, brand_name, brand_online_presence, brand_account, brand_id)
+        }
+
+        #[ink(message)]
+        fn get_me_address(&self) -> Result<AccountId, ProtocolError> {
+           AdminImpl::get_me_address(self)
+        }   
+    }
+
+
+    impl BrandImpl for Services {}
+
+    impl BrandController for Services {
+        
+        #[ink(message)]
+        fn create_more_rewards(&mut self, _amount: Balance, _reward_address: AccountId, _to: AccountId) -> Result<bool, ProtocolError> {
+            BrandImpl::create_more_rewards(self, _amount, _reward_address, _to)
+        }
+
+
+
     }
     
 

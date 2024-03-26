@@ -12,7 +12,7 @@ use crate::controllers::services::admin;
 use super::{errors::ProtocolError, types::BRAND_ID_TYPE, validator::is_empty};
 const EMPTY_ACCESS: RoleType  = 0;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 #[openbrush::storage_item(PAYMENT_STATE)]
 pub struct RecordStorage {
     pub records: BTreeMap<RoleType, AccessData>,
