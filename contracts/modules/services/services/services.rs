@@ -316,7 +316,7 @@ mod services {
         ) -> Result<bool, ProtocolError>{
             BrandImpl::withdraw_treasury_balances(self, reward, reward_amount, me_amount, to)
         }
-        
+
     }
     
 
@@ -325,7 +325,18 @@ mod services {
        
         #[ink(constructor)]
         pub fn new() -> Self {
-            Self::default()
+
+            let mut instance = Self::default(); 
+           
+            let caller = instance.env().caller();
+
+            access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
+
+            access_control::InternalImpl::_setup_role(&mut instance,PROTOCOL_ADMIN, Some(caller));
+            
+            access_control::InternalImpl::_setup_role(&mut instance,ONBOARDING_MANAGER, Some(caller));
+
+            instance
         }
 
 

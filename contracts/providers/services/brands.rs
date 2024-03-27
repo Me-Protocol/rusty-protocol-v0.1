@@ -385,7 +385,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
         let requestor = Self::env().caller();
         BountyRef::withdraw_bounty(&bounty, reward, amount, requestor, treasury)?;
 
-        TreasuryRef::deposit_reward_and_or_me(&treasury, reward, amount,  EMPTY_AMOUNT, DEFAULT_BRAND_ID, requestor, Some("".to_string()) )
+        TreasuryRef::deposit_reward_and_or_me(&treasury, reward, amount,  EMPTY_AMOUNT, DEFAULT_BRAND_ID, requestor, Some("".into()) )
     }
 
     fn add_liquidity_for_open_rewards (
@@ -512,7 +512,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
     
     APoolRef::withdraw_liquidity(&open_reward_id, liquidity_position, reward_amount, me_amount,requestor,  to)?;
 
-    TreasuryRef::deposit_reward_and_or_me(&to, reward,reward_amount, me_amount,brand_id, requestor, Some("".to_string()))?;
+    TreasuryRef::deposit_reward_and_or_me(&to, reward,reward_amount, me_amount,brand_id, requestor, Some("".into()))?;
     
     Ok(true)
     }

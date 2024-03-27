@@ -31,5 +31,15 @@ std = [
     "openbrush/std",
     "global/std"
 ]
+
 ink-as-dependency = []
-e2e-tests = []
+
+[profile.release]
+panic = "abort"
+lto = false
+
+[profile.dev]
+
+panic = "abort"
+lto = false
+overflow-checks = false
