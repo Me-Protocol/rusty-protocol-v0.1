@@ -88,7 +88,7 @@ pub trait BrandController {
         reward: AccountId,
         reward_amount: Balance,
         me_amount: Balance
-    ) -> Result<bool, ProtocolError>;
+    ) -> Result<bool, ProtocolError> ;
 
 
     #[ink(message)]
