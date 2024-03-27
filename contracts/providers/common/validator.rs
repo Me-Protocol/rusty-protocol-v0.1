@@ -1,4 +1,4 @@
-use openbrush::traits::{ AccountId, String };
+use openbrush::{contracts::psp34::Id, traits::{ AccountId, String }};
 
 use crate::providers::common::{ errors::*, types::*, constants::* };
 
@@ -46,3 +46,20 @@ pub fn is_empty (brand: BRAND_ID_TYPE) -> bool{
         false
     }
 } 
+
+
+pub fn is_empty_positions (positions: &Vec<Id>) -> bool{
+    if positions.len() == 0 {
+       true
+    } else {
+        false
+    }
+} 
+
+
+pub fn ensure_brand_is_not_empty(brand: BRAND_ID_TYPE) -> Result<(), ProtocolError> {
+    if is_empty(DEFAULT_BRAND_ID) {
+        return Err(ProtocolError::BrandCanNotBeEmpty);
+    }
+    Ok(())
+}

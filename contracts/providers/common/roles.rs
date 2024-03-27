@@ -16,4 +16,6 @@ pub const BOUNTY_MANAGER: RoleType = ink::selector_id!("BOUNTY_MANAGER");
 
 pub const PROTOCOL_ADMIN: RoleType = ink::selector_id!("PROTOCOL_ADMIN");
 
-pub const BRAND_MANAGER: RoleType = ink::selector_id!("BRAND_MANAGER");
+pub const BRAND_ACCOUNT_MANAGER: RoleType = ink::selector_id!("BRAND_ACCOUNT_MANAGER");
+
+pub const ONBOARDING_MANAGER: RoleType = ink::selector_id!("ONBOARDING_MANAGER");

@@ -15,13 +15,14 @@ pub struct BrandDetails {
     pub date_joined: u64,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 #[openbrush::storage_item(BRAND_RECORDS)]
 pub struct BrandRecords {
     pub id: Mapping<AccountId, BRAND_ID_TYPE>,
     pub exists: Mapping<BRAND_ID_TYPE, bool>,
     pub details: Mapping<BRAND_ID_TYPE, BrandDetails>,
     pub global_config: Mapping<BRAND_ID_TYPE, GlobalBrandConfig>,
+    // pub acount_managers: Mapping<AccountId, AccountId>,
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -71,3 +72,4 @@ impl Default for BrandDetails {
         }
     }
 }
+

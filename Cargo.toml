@@ -18,6 +18,7 @@ reward_initiator = { path = "contracts/modules/deployables/reward_initiator", de
 treasury = { path = "contracts/modules/peripherals/treasury", default-features = false }
 bounty = { path = "contracts/modules/peripherals/bounty", default-features = false }
 oracle = { path = "contracts/modules/services/oracle", default-features = false }
+services ={ path = "contracts/modules/services/services", default-features = false }
 payment = { path = "contracts/modules/services/payment", default-features = false }
 global = { path = "contracts", default-features = false }
 
