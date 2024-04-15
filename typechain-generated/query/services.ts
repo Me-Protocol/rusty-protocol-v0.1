@@ -30,18 +30,22 @@ export default class Methods {
 	}
 
 	/**
-	* spendRewardsOnIssuingBrand
+	* spendRewardsOnOtherBrand
 	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } amount,
+	* @param { ArgumentTypes.AccountId } rewardAtHand,
+	* @param { ArgumentTypes.AccountId } targetedReward,
+	* @param { (string | number | BN) } amountOfRewardAtHand,
+	* @param { (string | number | BN) } expectedAmountOfTargettedReward,
 	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
 	*/
-	"spendRewardsOnIssuingBrand" (
-		reward: ArgumentTypes.AccountId,
-		amount: (string | number | BN),
+	"spendRewardsOnOtherBrand" (
+		rewardAtHand: ArgumentTypes.AccountId,
+		targetedReward: ArgumentTypes.AccountId,
+		amountOfRewardAtHand: (string | number | BN),
+		expectedAmountOfTargettedReward: (string | number | BN),
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "customerController::spendRewardsOnIssuingBrand", [reward, amount], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "customerController::spendRewardsOnOtherBrand", [rewardAtHand, targetedReward, amountOfRewardAtHand, expectedAmountOfTargettedReward], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -66,44 +70,42 @@ export default class Methods {
 	}
 
 	/**
-	* spendRewardsOnOtherBrand
+	* spendRewardsOnIssuingBrand
 	*
-	* @param { ArgumentTypes.AccountId } rewardAtHand,
-	* @param { ArgumentTypes.AccountId } targetedReward,
-	* @param { (string | number | BN) } amountOfRewardAtHand,
-	* @param { (string | number | BN) } expectedAmountOfTargettedReward,
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { (string | number | BN) } amount,
 	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
 	*/
-	"spendRewardsOnOtherBrand" (
-		rewardAtHand: ArgumentTypes.AccountId,
-		targetedReward: ArgumentTypes.AccountId,
-		amountOfRewardAtHand: (string | number | BN),
-		expectedAmountOfTargettedReward: (string | number | BN),
+	"spendRewardsOnIssuingBrand" (
+		reward: ArgumentTypes.AccountId,
+		amount: (string | number | BN),
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "customerController::spendRewardsOnOtherBrand", [rewardAtHand, targetedReward, amountOfRewardAtHand, expectedAmountOfTargettedReward], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "customerController::spendRewardsOnIssuingBrand", [reward, amount], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
 	* getProtocolConfig
 	*
-	* @returns { Result<Result<ReturnTypes.ProtocolConfigClone, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	* @returns { Result<ReturnTypes.EditableProtocolConfig, ReturnTypes.LangError> }
 	*/
 	"getProtocolConfig" (
 		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<ReturnTypes.ProtocolConfigClone, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+	): Promise< QueryReturnType< Result<ReturnTypes.EditableProtocolConfig, ReturnTypes.LangError> > >{
 		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "adminController::getProtocolConfig", [], __options , (result) => { return handleReturnType(result, getTypeDescription(28, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
-	* getProtocolRecords
+	* updateProtocolRecords
 	*
-	* @returns { Result<Result<ReturnTypes.ProtocolRecordsClone, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	* @param { ArgumentTypes.EditableProtocolRecords } records,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
 	*/
-	"getProtocolRecords" (
+	"updateProtocolRecords" (
+		records: ArgumentTypes.EditableProtocolRecords,
 		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<ReturnTypes.ProtocolRecordsClone, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "adminController::getProtocolRecords", [], __options , (result) => { return handleReturnType(result, getTypeDescription(31, DATA_TYPE_DESCRIPTIONS)); });
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "adminController::updateProtocolRecords", [records], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -146,20 +148,7 @@ export default class Methods {
 	"getMeAddress" (
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<ReturnTypes.AccountId, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "adminController::getMeAddress", [], __options , (result) => { return handleReturnType(result, getTypeDescription(37, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* updateProtocolRecords
-	*
-	* @param { ArgumentTypes.EditableProtocolRecords } records,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"updateProtocolRecords" (
-		records: ArgumentTypes.EditableProtocolRecords,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "adminController::updateProtocolRecords", [records], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "adminController::getMeAddress", [], __options , (result) => { return handleReturnType(result, getTypeDescription(33, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -176,52 +165,76 @@ export default class Methods {
 	}
 
 	/**
-	* fundBountyPool
+	* getProtocolRecords
+	*
+	* @returns { Result<ReturnTypes.EditableProtocolRecords, ReturnTypes.LangError> }
+	*/
+	"getProtocolRecords" (
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<ReturnTypes.EditableProtocolRecords, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "adminController::getProtocolRecords", [], __options , (result) => { return handleReturnType(result, getTypeDescription(35, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* pauseOpenRewards
 	*
 	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } amount,
 	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
 	*/
-	"fundBountyPool" (
+	"pauseOpenRewards" (
 		reward: ArgumentTypes.AccountId,
-		amount: (string | number | BN),
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::fundBountyPool", [reward, amount], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::pauseOpenRewards", [reward], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
-	* createMoreRewards
+	* updateBrandConfigByBrandId
 	*
-	* @param { (string | number | BN) } amount,
-	* @param { ArgumentTypes.AccountId } rewardAddress,
-	* @param { ArgumentTypes.AccountId } to,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"createMoreRewards" (
-		amount: (string | number | BN),
-		rewardAddress: ArgumentTypes.AccountId,
-		to: ArgumentTypes.AccountId,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::createMoreRewards", [amount, rewardAddress, to], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* updateRewardDetails
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { ArgumentTypes.EditableRewardDetails } rewardDetails,
+	* @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
 	* @param { boolean } ignoreDefault,
+	* @param { Array<(number | string | BN)> } brandId,
 	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
 	*/
-	"updateRewardDetails" (
-		reward: ArgumentTypes.AccountId,
-		rewardDetails: ArgumentTypes.EditableRewardDetails,
+	"updateBrandConfigByBrandId" (
+		brandConfig: ArgumentTypes.GlobalBrandConfig,
 		ignoreDefault: boolean,
+		brandId: Array<(number | string | BN)>,
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateRewardDetails", [reward, rewardDetails, ignoreDefault], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateBrandConfigByBrandId", [brandConfig, ignoreDefault, brandId], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* withdrawOpenRewardsLiquidityToTreasury
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { ArgumentTypes.Id } liquidityPosition,
+	* @param { (string | number | BN) } rewardAmount,
+	* @param { (string | number | BN) } meAmount,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"withdrawOpenRewardsLiquidityToTreasury" (
+		reward: ArgumentTypes.AccountId,
+		liquidityPosition: ArgumentTypes.Id,
+		rewardAmount: (string | number | BN),
+		meAmount: (string | number | BN),
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::withdrawOpenRewardsLiquidityToTreasury", [reward, liquidityPosition, rewardAmount, meAmount], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* getBrandConfigById
+	*
+	* @param { Array<(number | string | BN)> } brandId,
+	* @returns { Result<Result<ReturnTypes.BrandDetails, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"getBrandConfigById" (
+		brandId: Array<(number | string | BN)>,
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<ReturnTypes.BrandDetails, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::getBrandConfigById", [brandId], __options , (result) => { return handleReturnType(result, getTypeDescription(40, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -239,64 +252,6 @@ export default class Methods {
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
 		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::integrateExistingReward", [reward, rewardDescriptionLink, readTAndC], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* getBrandConfigById
-	*
-	* @param { Array<(number | string | BN)> } brandId,
-	* @returns { Result<Result<ReturnTypes.BrandDetails, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"getBrandConfigById" (
-		brandId: Array<(number | string | BN)>,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<ReturnTypes.BrandDetails, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::getBrandConfigById", [brandId], __options , (result) => { return handleReturnType(result, getTypeDescription(41, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* resumeOpenRewards
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"resumeOpenRewards" (
-		reward: ArgumentTypes.AccountId,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::resumeOpenRewards", [reward], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* updateRewardConfig
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { ArgumentTypes.RewardConfig } rewardConfig,
-	* @param { boolean } ignoreDefault,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"updateRewardConfig" (
-		reward: ArgumentTypes.AccountId,
-		rewardConfig: ArgumentTypes.RewardConfig,
-		ignoreDefault: boolean,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateRewardConfig", [reward, rewardConfig, ignoreDefault], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* setBountyTriggerLimit
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } triggerLimit,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"setBountyTriggerLimit" (
-		reward: ArgumentTypes.AccountId,
-		triggerLimit: (string | number | BN),
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::setBountyTriggerLimit", [reward, triggerLimit], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -319,6 +274,65 @@ export default class Methods {
 	}
 
 	/**
+	* updateBrandDetails
+	*
+	* @param { ArgumentTypes.EditableBrandDetails } brandDetails,
+	* @param { boolean } ignoreDefault,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"updateBrandDetails" (
+		brandDetails: ArgumentTypes.EditableBrandDetails,
+		ignoreDefault: boolean,
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateBrandDetails", [brandDetails, ignoreDefault], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* setBountyTriggerLimit
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { (string | number | BN) } triggerLimit,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"setBountyTriggerLimit" (
+		reward: ArgumentTypes.AccountId,
+		triggerLimit: (string | number | BN),
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::setBountyTriggerLimit", [reward, triggerLimit], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* createNewReward
+	*
+	* @param { ArgumentTypes.AccountId } rewardInitiator,
+	* @param { string | null } rewardName,
+	* @param { string | null } rewardSymbol,
+	* @param { string | null } rewardDescriptionLink,
+	* @param { (number | string | BN) } rewardType,
+	* @param { (string | number | BN) } initialRewardSupply,
+	* @param { Array<(number | string | BN)> } saltBytes,
+	* @param { Array<(number | string | BN)> } brandId,
+	* @param { ArgumentTypes.AccountId } requestor,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"createNewReward" (
+		rewardInitiator: ArgumentTypes.AccountId,
+		rewardName: string | null,
+		rewardSymbol: string | null,
+		rewardDescriptionLink: string | null,
+		rewardType: (number | string | BN),
+		initialRewardSupply: (string | number | BN),
+		saltBytes: Array<(number | string | BN)>,
+		brandId: Array<(number | string | BN)>,
+		requestor: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::createNewReward", [rewardInitiator, rewardName, rewardSymbol, rewardDescriptionLink, rewardType, initialRewardSupply, saltBytes, brandId, requestor], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
 	* withdrawRewardsFromBountyPoolToTreasury
 	*
 	* @param { ArgumentTypes.AccountId } reward,
@@ -334,135 +348,33 @@ export default class Methods {
 	}
 
 	/**
-	* addLiquidityForOpenRewards
+	* updateRewardConfig
 	*
 	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } rewardAmount,
-	* @param { (string | number | BN) } meAmount,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"addLiquidityForOpenRewards" (
-		reward: ArgumentTypes.AccountId,
-		rewardAmount: (string | number | BN),
-		meAmount: (string | number | BN),
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::addLiquidityForOpenRewards", [reward, rewardAmount, meAmount], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* updateBrandConfig
-	*
-	* @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
+	* @param { ArgumentTypes.RewardConfig } rewardConfig,
 	* @param { boolean } ignoreDefault,
 	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
 	*/
-	"updateBrandConfig" (
-		brandConfig: ArgumentTypes.GlobalBrandConfig,
-		ignoreDefault: boolean,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateBrandConfig", [brandConfig, ignoreDefault], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* addLiquidityForOpenRewardsFromTreasury
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } rewardAmount,
-	* @param { (string | number | BN) } meAmount,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"addLiquidityForOpenRewardsFromTreasury" (
+	"updateRewardConfig" (
 		reward: ArgumentTypes.AccountId,
-		rewardAmount: (string | number | BN),
-		meAmount: (string | number | BN),
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::addLiquidityForOpenRewardsFromTreasury", [reward, rewardAmount, meAmount], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* updateBrandConfigByBrandId
-	*
-	* @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
-	* @param { boolean } ignoreDefault,
-	* @param { Array<(number | string | BN)> } brandId,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"updateBrandConfigByBrandId" (
-		brandConfig: ArgumentTypes.GlobalBrandConfig,
+		rewardConfig: ArgumentTypes.RewardConfig,
 		ignoreDefault: boolean,
-		brandId: Array<(number | string | BN)>,
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateBrandConfigByBrandId", [brandConfig, ignoreDefault, brandId], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateRewardConfig", [reward, rewardConfig, ignoreDefault], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
-	* changeBrandMainAccount
+	* getRewardDetails
 	*
-	* @param { ArgumentTypes.AccountId } newAccount,
 	* @param { ArgumentTypes.AccountId } requestor,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	* @returns { Result<ReturnTypes.RewardDetails, ReturnTypes.LangError> }
 	*/
-	"changeBrandMainAccount" (
-		newAccount: ArgumentTypes.AccountId,
+	"getRewardDetails" (
 		requestor: ArgumentTypes.AccountId,
 		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::changeBrandMainAccount", [newAccount, requestor], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* changeOptimalValuation
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } newOptimalValuation,
-	* @param { boolean } autoResumeConversations,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"changeOptimalValuation" (
-		reward: ArgumentTypes.AccountId,
-		newOptimalValuation: (string | number | BN),
-		autoResumeConversations: boolean,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::changeOptimalValuation", [reward, newOptimalValuation, autoResumeConversations], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* updateBrandDetailsByBrandId
-	*
-	* @param { ArgumentTypes.EditableBrandDetails } brandDetails,
-	* @param { boolean } ignoreDefault,
-	* @param { Array<(number | string | BN)> } brandId,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"updateBrandDetailsByBrandId" (
-		brandDetails: ArgumentTypes.EditableBrandDetails,
-		ignoreDefault: boolean,
-		brandId: Array<(number | string | BN)>,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateBrandDetailsByBrandId", [brandDetails, ignoreDefault, brandId], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* updatePoolConfiguration
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { ArgumentTypes.EditablePoolConfig } editablePoolConfig,
-	* @param { boolean } ignoreDefault,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"updatePoolConfiguration" (
-		reward: ArgumentTypes.AccountId,
-		editablePoolConfig: ArgumentTypes.EditablePoolConfig,
-		ignoreDefault: boolean,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updatePoolConfiguration", [reward, editablePoolConfig, ignoreDefault], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	): Promise< QueryReturnType< Result<ReturnTypes.RewardDetails, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::getRewardDetails", [requestor], __options , (result) => { return handleReturnType(result, getTypeDescription(45, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -475,7 +387,7 @@ export default class Methods {
 		brandAddress: ArgumentTypes.AccountId,
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<ReturnTypes.BrandDetails, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::getBrandConfigByAddress", [brandAddress], __options , (result) => { return handleReturnType(result, getTypeDescription(41, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::getBrandConfigByAddress", [brandAddress], __options , (result) => { return handleReturnType(result, getTypeDescription(40, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -507,35 +419,146 @@ export default class Methods {
 	}
 
 	/**
-	* withdrawOpenRewardsLiquidityToTreasury
+	* updateRewardDetails
 	*
 	* @param { ArgumentTypes.AccountId } reward,
-	* @param { ArgumentTypes.Id } liquidityPosition,
+	* @param { ArgumentTypes.EditableRewardDetails } rewardDetails,
+	* @param { boolean } ignoreDefault,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"updateRewardDetails" (
+		reward: ArgumentTypes.AccountId,
+		rewardDetails: ArgumentTypes.EditableRewardDetails,
+		ignoreDefault: boolean,
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateRewardDetails", [reward, rewardDetails, ignoreDefault], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* updatePoolConfiguration
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { ArgumentTypes.EditablePoolConfig } editablePoolConfig,
+	* @param { boolean } ignoreDefault,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"updatePoolConfiguration" (
+		reward: ArgumentTypes.AccountId,
+		editablePoolConfig: ArgumentTypes.EditablePoolConfig,
+		ignoreDefault: boolean,
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updatePoolConfiguration", [reward, editablePoolConfig, ignoreDefault], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* resumeOpenRewards
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"resumeOpenRewards" (
+		reward: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::resumeOpenRewards", [reward], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* updateBrandDetailsByBrandId
+	*
+	* @param { ArgumentTypes.EditableBrandDetails } brandDetails,
+	* @param { boolean } ignoreDefault,
+	* @param { Array<(number | string | BN)> } brandId,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"updateBrandDetailsByBrandId" (
+		brandDetails: ArgumentTypes.EditableBrandDetails,
+		ignoreDefault: boolean,
+		brandId: Array<(number | string | BN)>,
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateBrandDetailsByBrandId", [brandDetails, ignoreDefault, brandId], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* fundBountyPool
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { (string | number | BN) } amount,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"fundBountyPool" (
+		reward: ArgumentTypes.AccountId,
+		amount: (string | number | BN),
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::fundBountyPool", [reward, amount], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* addLiquidityForOpenRewardsFromTreasury
+	*
+	* @param { ArgumentTypes.AccountId } reward,
 	* @param { (string | number | BN) } rewardAmount,
 	* @param { (string | number | BN) } meAmount,
 	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
 	*/
-	"withdrawOpenRewardsLiquidityToTreasury" (
+	"addLiquidityForOpenRewardsFromTreasury" (
 		reward: ArgumentTypes.AccountId,
-		liquidityPosition: ArgumentTypes.Id,
 		rewardAmount: (string | number | BN),
 		meAmount: (string | number | BN),
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::withdrawOpenRewardsLiquidityToTreasury", [reward, liquidityPosition, rewardAmount, meAmount], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::addLiquidityForOpenRewardsFromTreasury", [reward, rewardAmount, meAmount], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
-	* pauseOpenRewards
+	* updateBrandConfig
 	*
-	* @param { ArgumentTypes.AccountId } reward,
+	* @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
+	* @param { boolean } ignoreDefault,
 	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
 	*/
-	"pauseOpenRewards" (
-		reward: ArgumentTypes.AccountId,
+	"updateBrandConfig" (
+		brandConfig: ArgumentTypes.GlobalBrandConfig,
+		ignoreDefault: boolean,
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::pauseOpenRewards", [reward], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateBrandConfig", [brandConfig, ignoreDefault], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* addLiquidityForOpenRewards
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { (string | number | BN) } rewardAmount,
+	* @param { (string | number | BN) } meAmount,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"addLiquidityForOpenRewards" (
+		reward: ArgumentTypes.AccountId,
+		rewardAmount: (string | number | BN),
+		meAmount: (string | number | BN),
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::addLiquidityForOpenRewards", [reward, rewardAmount, meAmount], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* changeBrandMainAccount
+	*
+	* @param { ArgumentTypes.AccountId } newAccount,
+	* @param { ArgumentTypes.AccountId } requestor,
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"changeBrandMainAccount" (
+		newAccount: ArgumentTypes.AccountId,
+		requestor: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::changeBrandMainAccount", [newAccount, requestor], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -556,61 +579,20 @@ export default class Methods {
 	}
 
 	/**
-	* updateBrandDetails
+	* changeOptimalValuation
 	*
-	* @param { ArgumentTypes.EditableBrandDetails } brandDetails,
-	* @param { boolean } ignoreDefault,
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { (string | number | BN) } newOptimalValuation,
+	* @param { boolean } autoResumeConversations,
 	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
 	*/
-	"updateBrandDetails" (
-		brandDetails: ArgumentTypes.EditableBrandDetails,
-		ignoreDefault: boolean,
+	"changeOptimalValuation" (
+		reward: ArgumentTypes.AccountId,
+		newOptimalValuation: (string | number | BN),
+		autoResumeConversations: boolean,
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::updateBrandDetails", [brandDetails, ignoreDefault], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* renounceRole
-	*
-	* @param { (number | string | BN) } role,
-	* @param { ArgumentTypes.AccountId | null } account,
-	* @returns { Result<Result<null, ReturnTypes.AccessControlError>, ReturnTypes.LangError> }
-	*/
-	"renounceRole" (
-		role: (number | string | BN),
-		account: ArgumentTypes.AccountId | null,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<null, ReturnTypes.AccessControlError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::renounceRole", [role, account], __options , (result) => { return handleReturnType(result, getTypeDescription(52, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* getRoleAdmin
-	*
-	* @param { (number | string | BN) } role,
-	* @returns { Result<number, ReturnTypes.LangError> }
-	*/
-	"getRoleAdmin" (
-		role: (number | string | BN),
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<number, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::getRoleAdmin", [role], __options , (result) => { return handleReturnType(result, getTypeDescription(54, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* grantRole
-	*
-	* @param { (number | string | BN) } role,
-	* @param { ArgumentTypes.AccountId | null } account,
-	* @returns { Result<Result<null, ReturnTypes.AccessControlError>, ReturnTypes.LangError> }
-	*/
-	"grantRole" (
-		role: (number | string | BN),
-		account: ArgumentTypes.AccountId | null,
-		__options ? : GasLimit,
-	): Promise< QueryReturnType< Result<Result<null, ReturnTypes.AccessControlError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::grantRole", [role, account], __options , (result) => { return handleReturnType(result, getTypeDescription(52, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "brandController::changeOptimalValuation", [reward, newOptimalValuation, autoResumeConversations], __options , (result) => { return handleReturnType(result, getTypeDescription(18, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -625,7 +607,22 @@ export default class Methods {
 		account: ArgumentTypes.AccountId | null,
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<Result<null, ReturnTypes.AccessControlError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::revokeRole", [role, account], __options , (result) => { return handleReturnType(result, getTypeDescription(52, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::revokeRole", [role, account], __options , (result) => { return handleReturnType(result, getTypeDescription(50, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* renounceRole
+	*
+	* @param { (number | string | BN) } role,
+	* @param { ArgumentTypes.AccountId | null } account,
+	* @returns { Result<Result<null, ReturnTypes.AccessControlError>, ReturnTypes.LangError> }
+	*/
+	"renounceRole" (
+		role: (number | string | BN),
+		account: ArgumentTypes.AccountId | null,
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<null, ReturnTypes.AccessControlError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::renounceRole", [role, account], __options , (result) => { return handleReturnType(result, getTypeDescription(50, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -640,7 +637,35 @@ export default class Methods {
 		address: ArgumentTypes.AccountId | null,
 		__options ? : GasLimit,
 	): Promise< QueryReturnType< Result<boolean, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::hasRole", [role, address], __options , (result) => { return handleReturnType(result, getTypeDescription(55, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::hasRole", [role, address], __options , (result) => { return handleReturnType(result, getTypeDescription(52, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* getRoleAdmin
+	*
+	* @param { (number | string | BN) } role,
+	* @returns { Result<number, ReturnTypes.LangError> }
+	*/
+	"getRoleAdmin" (
+		role: (number | string | BN),
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<number, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::getRoleAdmin", [role], __options , (result) => { return handleReturnType(result, getTypeDescription(53, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* grantRole
+	*
+	* @param { (number | string | BN) } role,
+	* @param { ArgumentTypes.AccountId | null } account,
+	* @returns { Result<Result<null, ReturnTypes.AccessControlError>, ReturnTypes.LangError> }
+	*/
+	"grantRole" (
+		role: (number | string | BN),
+		account: ArgumentTypes.AccountId | null,
+		__options ? : GasLimit,
+	): Promise< QueryReturnType< Result<Result<null, ReturnTypes.AccessControlError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::grantRole", [role, account], __options , (result) => { return handleReturnType(result, getTypeDescription(50, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 }

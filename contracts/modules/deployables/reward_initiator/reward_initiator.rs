@@ -71,7 +71,7 @@ pub mod reward_initiator {
          }
 
          #[ink(message)]
-         pub fn get_pool_hash(&mut self) -> Hash {
+         pub fn get_reward_hash(&mut self) -> Hash {
             get_hash(self)
          }
 

@@ -29,19 +29,23 @@ export default class Methods {
 	}
 
 	/**
-	* spendRewardsOnIssuingBrand
+	* spendRewardsOnOtherBrand
 	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } amount,
+	* @param { ArgumentTypes.AccountId } rewardAtHand,
+	* @param { ArgumentTypes.AccountId } targetedReward,
+	* @param { (string | number | BN) } amountOfRewardAtHand,
+	* @param { (string | number | BN) } expectedAmountOfTargettedReward,
 	*/
-	"spendRewardsOnIssuingBrand" (
-		reward: ArgumentTypes.AccountId,
-		amount: (string | number | BN),
+	"spendRewardsOnOtherBrand" (
+		rewardAtHand: ArgumentTypes.AccountId,
+		targetedReward: ArgumentTypes.AccountId,
+		amountOfRewardAtHand: (string | number | BN),
+		expectedAmountOfTargettedReward: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "customerController::spendRewardsOnIssuingBrand", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "customerController::spendRewardsOnOtherBrand", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward, amount], __options);
+		}, [rewardAtHand, targetedReward, amountOfRewardAtHand, expectedAmountOfTargettedReward], __options);
 	}
 
 	/**
@@ -67,23 +71,19 @@ export default class Methods {
 	}
 
 	/**
-	* spendRewardsOnOtherBrand
+	* spendRewardsOnIssuingBrand
 	*
-	* @param { ArgumentTypes.AccountId } rewardAtHand,
-	* @param { ArgumentTypes.AccountId } targetedReward,
-	* @param { (string | number | BN) } amountOfRewardAtHand,
-	* @param { (string | number | BN) } expectedAmountOfTargettedReward,
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { (string | number | BN) } amount,
 	*/
-	"spendRewardsOnOtherBrand" (
-		rewardAtHand: ArgumentTypes.AccountId,
-		targetedReward: ArgumentTypes.AccountId,
-		amountOfRewardAtHand: (string | number | BN),
-		expectedAmountOfTargettedReward: (string | number | BN),
+	"spendRewardsOnIssuingBrand" (
+		reward: ArgumentTypes.AccountId,
+		amount: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "customerController::spendRewardsOnOtherBrand", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "customerController::spendRewardsOnIssuingBrand", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [rewardAtHand, targetedReward, amountOfRewardAtHand, expectedAmountOfTargettedReward], __options);
+		}, [reward, amount], __options);
 	}
 
 	/**
@@ -99,15 +99,17 @@ export default class Methods {
 	}
 
 	/**
-	* getProtocolRecords
+	* updateProtocolRecords
 	*
+	* @param { ArgumentTypes.EditableProtocolRecords } records,
 	*/
-	"getProtocolRecords" (
+	"updateProtocolRecords" (
+		records: ArgumentTypes.EditableProtocolRecords,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "adminController::getProtocolRecords", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "adminController::updateProtocolRecords", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
+		}, [records], __options);
 	}
 
 	/**
@@ -157,20 +159,6 @@ export default class Methods {
 	}
 
 	/**
-	* updateProtocolRecords
-	*
-	* @param { ArgumentTypes.EditableProtocolRecords } records,
-	*/
-	"updateProtocolRecords" (
-		records: ArgumentTypes.EditableProtocolRecords,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "adminController::updateProtocolRecords", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [records], __options);
-	}
-
-	/**
 	* updateTreasuryAddress
 	*
 	* @param { ArgumentTypes.AccountId } address,
@@ -185,55 +173,81 @@ export default class Methods {
 	}
 
 	/**
-	* fundBountyPool
+	* getProtocolRecords
+	*
+	*/
+	"getProtocolRecords" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "adminController::getProtocolRecords", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* pauseOpenRewards
 	*
 	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } amount,
 	*/
-	"fundBountyPool" (
+	"pauseOpenRewards" (
 		reward: ArgumentTypes.AccountId,
-		amount: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::fundBountyPool", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::pauseOpenRewards", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward, amount], __options);
+		}, [reward], __options);
 	}
 
 	/**
-	* createMoreRewards
+	* updateBrandConfigByBrandId
 	*
-	* @param { (string | number | BN) } amount,
-	* @param { ArgumentTypes.AccountId } rewardAddress,
-	* @param { ArgumentTypes.AccountId } to,
-	*/
-	"createMoreRewards" (
-		amount: (string | number | BN),
-		rewardAddress: ArgumentTypes.AccountId,
-		to: ArgumentTypes.AccountId,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::createMoreRewards", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [amount, rewardAddress, to], __options);
-	}
-
-	/**
-	* updateRewardDetails
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { ArgumentTypes.EditableRewardDetails } rewardDetails,
+	* @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
 	* @param { boolean } ignoreDefault,
+	* @param { Array<(number | string | BN)> } brandId,
 	*/
-	"updateRewardDetails" (
-		reward: ArgumentTypes.AccountId,
-		rewardDetails: ArgumentTypes.EditableRewardDetails,
+	"updateBrandConfigByBrandId" (
+		brandConfig: ArgumentTypes.GlobalBrandConfig,
 		ignoreDefault: boolean,
+		brandId: Array<(number | string | BN)>,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateRewardDetails", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateBrandConfigByBrandId", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward, rewardDetails, ignoreDefault], __options);
+		}, [brandConfig, ignoreDefault, brandId], __options);
+	}
+
+	/**
+	* withdrawOpenRewardsLiquidityToTreasury
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { ArgumentTypes.Id } liquidityPosition,
+	* @param { (string | number | BN) } rewardAmount,
+	* @param { (string | number | BN) } meAmount,
+	*/
+	"withdrawOpenRewardsLiquidityToTreasury" (
+		reward: ArgumentTypes.AccountId,
+		liquidityPosition: ArgumentTypes.Id,
+		rewardAmount: (string | number | BN),
+		meAmount: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::withdrawOpenRewardsLiquidityToTreasury", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [reward, liquidityPosition, rewardAmount, meAmount], __options);
+	}
+
+	/**
+	* getBrandConfigById
+	*
+	* @param { Array<(number | string | BN)> } brandId,
+	*/
+	"getBrandConfigById" (
+		brandId: Array<(number | string | BN)>,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::getBrandConfigById", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [brandId], __options);
 	}
 
 	/**
@@ -252,68 +266,6 @@ export default class Methods {
 		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::integrateExistingReward", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [reward, rewardDescriptionLink, readTAndC], __options);
-	}
-
-	/**
-	* getBrandConfigById
-	*
-	* @param { Array<(number | string | BN)> } brandId,
-	*/
-	"getBrandConfigById" (
-		brandId: Array<(number | string | BN)>,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::getBrandConfigById", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [brandId], __options);
-	}
-
-	/**
-	* resumeOpenRewards
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	*/
-	"resumeOpenRewards" (
-		reward: ArgumentTypes.AccountId,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::resumeOpenRewards", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward], __options);
-	}
-
-	/**
-	* updateRewardConfig
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { ArgumentTypes.RewardConfig } rewardConfig,
-	* @param { boolean } ignoreDefault,
-	*/
-	"updateRewardConfig" (
-		reward: ArgumentTypes.AccountId,
-		rewardConfig: ArgumentTypes.RewardConfig,
-		ignoreDefault: boolean,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateRewardConfig", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward, rewardConfig, ignoreDefault], __options);
-	}
-
-	/**
-	* setBountyTriggerLimit
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } triggerLimit,
-	*/
-	"setBountyTriggerLimit" (
-		reward: ArgumentTypes.AccountId,
-		triggerLimit: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::setBountyTriggerLimit", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward, triggerLimit], __options);
 	}
 
 	/**
@@ -337,6 +289,68 @@ export default class Methods {
 	}
 
 	/**
+	* updateBrandDetails
+	*
+	* @param { ArgumentTypes.EditableBrandDetails } brandDetails,
+	* @param { boolean } ignoreDefault,
+	*/
+	"updateBrandDetails" (
+		brandDetails: ArgumentTypes.EditableBrandDetails,
+		ignoreDefault: boolean,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateBrandDetails", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [brandDetails, ignoreDefault], __options);
+	}
+
+	/**
+	* setBountyTriggerLimit
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { (string | number | BN) } triggerLimit,
+	*/
+	"setBountyTriggerLimit" (
+		reward: ArgumentTypes.AccountId,
+		triggerLimit: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::setBountyTriggerLimit", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [reward, triggerLimit], __options);
+	}
+
+	/**
+	* createNewReward
+	*
+	* @param { ArgumentTypes.AccountId } rewardInitiator,
+	* @param { string | null } rewardName,
+	* @param { string | null } rewardSymbol,
+	* @param { string | null } rewardDescriptionLink,
+	* @param { (number | string | BN) } rewardType,
+	* @param { (string | number | BN) } initialRewardSupply,
+	* @param { Array<(number | string | BN)> } saltBytes,
+	* @param { Array<(number | string | BN)> } brandId,
+	* @param { ArgumentTypes.AccountId } requestor,
+	*/
+	"createNewReward" (
+		rewardInitiator: ArgumentTypes.AccountId,
+		rewardName: string | null,
+		rewardSymbol: string | null,
+		rewardDescriptionLink: string | null,
+		rewardType: (number | string | BN),
+		initialRewardSupply: (string | number | BN),
+		saltBytes: Array<(number | string | BN)>,
+		brandId: Array<(number | string | BN)>,
+		requestor: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::createNewReward", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [rewardInitiator, rewardName, rewardSymbol, rewardDescriptionLink, rewardType, initialRewardSupply, saltBytes, brandId, requestor], __options);
+	}
+
+	/**
 	* withdrawRewardsFromBountyPoolToTreasury
 	*
 	* @param { ArgumentTypes.AccountId } reward,
@@ -353,143 +367,35 @@ export default class Methods {
 	}
 
 	/**
-	* addLiquidityForOpenRewards
+	* updateRewardConfig
 	*
 	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } rewardAmount,
-	* @param { (string | number | BN) } meAmount,
-	*/
-	"addLiquidityForOpenRewards" (
-		reward: ArgumentTypes.AccountId,
-		rewardAmount: (string | number | BN),
-		meAmount: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::addLiquidityForOpenRewards", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward, rewardAmount, meAmount], __options);
-	}
-
-	/**
-	* updateBrandConfig
-	*
-	* @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
+	* @param { ArgumentTypes.RewardConfig } rewardConfig,
 	* @param { boolean } ignoreDefault,
 	*/
-	"updateBrandConfig" (
-		brandConfig: ArgumentTypes.GlobalBrandConfig,
+	"updateRewardConfig" (
+		reward: ArgumentTypes.AccountId,
+		rewardConfig: ArgumentTypes.RewardConfig,
 		ignoreDefault: boolean,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateBrandConfig", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateRewardConfig", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [brandConfig, ignoreDefault], __options);
+		}, [reward, rewardConfig, ignoreDefault], __options);
 	}
 
 	/**
-	* addLiquidityForOpenRewardsFromTreasury
+	* getRewardDetails
 	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } rewardAmount,
-	* @param { (string | number | BN) } meAmount,
-	*/
-	"addLiquidityForOpenRewardsFromTreasury" (
-		reward: ArgumentTypes.AccountId,
-		rewardAmount: (string | number | BN),
-		meAmount: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::addLiquidityForOpenRewardsFromTreasury", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward, rewardAmount, meAmount], __options);
-	}
-
-	/**
-	* updateBrandConfigByBrandId
-	*
-	* @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
-	* @param { boolean } ignoreDefault,
-	* @param { Array<(number | string | BN)> } brandId,
-	*/
-	"updateBrandConfigByBrandId" (
-		brandConfig: ArgumentTypes.GlobalBrandConfig,
-		ignoreDefault: boolean,
-		brandId: Array<(number | string | BN)>,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateBrandConfigByBrandId", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [brandConfig, ignoreDefault, brandId], __options);
-	}
-
-	/**
-	* changeBrandMainAccount
-	*
-	* @param { ArgumentTypes.AccountId } newAccount,
 	* @param { ArgumentTypes.AccountId } requestor,
 	*/
-	"changeBrandMainAccount" (
-		newAccount: ArgumentTypes.AccountId,
+	"getRewardDetails" (
 		requestor: ArgumentTypes.AccountId,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::changeBrandMainAccount", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::getRewardDetails", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [newAccount, requestor], __options);
-	}
-
-	/**
-	* changeOptimalValuation
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { (string | number | BN) } newOptimalValuation,
-	* @param { boolean } autoResumeConversations,
-	*/
-	"changeOptimalValuation" (
-		reward: ArgumentTypes.AccountId,
-		newOptimalValuation: (string | number | BN),
-		autoResumeConversations: boolean,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::changeOptimalValuation", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward, newOptimalValuation, autoResumeConversations], __options);
-	}
-
-	/**
-	* updateBrandDetailsByBrandId
-	*
-	* @param { ArgumentTypes.EditableBrandDetails } brandDetails,
-	* @param { boolean } ignoreDefault,
-	* @param { Array<(number | string | BN)> } brandId,
-	*/
-	"updateBrandDetailsByBrandId" (
-		brandDetails: ArgumentTypes.EditableBrandDetails,
-		ignoreDefault: boolean,
-		brandId: Array<(number | string | BN)>,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateBrandDetailsByBrandId", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [brandDetails, ignoreDefault, brandId], __options);
-	}
-
-	/**
-	* updatePoolConfiguration
-	*
-	* @param { ArgumentTypes.AccountId } reward,
-	* @param { ArgumentTypes.EditablePoolConfig } editablePoolConfig,
-	* @param { boolean } ignoreDefault,
-	*/
-	"updatePoolConfiguration" (
-		reward: ArgumentTypes.AccountId,
-		editablePoolConfig: ArgumentTypes.EditablePoolConfig,
-		ignoreDefault: boolean,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updatePoolConfiguration", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward, editablePoolConfig, ignoreDefault], __options);
+		}, [requestor], __options);
 	}
 
 	/**
@@ -537,37 +443,155 @@ export default class Methods {
 	}
 
 	/**
-	* withdrawOpenRewardsLiquidityToTreasury
+	* updateRewardDetails
 	*
 	* @param { ArgumentTypes.AccountId } reward,
-	* @param { ArgumentTypes.Id } liquidityPosition,
+	* @param { ArgumentTypes.EditableRewardDetails } rewardDetails,
+	* @param { boolean } ignoreDefault,
+	*/
+	"updateRewardDetails" (
+		reward: ArgumentTypes.AccountId,
+		rewardDetails: ArgumentTypes.EditableRewardDetails,
+		ignoreDefault: boolean,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateRewardDetails", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [reward, rewardDetails, ignoreDefault], __options);
+	}
+
+	/**
+	* updatePoolConfiguration
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { ArgumentTypes.EditablePoolConfig } editablePoolConfig,
+	* @param { boolean } ignoreDefault,
+	*/
+	"updatePoolConfiguration" (
+		reward: ArgumentTypes.AccountId,
+		editablePoolConfig: ArgumentTypes.EditablePoolConfig,
+		ignoreDefault: boolean,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updatePoolConfiguration", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [reward, editablePoolConfig, ignoreDefault], __options);
+	}
+
+	/**
+	* resumeOpenRewards
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	*/
+	"resumeOpenRewards" (
+		reward: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::resumeOpenRewards", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [reward], __options);
+	}
+
+	/**
+	* updateBrandDetailsByBrandId
+	*
+	* @param { ArgumentTypes.EditableBrandDetails } brandDetails,
+	* @param { boolean } ignoreDefault,
+	* @param { Array<(number | string | BN)> } brandId,
+	*/
+	"updateBrandDetailsByBrandId" (
+		brandDetails: ArgumentTypes.EditableBrandDetails,
+		ignoreDefault: boolean,
+		brandId: Array<(number | string | BN)>,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateBrandDetailsByBrandId", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [brandDetails, ignoreDefault, brandId], __options);
+	}
+
+	/**
+	* fundBountyPool
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { (string | number | BN) } amount,
+	*/
+	"fundBountyPool" (
+		reward: ArgumentTypes.AccountId,
+		amount: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::fundBountyPool", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [reward, amount], __options);
+	}
+
+	/**
+	* addLiquidityForOpenRewardsFromTreasury
+	*
+	* @param { ArgumentTypes.AccountId } reward,
 	* @param { (string | number | BN) } rewardAmount,
 	* @param { (string | number | BN) } meAmount,
 	*/
-	"withdrawOpenRewardsLiquidityToTreasury" (
+	"addLiquidityForOpenRewardsFromTreasury" (
 		reward: ArgumentTypes.AccountId,
-		liquidityPosition: ArgumentTypes.Id,
 		rewardAmount: (string | number | BN),
 		meAmount: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::withdrawOpenRewardsLiquidityToTreasury", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::addLiquidityForOpenRewardsFromTreasury", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward, liquidityPosition, rewardAmount, meAmount], __options);
+		}, [reward, rewardAmount, meAmount], __options);
 	}
 
 	/**
-	* pauseOpenRewards
+	* updateBrandConfig
 	*
-	* @param { ArgumentTypes.AccountId } reward,
+	* @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
+	* @param { boolean } ignoreDefault,
 	*/
-	"pauseOpenRewards" (
-		reward: ArgumentTypes.AccountId,
+	"updateBrandConfig" (
+		brandConfig: ArgumentTypes.GlobalBrandConfig,
+		ignoreDefault: boolean,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::pauseOpenRewards", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateBrandConfig", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [reward], __options);
+		}, [brandConfig, ignoreDefault], __options);
+	}
+
+	/**
+	* addLiquidityForOpenRewards
+	*
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { (string | number | BN) } rewardAmount,
+	* @param { (string | number | BN) } meAmount,
+	*/
+	"addLiquidityForOpenRewards" (
+		reward: ArgumentTypes.AccountId,
+		rewardAmount: (string | number | BN),
+		meAmount: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::addLiquidityForOpenRewards", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [reward, rewardAmount, meAmount], __options);
+	}
+
+	/**
+	* changeBrandMainAccount
+	*
+	* @param { ArgumentTypes.AccountId } newAccount,
+	* @param { ArgumentTypes.AccountId } requestor,
+	*/
+	"changeBrandMainAccount" (
+		newAccount: ArgumentTypes.AccountId,
+		requestor: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::changeBrandMainAccount", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [newAccount, requestor], __options);
 	}
 
 	/**
@@ -589,19 +613,37 @@ export default class Methods {
 	}
 
 	/**
-	* updateBrandDetails
+	* changeOptimalValuation
 	*
-	* @param { ArgumentTypes.EditableBrandDetails } brandDetails,
-	* @param { boolean } ignoreDefault,
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { (string | number | BN) } newOptimalValuation,
+	* @param { boolean } autoResumeConversations,
 	*/
-	"updateBrandDetails" (
-		brandDetails: ArgumentTypes.EditableBrandDetails,
-		ignoreDefault: boolean,
+	"changeOptimalValuation" (
+		reward: ArgumentTypes.AccountId,
+		newOptimalValuation: (string | number | BN),
+		autoResumeConversations: boolean,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::updateBrandDetails", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "brandController::changeOptimalValuation", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [brandDetails, ignoreDefault], __options);
+		}, [reward, newOptimalValuation, autoResumeConversations], __options);
+	}
+
+	/**
+	* revokeRole
+	*
+	* @param { (number | string | BN) } role,
+	* @param { ArgumentTypes.AccountId | null } account,
+	*/
+	"revokeRole" (
+		role: (number | string | BN),
+		account: ArgumentTypes.AccountId | null,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::revokeRole", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [role, account], __options);
 	}
 
 	/**
@@ -618,6 +660,22 @@ export default class Methods {
 		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::renounceRole", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [role, account], __options);
+	}
+
+	/**
+	* hasRole
+	*
+	* @param { (number | string | BN) } role,
+	* @param { ArgumentTypes.AccountId | null } address,
+	*/
+	"hasRole" (
+		role: (number | string | BN),
+		address: ArgumentTypes.AccountId | null,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::hasRole", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [role, address], __options);
 	}
 
 	/**
@@ -648,38 +706,6 @@ export default class Methods {
 		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::grantRole", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [role, account], __options);
-	}
-
-	/**
-	* revokeRole
-	*
-	* @param { (number | string | BN) } role,
-	* @param { ArgumentTypes.AccountId | null } account,
-	*/
-	"revokeRole" (
-		role: (number | string | BN),
-		account: ArgumentTypes.AccountId | null,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::revokeRole", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [role, account], __options);
-	}
-
-	/**
-	* hasRole
-	*
-	* @param { (number | string | BN) } role,
-	* @param { ArgumentTypes.AccountId | null } address,
-	*/
-	"hasRole" (
-		role: (number | string | BN),
-		address: ArgumentTypes.AccountId | null,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::hasRole", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [role, address], __options);
 	}
 
 }

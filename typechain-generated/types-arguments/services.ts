@@ -603,28 +603,6 @@ export enum PausableError {
 	notPaused = 'NotPaused'
 }
 
-export type ProtocolConfigClone = {
-	defaultMinimumMeForConversation: (string | number | BN),
-	defaultMinimumRewardForConversationInPercent: (number | string | BN),
-	defaultMaximumRLimitForConversationInPrecision: (string | number | BN),
-	defaultRewardNotifyThresholdInPercent: (number | string | BN),
-	defaultNotifyMeAmount: (string | number | BN),
-	defaultNotifyRewardAmountInPercent: (number | string | BN),
-	caiInMe: (string | number | BN),
-	protocolFee: (string | number | BN),
-	bountyContributionInPrecision: (string | number | BN)
-}
-
-export type ProtocolRecordsClone = {
-	me: AccountId,
-	bounty: AccountId,
-	treasury: AccountId,
-	adminId: Array<(number | string | BN)>,
-	totalNumberOfBrands: (string | number | BN),
-	totalNumberOfRewards: (string | number | BN),
-	lastUpdated: (number | string | BN)
-}
-
 export type EditableProtocolConfig = {
 	defaultMinimumMeForConversation: (string | number | BN),
 	defaultMinimumRewardForConversationInPercent: (number | string | BN),
@@ -643,32 +621,10 @@ export type EditableProtocolRecords = {
 	me: AccountId,
 	bounty: AccountId,
 	treasury: AccountId,
-	vaultId: AccountId,
-	adminId: Array<(number | string | BN)>
-}
-
-export type EditableRewardDetails = {
-	name: string | null,
-	symbol: string | null,
-	descriptionLink: string | null
-}
-
-export type BrandDetails = {
-	name: string | null,
-	id: Array<(number | string | BN)>,
-	mainAccount: AccountId,
-	onlinePresence: string | null,
-	dateJoined: (number | string | BN)
-}
-
-export type RewardConfig = {
-	specificExceptions: boolean,
-	bountyEnabled: boolean,
-	caiEnabled: boolean,
-	bountyTriggerLimit: (string | number | BN),
-	bountyContributionInPrecision: (string | number | BN),
-	payIncomingGasFee: boolean,
-	payOutgoingGasFee: boolean
+	adminId: Array<(number | string | BN)>,
+	totalNumberOfBrands: (string | number | BN),
+	totalNumberOfRewards: (string | number | BN),
+	lastUpdated: (number | string | BN)
 }
 
 export type GlobalBrandConfig = {
@@ -676,21 +632,6 @@ export type GlobalBrandConfig = {
 	enableCais: boolean,
 	payIncomingGasFees: boolean,
 	payOutgoingGasFees: boolean
-}
-
-export type EditableBrandDetails = {
-	name: string | null,
-	onlinePresence: string | null
-}
-
-export type EditablePoolConfig = {
-	maximumRLimit: (string | number | BN),
-	minimumRewardAmountForConversation: (string | number | BN),
-	minimumMeAmountForConversation: (string | number | BN),
-	notifyRewardAmount: (string | number | BN),
-	notifyMeAmount: (string | number | BN),
-	defaultSlippageInPrecision: (string | number | BN),
-	allowInternalSwap: boolean
 }
 
 export interface Id {
@@ -733,5 +674,58 @@ export class IdBuilder {
 			bytes: value,
 		};
 	}
+}
+
+export type BrandDetails = {
+	name: string | null,
+	id: Array<(number | string | BN)>,
+	mainAccount: AccountId,
+	onlinePresence: string | null,
+	dateJoined: (number | string | BN)
+}
+
+export type EditableBrandDetails = {
+	name: string | null,
+	onlinePresence: string | null
+}
+
+export type RewardConfig = {
+	specificExceptions: boolean,
+	bountyEnabled: boolean,
+	caiEnabled: boolean,
+	bountyTriggerLimit: (string | number | BN),
+	bountyContributionInPrecision: (string | number | BN),
+	payIncomingGasFee: boolean,
+	payOutgoingGasFee: boolean
+}
+
+export type RewardDetails = {
+	name: string | null,
+	symbol: string | null,
+	rType: (number | string | BN),
+	verified: boolean,
+	contractAddress: AccountId,
+	descriptionLink: string | null,
+	issuingBrand: Array<(number | string | BN)>,
+	open: boolean,
+	interspendable: boolean,
+	poolId: AccountId,
+	dateCreated: (string | number | BN)
+}
+
+export type EditableRewardDetails = {
+	name: string | null,
+	symbol: string | null,
+	descriptionLink: string | null
+}
+
+export type EditablePoolConfig = {
+	maximumRLimit: (string | number | BN),
+	minimumRewardAmountForConversation: (string | number | BN),
+	minimumMeAmountForConversation: (string | number | BN),
+	notifyRewardAmount: (string | number | BN),
+	notifyMeAmount: (string | number | BN),
+	defaultSlippageInPrecision: (string | number | BN),
+	allowInternalSwap: boolean
 }
 

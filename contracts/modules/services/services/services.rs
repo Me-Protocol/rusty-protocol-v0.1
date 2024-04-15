@@ -4,7 +4,8 @@
 #[openbrush::contract]
 mod services {
 
-    use global::{controllers::services::customers, providers::{common::roleguard::RecordStorage, data::{a_reward::RewardRecords, brand::BrandRecords, protocol::{ProtocolConfig, ProtocolRecords}}, services::{admin::{AdminImpl, BrandImpl}, customers::CustomerImpl}}};
+    use ink::{ prelude::vec::Vec };
+    use global::{controllers::services::customers, providers::{common::roleguard::RecordStorage, data::{a_reward::RewardRecords, brand::BrandRecords, protocol::{EditableProtocolConfig, EditableProtocolRecords, ProtocolConfig, ProtocolRecords}}, services::{admin::{AdminImpl, BrandImpl}, customers::CustomerImpl}}};
     use openbrush::{
         contracts::access_control::{*, self},
         traits::Storage,
@@ -66,12 +67,12 @@ mod services {
     impl AdminController for Services {
         
         #[ink(message)]
-        fn get_protocol_config(&self) -> Result<ProtocolConfigClone, ProtocolError> {
+        fn get_protocol_config(&self) -> EditableProtocolConfig {
             AdminImpl::get_protocol_config(self)
         }
 
         #[ink(message)]
-        fn get_protocol_records(&self) -> Result<ProtocolRecordsClone, ProtocolError> {
+        fn get_protocol_records(&self) -> EditableProtocolRecords {
             AdminImpl::get_protocol_records(self)
         }
 
@@ -105,11 +106,6 @@ mod services {
     impl BrandImpl for Services {}
 
     impl BrandController for Services {
-
-        #[ink(message)]
-        fn create_more_rewards(&mut self, _amount: Balance, _reward_address: AccountId, _to: AccountId) -> Result<bool, ProtocolError> {
-            BrandImpl::create_more_rewards(self, _amount, _reward_address, _to)
-        }
 
         #[ink(message)]
         fn update_brand_details(
@@ -317,6 +313,18 @@ mod services {
             BrandImpl::withdraw_treasury_balances(self, reward, reward_amount, me_amount, to)
         }
 
+        #[ink(message)]
+        fn create_new_reward(&mut self,reward_initiator: AccountId, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8, initial_reward_supply:Balance, salt_bytes: Vec<u8>,brand_id: BRAND_ID_TYPE, requestor: AccountId) -> Result<bool, ProtocolError>{
+
+            BrandImpl::create_new_reward(self, reward_initiator, reward_name, reward_symbol, reward_description_link, reward_type, initial_reward_supply, salt_bytes, brand_id, requestor)
+        }
+
+        #[ink(message)]
+        fn get_reward_details ( &self, requestor: AccountId) -> RewardDetails{
+
+            BrandImpl::get_reward_details(self, requestor)
+        }
+
     }
     
 
@@ -333,8 +341,10 @@ mod services {
             access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
 
             access_control::InternalImpl::_setup_role(&mut instance,PROTOCOL_ADMIN, Some(caller));
-            
+
             access_control::InternalImpl::_setup_role(&mut instance,ONBOARDING_MANAGER, Some(caller));
+
+            RewardConfig::default();
 
             instance
         }

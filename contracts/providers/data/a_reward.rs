@@ -5,7 +5,7 @@ use crate::providers::common::{ database::*, types::BRAND_ID_TYPE, errors::Proto
 pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
 
 
-#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode, Clone)]
 #[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
 pub struct RewardDetails {
     pub name: Option<String>,

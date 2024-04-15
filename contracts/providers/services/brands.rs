@@ -1,5 +1,5 @@
 
-use crate::controllers::deployables::{reward, treasury};
+use crate::{controllers::deployables::{reward, treasury}, providers::data::brand};
 pub use crate::{
     providers::{
         data::{ brand::*, a_pool::*, a_reward::*, protocol::* },
@@ -14,7 +14,7 @@ pub use crate::{
     },
     controllers::{
         services::brands::*,
-        deployables::{ a_pool::*, reward::*, treasury::*, bounty::* },
+        deployables::{ a_pool::*, reward::*, treasury::*, bounty::* , reward_initiator::*},
     },
 };
 
@@ -64,35 +64,32 @@ pub trait BrandImpl: Storage<BrandRecords> +
     //     Ok(())
     // }
 
-    // fn create_new_reward(&mut self, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8, initial_reward_supply:Balance, use_global_config:bool, requestor: AccountId) -> Result<bool, ProtocolError>{
+    fn create_new_reward(&mut self,reward_initiator: AccountId, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8, initial_reward_supply:Balance, salt_bytes: Vec<u8>,brand_id: BRAND_ID_TYPE, requestor: AccountId) -> Result<bool, ProtocolError>{
 
-    //     if reward_name == None {return Err(ProtocolError::RewardNameCannotBeEmpty)}
-    //     if reward_symbol == None {return Err(ProtocolError::RewardSymbolCannotBeEmpty)}
-    //     ensure_address_is_not_zero_address(requestor);
-    //     ensure_value_is_not_zero(reward_type.into());
+        if reward_name == None {return Err(ProtocolError::RewardNameCannotBeEmpty)}
+        if reward_symbol == None {return Err(ProtocolError::RewardSymbolCannotBeEmpty)}
+        ensure_address_is_not_zero_address(requestor).unwrap();
+        ensure_value_is_not_zero(reward_type.into()).unwrap();
 
-    //    let mut reward_details: RewardDetails = Default::default();
+       let mut reward_details: RewardDetails = Default::default();
     //    let mut reward_config: RewardConfig = Default::default();
-    //    reward_details.name = reward_name;
-    //    reward_details.symbol = reward_symbol;
-    //    reward_details.description_link = reward_description_link;
-    //    reward_details.r_type = reward_type;
-    //    if reward_type == FUNGIBLE_REWARD{
-    //     RewardRef::new()
-    //    }
+       reward_details.name = reward_name.clone();
+       reward_details.symbol = reward_symbol.clone();
+       reward_details.description_link = reward_description_link;
+       reward_details.r_type = reward_type;
+       if reward_type == FUNGIBLE_REWARD{
+       let reward: AccountId = RewardInitiatorRef::create_new_reward(&reward_initiator,requestor, reward_name, reward_symbol, reward_type, initial_reward_supply, salt_bytes, brand_id)?;
+       reward_details.contract_address = reward;
+       self.data::<RewardRecords>().details.insert(requestor, &reward_details);
+       }
 
-    //     Ok(true)
-    // }
-
-    fn create_more_rewards(&mut self, _amount: Balance, _reward_address: AccountId, _to: AccountId) -> Result<bool, ProtocolError> {
-
-        let requestor = Self::env().caller();
-        let requestor_id = self.data::<BrandRecords>().id.get(&requestor).unwrap();
-        // Todo: no create more rewards
-        // RewardRef::create_more_rewards(&_reward_address, _to, _amount);
         Ok(true)
     }
 
+
+    fn get_reward_details ( &self, requestor: AccountId) -> RewardDetails{
+        self.data::<RewardRecords>().details.get(requestor).clone().unwrap()
+    }
 
 
    // Todo: Implement Role Guard

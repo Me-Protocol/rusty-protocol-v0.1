@@ -12,10 +12,10 @@ pub type AdminRef = dyn AdminController + AccessControl;
 pub trait AdminController {
 
     #[ink(message)]
-    fn get_protocol_config(&self) -> Result<ProtocolConfigClone, ProtocolError>;
+    fn get_protocol_config(&self) -> EditableProtocolConfig;
 
     #[ink(message)]
-    fn get_protocol_records(&self) -> Result<ProtocolRecordsClone, ProtocolError>;
+    fn get_protocol_records(&self) -> EditableProtocolRecords;
 
     #[ink(message)]
     fn update_protocol_configurations(&mut self, config: EditableProtocolConfig) -> Result<bool, ProtocolError>;

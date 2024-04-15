@@ -41,10 +41,10 @@ pub trait AdminImpl:
 {
 
 
-    fn get_protocol_config(&self) -> Result<ProtocolConfigClone, ProtocolError> {
+    fn get_protocol_config(&self) -> EditableProtocolConfig{
        let config = self.data::<ProtocolConfig>().clone();
 
-        Ok (ProtocolConfigClone{
+      EditableProtocolConfig{
             default_minimum_me_for_conversation: config.default_minimum_me_for_conversation,
             default_minimum_reward_for_conversation_in_percent: config.default_minimum_reward_for_conversation_in_percent,
             default_maximum_r_limit_for_conversation_in_precision: config.default_maximum_r_limit_for_conversation_in_precision,
@@ -54,14 +54,16 @@ pub trait AdminImpl:
             cai_in_me: config.cai_in_me,
             protocol_fee: config.protocol_fee,
             bounty_contribution_in_precision: config.bounty_contribution_in_precision,
-        })
+            conversions_slippage_in_precisiion: config.conversions_slippage_in_precisiion,
+            informations_slippage_in_precision: config.informations_slippage_in_precision,
+        }
     }
 
-    fn get_protocol_records(&self) -> Result<ProtocolRecordsClone, ProtocolError> {
+    fn get_protocol_records(&self) -> EditableProtocolRecords{
         let protocol = self.data::<ProtocolRecords>().clone();
 
-        Ok(
-            ProtocolRecordsClone{
+    
+            EditableProtocolRecords{
                 me: protocol.me,
                 bounty: protocol.bounty,
                 treasury: protocol.treasury,
@@ -70,7 +72,7 @@ pub trait AdminImpl:
                 total_number_of_rewards: protocol.total_number_of_rewards,
                 last_updated: protocol.last_updated,
             }
-        )
+        
 
     }
 

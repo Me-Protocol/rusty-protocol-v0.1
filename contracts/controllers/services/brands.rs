@@ -5,14 +5,13 @@ use openbrush::{
 
 use crate::providers::{ common::{errors::*, types::BRAND_ID_TYPE}, data::{ a_pool::*, a_reward::*, brand::* } };
 
+use ink::{ prelude::vec::Vec };
+
 #[openbrush::wrapper]
 pub type BrandRef = dyn BrandController + AccessControl;
 
 #[openbrush::trait_definition]
 pub trait BrandController {
-
-    #[ink(message)]
-    fn create_more_rewards(&mut self, _amount: Balance, _reward_address: AccountId, _to: AccountId) -> Result<bool, ProtocolError>;
 
     #[ink(message)]
     fn update_brand_details(
@@ -172,4 +171,19 @@ pub trait BrandController {
         to: AccountId
     ) -> Result<bool, ProtocolError>;
 
+    #[ink(message)]
+    fn create_new_reward(&mut self,
+        reward_initiator: AccountId, 
+        reward_name: Option<String>, 
+        reward_symbol: Option<String>, 
+        reward_description_link:Option<String>, 
+        reward_type:u8, 
+        initial_reward_supply:Balance, 
+        salt_bytes: Vec<u8>,
+        brand_id: BRAND_ID_TYPE, 
+        requestor: AccountId) -> Result<bool, ProtocolError>;
+
+    #[ink(message)]
+    fn get_reward_details ( &self, requestor: AccountId) -> RewardDetails;
 }
+
