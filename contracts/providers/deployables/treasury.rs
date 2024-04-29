@@ -24,7 +24,7 @@ use openbrush::{
     {
 
 
-    #[modifiers(only_role(PROTOCOL))]
+    // #[modifiers(only_role(PROTOCOL))]
     fn deposit_reward_and_or_me(
         &mut self,
         reward: AccountId,
@@ -93,7 +93,7 @@ use openbrush::{
         Ok(true)
     }
 
-    #[modifiers(only_role(PROTOCOL))]
+    // #[modifiers(only_role(PROTOCOL))]
     #[modifiers(non_reentrant)]
     fn withdraw_reward_and_or_me(
         &mut self,

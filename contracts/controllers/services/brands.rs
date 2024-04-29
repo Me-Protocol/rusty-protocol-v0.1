@@ -23,10 +23,10 @@ pub trait BrandController {
     #[ink(message)]
     fn update_brand_details_by_brand_id(
         &mut self,
-        brand_details: EditableBrandDetails,
-        ignore_default: bool,
+        brand_details: BrandDetails,
+        // ignore_default: bool,
         brand_id: BRAND_ID_TYPE
-    ) -> Result<bool, ProtocolError> ;
+    );
 
     #[ink(message)]
     fn update_brand_config(
@@ -152,14 +152,15 @@ pub trait BrandController {
     fn get_brand_config_by_id (
         &self,
         brand_id: BRAND_ID_TYPE
-    ) -> Result<BrandDetails, ProtocolError>;
+    ) ->GlobalBrandConfig;
 
     #[ink(message)]
     fn top_up_treasury_balances(
         &mut self,
         reward: AccountId,
         reward_amount: Balance,
-        me_amount: Balance
+        me_amount: Balance,
+        brand: BRAND_ID_TYPE
     ) -> Result<bool, ProtocolError>;
 
     #[ink(message)]
@@ -168,22 +169,19 @@ pub trait BrandController {
         reward: AccountId,
         reward_amount: Balance,
         me_amount: Balance,
-        to: AccountId
+        to: AccountId,
+        brand: BRAND_ID_TYPE
     ) -> Result<bool, ProtocolError>;
 
     #[ink(message)]
-    fn create_new_reward(&mut self,
-        reward_initiator: AccountId, 
-        reward_name: Option<String>, 
-        reward_symbol: Option<String>, 
-        reward_description_link:Option<String>, 
-        reward_type:u8, 
-        initial_reward_supply:Balance, 
-        salt_bytes: Vec<u8>,
-        brand_id: BRAND_ID_TYPE, 
-        requestor: AccountId) -> Result<bool, ProtocolError>;
+    fn create_new_reward(&mut self, reward: AccountId, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8,brand_id: BRAND_ID_TYPE, requestor: AccountId, pool_id: AccountId) -> Result<bool, ProtocolError>;
+
 
     #[ink(message)]
     fn get_reward_details ( &self, requestor: AccountId) -> RewardDetails;
+
+    #[ink(message)]
+    fn get_brand_details ( &self, brand_id: BRAND_ID_TYPE) -> BrandDetails;
+
 }
 

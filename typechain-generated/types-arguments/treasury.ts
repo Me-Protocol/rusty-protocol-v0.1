@@ -21,11 +21,14 @@ export interface ProtocolError {
 	openRewardsNotStarted ? : null,
 	openRewardsAlreadyStarted ? : null,
 	poolAlreadyInActive ? : null,
+	pairInstantiationFailed ? : null,
 	poolIsActive ? : null,
+	topUpToPayForService ? : null,
 	poolNotActive ? : null,
 	poolAlreadyActive ? : null,
 	conversationsShouldBeStartedAtOptimalRatioOrLess ? : null,
 	accountAlreadyPoolManager ? : null,
+	emptyBrand ? : null,
 	accountIsNotAPoolManager ? : null,
 	conversationWillCausePoolToGoOutOfRag ? : null,
 	requestIsNotWithInAccuracyRange ? : null,
@@ -34,7 +37,13 @@ export interface ProtocolError {
 	actionWillTakePoolMeTokensBelowConversationLimit ? : null,
 	actionWillTakePoolRewardsBelowConversationLimit ? : null,
 	protocolOffsetMustBeConsidered ? : null,
+	seedsAreTooMuch ? : null,
+	accountDoesNotHaveAccess ? : null,
+	accessKeyAlreadyExistsPleaseChangeInstead ? : null,
+	accountAlreadyHasAccess ? : null,
+	requestorIsNotAdminForThisAccessKey ? : null,
 	canNotWithdrawZeroAssetsFromThePool ? : null,
+	accountIsNotAuthorizedToMakeThisRequest ? : null,
 	depositedRewardAmountIsNotTheSameAsStatedAmount ? : null,
 	insufficientRewardAmountDepositedForConversation ? : null,
 	expectedRewardAmountExceedsActuallyObtainableRewardsAmount ? : null,
@@ -54,11 +63,14 @@ export interface ProtocolError {
 	requestorIsNotIssuingBrand ? : null,
 	accountAlreadyABountyManager ? : null,
 	accountIsNotABountyManager ? : null,
+	youCannotWithdrawWhatYouDontHave ? : null,
+	paymentBalanceIsZero ? : null,
 	rewardHasNoPool ? : null,
 	pleaseReadTandC ? : null,
 	bothDepositsCanNotBeZero ? : null,
 	bothWithdrawalsCanNotBeZero ? : null,
 	bountyDepositNotRecognized ? : null,
+	paymentCanNotBeZero ? : null,
 	rewardIsNotBountyReward ? : null,
 	insufficientBountyReward ? : null,
 	brandCanNotBeEmpty ? : null,
@@ -142,9 +154,19 @@ export class ProtocolErrorBuilder {
 			poolAlreadyInActive: null,
 		};
 	}
+	static PairInstantiationFailed(): ProtocolError {
+		return {
+			pairInstantiationFailed: null,
+		};
+	}
 	static PoolIsActive(): ProtocolError {
 		return {
 			poolIsActive: null,
+		};
+	}
+	static TopUpToPayForService(): ProtocolError {
+		return {
+			topUpToPayForService: null,
 		};
 	}
 	static PoolNotActive(): ProtocolError {
@@ -165,6 +187,11 @@ export class ProtocolErrorBuilder {
 	static AccountAlreadyPoolManager(): ProtocolError {
 		return {
 			accountAlreadyPoolManager: null,
+		};
+	}
+	static EmptyBrand(): ProtocolError {
+		return {
+			emptyBrand: null,
 		};
 	}
 	static AccountIsNotAPoolManager(): ProtocolError {
@@ -207,9 +234,39 @@ export class ProtocolErrorBuilder {
 			protocolOffsetMustBeConsidered: null,
 		};
 	}
+	static SeedsAreTooMuch(): ProtocolError {
+		return {
+			seedsAreTooMuch: null,
+		};
+	}
+	static AccountDoesNotHaveAccess(): ProtocolError {
+		return {
+			accountDoesNotHaveAccess: null,
+		};
+	}
+	static AccessKeyAlreadyExistsPleaseChangeInstead(): ProtocolError {
+		return {
+			accessKeyAlreadyExistsPleaseChangeInstead: null,
+		};
+	}
+	static AccountAlreadyHasAccess(): ProtocolError {
+		return {
+			accountAlreadyHasAccess: null,
+		};
+	}
+	static RequestorIsNotAdminForThisAccessKey(): ProtocolError {
+		return {
+			requestorIsNotAdminForThisAccessKey: null,
+		};
+	}
 	static CanNotWithdrawZeroAssetsFromThePool(): ProtocolError {
 		return {
 			canNotWithdrawZeroAssetsFromThePool: null,
+		};
+	}
+	static AccountIsNotAuthorizedToMakeThisRequest(): ProtocolError {
+		return {
+			accountIsNotAuthorizedToMakeThisRequest: null,
 		};
 	}
 	static DepositedRewardAmountIsNotTheSameAsStatedAmount(): ProtocolError {
@@ -307,6 +364,16 @@ export class ProtocolErrorBuilder {
 			accountIsNotABountyManager: null,
 		};
 	}
+	static YouCannotWithdrawWhatYouDontHave(): ProtocolError {
+		return {
+			youCannotWithdrawWhatYouDontHave: null,
+		};
+	}
+	static PaymentBalanceIsZero(): ProtocolError {
+		return {
+			paymentBalanceIsZero: null,
+		};
+	}
 	static RewardHasNoPool(): ProtocolError {
 		return {
 			rewardHasNoPool: null,
@@ -330,6 +397,11 @@ export class ProtocolErrorBuilder {
 	static BountyDepositNotRecognized(): ProtocolError {
 		return {
 			bountyDepositNotRecognized: null,
+		};
+	}
+	static PaymentCanNotBeZero(): ProtocolError {
+		return {
+			paymentCanNotBeZero: null,
 		};
 	}
 	static RewardIsNotBountyReward(): ProtocolError {

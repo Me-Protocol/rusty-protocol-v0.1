@@ -603,6 +603,16 @@ export enum PausableError {
 	notPaused = 'NotPaused'
 }
 
+export type EditableProtocolRecords = {
+	me: AccountId,
+	bounty: AccountId,
+	treasury: AccountId,
+	adminId: Array<(number | string | BN)>,
+	totalNumberOfBrands: (string | number | BN),
+	totalNumberOfRewards: (string | number | BN),
+	lastUpdated: (number | string | BN)
+}
+
 export type EditableProtocolConfig = {
 	defaultMinimumMeForConversation: (string | number | BN),
 	defaultMinimumRewardForConversationInPercent: (number | string | BN),
@@ -617,21 +627,46 @@ export type EditableProtocolConfig = {
 	informationsSlippageInPrecision: (string | number | BN)
 }
 
-export type EditableProtocolRecords = {
-	me: AccountId,
-	bounty: AccountId,
-	treasury: AccountId,
-	adminId: Array<(number | string | BN)>,
-	totalNumberOfBrands: (string | number | BN),
-	totalNumberOfRewards: (string | number | BN),
-	lastUpdated: (number | string | BN)
+export type RewardConfig = {
+	specificExceptions: boolean,
+	bountyEnabled: boolean,
+	caiEnabled: boolean,
+	bountyTriggerLimit: (string | number | BN),
+	bountyContributionInPrecision: (string | number | BN),
+	payIncomingGasFee: boolean,
+	payOutgoingGasFee: boolean
 }
 
-export type GlobalBrandConfig = {
-	enableBountyRewards: boolean,
-	enableCais: boolean,
-	payIncomingGasFees: boolean,
-	payOutgoingGasFees: boolean
+export type BrandDetails = {
+	name: string | null,
+	id: Array<(number | string | BN)>,
+	mainAccount: AccountId,
+	onlinePresence: string | null,
+	dateJoined: (number | string | BN)
+}
+
+export type RewardDetails = {
+	name: string | null,
+	symbol: string | null,
+	rType: (number | string | BN),
+	verified: boolean,
+	contractAddress: AccountId,
+	descriptionLink: string | null,
+	issuingBrand: Array<(number | string | BN)>,
+	open: boolean,
+	interspendable: boolean,
+	poolId: AccountId,
+	dateCreated: (string | number | BN)
+}
+
+export type EditablePoolConfig = {
+	maximumRLimit: (string | number | BN),
+	minimumRewardAmountForConversation: (string | number | BN),
+	minimumMeAmountForConversation: (string | number | BN),
+	notifyRewardAmount: (string | number | BN),
+	notifyMeAmount: (string | number | BN),
+	defaultSlippageInPrecision: (string | number | BN),
+	allowInternalSwap: boolean
 }
 
 export interface Id {
@@ -676,30 +711,7 @@ export class IdBuilder {
 	}
 }
 
-export type BrandDetails = {
-	name: string | null,
-	id: Array<(number | string | BN)>,
-	mainAccount: AccountId,
-	onlinePresence: string | null,
-	dateJoined: (number | string | BN)
-}
-
-export type EditableBrandDetails = {
-	name: string | null,
-	onlinePresence: string | null
-}
-
-export type RewardConfig = {
-	specificExceptions: boolean,
-	bountyEnabled: boolean,
-	caiEnabled: boolean,
-	bountyTriggerLimit: (string | number | BN),
-	bountyContributionInPrecision: (string | number | BN),
-	payIncomingGasFee: boolean,
-	payOutgoingGasFee: boolean
-}
-
-export type RewardDetails = {
+export type EditableRewardDetails = {
 	name: string | null,
 	symbol: string | null,
 	rType: (number | string | BN),
@@ -713,19 +725,15 @@ export type RewardDetails = {
 	dateCreated: (string | number | BN)
 }
 
-export type EditableRewardDetails = {
-	name: string | null,
-	symbol: string | null,
-	descriptionLink: string | null
+export type GlobalBrandConfig = {
+	enableBountyRewards: boolean,
+	enableCais: boolean,
+	payIncomingGasFees: boolean,
+	payOutgoingGasFees: boolean
 }
 
-export type EditablePoolConfig = {
-	maximumRLimit: (string | number | BN),
-	minimumRewardAmountForConversation: (string | number | BN),
-	minimumMeAmountForConversation: (string | number | BN),
-	notifyRewardAmount: (string | number | BN),
-	notifyMeAmount: (string | number | BN),
-	defaultSlippageInPrecision: (string | number | BN),
-	allowInternalSwap: boolean
+export type EditableBrandDetails = {
+	name: string | null,
+	onlinePresence: string | null
 }
 

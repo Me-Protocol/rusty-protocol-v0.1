@@ -4,7 +4,7 @@
 #[openbrush::contract]
 mod services {
 
-    use ink::{ prelude::vec::Vec };
+    use ink::{ prelude::vec::Vec};
     use global::{controllers::services::customers, providers::{common::roleguard::RecordStorage, data::{a_reward::RewardRecords, brand::BrandRecords, protocol::{EditableProtocolConfig, EditableProtocolRecords, ProtocolConfig, ProtocolRecords}}, services::{admin::{AdminImpl, BrandImpl}, customers::CustomerImpl}}};
     use openbrush::{
         contracts::access_control::{*, self},
@@ -119,11 +119,11 @@ mod services {
         #[ink(message)]
         fn update_brand_details_by_brand_id(
             &mut self,
-            brand_details: EditableBrandDetails,
-            ignore_default: bool,
+            brand_details: BrandDetails,
+            // ignore_default: bool,
             brand_id: BRAND_ID_TYPE
-        ) -> Result<bool, ProtocolError> {
-            BrandImpl::update_brand_details_by_brand_id(self, brand_details, ignore_default, brand_id)
+        )  {
+            BrandImpl::update_brand_details_by_brand_id(self, brand_details,brand_id)
         }
 
         #[ink(message)]
@@ -288,7 +288,7 @@ mod services {
         fn get_brand_config_by_id (
             &self,
             brand_id: BRAND_ID_TYPE
-        ) -> Result<BrandDetails, ProtocolError>{
+        ) ->GlobalBrandConfig{
             BrandImpl::get_brand_config_by_id(self, brand_id)
         }
 
@@ -297,9 +297,10 @@ mod services {
             &mut self,
             reward: AccountId,
             reward_amount: Balance,
-            me_amount: Balance
+            me_amount: Balance,
+            brand: BRAND_ID_TYPE
         ) -> Result<bool, ProtocolError>{
-            BrandImpl::top_up_treasury_balances(self, reward, reward_amount, me_amount)
+            BrandImpl::top_up_treasury_balances(self, reward, reward_amount, me_amount,brand)
         }
 
         #[ink(message)]
@@ -308,21 +309,29 @@ mod services {
             reward: AccountId,
             reward_amount: Balance,
             me_amount: Balance,
-            to: AccountId
+            to: AccountId,
+            brand: BRAND_ID_TYPE
         ) -> Result<bool, ProtocolError>{
-            BrandImpl::withdraw_treasury_balances(self, reward, reward_amount, me_amount, to)
+            BrandImpl::withdraw_treasury_balances(self, reward, reward_amount, me_amount, to, brand)
         }
 
         #[ink(message)]
-        fn create_new_reward(&mut self,reward_initiator: AccountId, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8, initial_reward_supply:Balance, salt_bytes: Vec<u8>,brand_id: BRAND_ID_TYPE, requestor: AccountId) -> Result<bool, ProtocolError>{
+        fn create_new_reward(&mut self, reward: AccountId, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8,brand_id: BRAND_ID_TYPE, requestor: AccountId, pool_id: AccountId) -> Result<bool, ProtocolError>{
 
-            BrandImpl::create_new_reward(self, reward_initiator, reward_name, reward_symbol, reward_description_link, reward_type, initial_reward_supply, salt_bytes, brand_id, requestor)
+            BrandImpl::create_new_reward(self, reward, reward_name, reward_symbol, reward_description_link, reward_type, brand_id, requestor, pool_id)
+
         }
 
         #[ink(message)]
         fn get_reward_details ( &self, requestor: AccountId) -> RewardDetails{
 
             BrandImpl::get_reward_details(self, requestor)
+        }
+
+        #[ink(message)]
+        fn get_brand_details ( &self, brand_id: BRAND_ID_TYPE) -> BrandDetails {
+
+            BrandImpl::get_brand_details(self, brand_id)
         }
 
     }

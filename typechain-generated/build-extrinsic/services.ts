@@ -21,21 +21,17 @@ export default class Methods {
 		this.__apiPromise = apiPromise;
 	}
 	/**
-	 * spendRewardsOnOtherBrand
+	 * spendRewardsOnIssuingBrand
 	 *
-	 * @param { ArgumentTypes.AccountId } rewardAtHand,
-	 * @param { ArgumentTypes.AccountId } targetedReward,
-	 * @param { (string | number | BN) } amountOfRewardAtHand,
-	 * @param { (string | number | BN) } expectedAmountOfTargettedReward,
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { (string | number | BN) } amount,
 	*/
-	"spendRewardsOnOtherBrand" (
-		rewardAtHand: ArgumentTypes.AccountId,
-		targetedReward: ArgumentTypes.AccountId,
-		amountOfRewardAtHand: (string | number | BN),
-		expectedAmountOfTargettedReward: (string | number | BN),
+	"spendRewardsOnIssuingBrand" (
+		reward: ArgumentTypes.AccountId,
+		amount: (string | number | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "customerController::spendRewardsOnOtherBrand", [rewardAtHand, targetedReward, amountOfRewardAtHand, expectedAmountOfTargettedReward], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "customerController::spendRewardsOnIssuingBrand", [reward, amount], __options);
 	}
 
 	/**
@@ -59,39 +55,21 @@ export default class Methods {
 	}
 
 	/**
-	 * spendRewardsOnIssuingBrand
+	 * spendRewardsOnOtherBrand
 	 *
-	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { (string | number | BN) } amount,
+	 * @param { ArgumentTypes.AccountId } rewardAtHand,
+	 * @param { ArgumentTypes.AccountId } targetedReward,
+	 * @param { (string | number | BN) } amountOfRewardAtHand,
+	 * @param { (string | number | BN) } expectedAmountOfTargettedReward,
 	*/
-	"spendRewardsOnIssuingBrand" (
-		reward: ArgumentTypes.AccountId,
-		amount: (string | number | BN),
+	"spendRewardsOnOtherBrand" (
+		rewardAtHand: ArgumentTypes.AccountId,
+		targetedReward: ArgumentTypes.AccountId,
+		amountOfRewardAtHand: (string | number | BN),
+		expectedAmountOfTargettedReward: (string | number | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "customerController::spendRewardsOnIssuingBrand", [reward, amount], __options);
-	}
-
-	/**
-	 * getProtocolConfig
-	 *
-	*/
-	"getProtocolConfig" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "adminController::getProtocolConfig", [], __options);
-	}
-
-	/**
-	 * updateProtocolRecords
-	 *
-	 * @param { ArgumentTypes.EditableProtocolRecords } records,
-	*/
-	"updateProtocolRecords" (
-		records: ArgumentTypes.EditableProtocolRecords,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "adminController::updateProtocolRecords", [records], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "customerController::spendRewardsOnOtherBrand", [rewardAtHand, targetedReward, amountOfRewardAtHand, expectedAmountOfTargettedReward], __options);
 	}
 
 	/**
@@ -110,18 +88,6 @@ export default class Methods {
 		__options: GasLimit,
 	){
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "adminController::registerBrand", [brandName, brandOnlinePresence, brandAccount, brandId], __options);
-	}
-
-	/**
-	 * updateProtocolConfigurations
-	 *
-	 * @param { ArgumentTypes.EditableProtocolConfig } config,
-	*/
-	"updateProtocolConfigurations" (
-		config: ArgumentTypes.EditableProtocolConfig,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "adminController::updateProtocolConfigurations", [config], __options);
 	}
 
 	/**
@@ -157,6 +123,168 @@ export default class Methods {
 	}
 
 	/**
+	 * getProtocolConfig
+	 *
+	*/
+	"getProtocolConfig" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "adminController::getProtocolConfig", [], __options);
+	}
+
+	/**
+	 * updateProtocolRecords
+	 *
+	 * @param { ArgumentTypes.EditableProtocolRecords } records,
+	*/
+	"updateProtocolRecords" (
+		records: ArgumentTypes.EditableProtocolRecords,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "adminController::updateProtocolRecords", [records], __options);
+	}
+
+	/**
+	 * updateProtocolConfigurations
+	 *
+	 * @param { ArgumentTypes.EditableProtocolConfig } config,
+	*/
+	"updateProtocolConfigurations" (
+		config: ArgumentTypes.EditableProtocolConfig,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "adminController::updateProtocolConfigurations", [config], __options);
+	}
+
+	/**
+	 * topUpTreasuryBalances
+	 *
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { (string | number | BN) } rewardAmount,
+	 * @param { (string | number | BN) } meAmount,
+	 * @param { Array<(number | string | BN)> } brand,
+	*/
+	"topUpTreasuryBalances" (
+		reward: ArgumentTypes.AccountId,
+		rewardAmount: (string | number | BN),
+		meAmount: (string | number | BN),
+		brand: Array<(number | string | BN)>,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::topUpTreasuryBalances", [reward, rewardAmount, meAmount, brand], __options);
+	}
+
+	/**
+	 * updateRewardConfig
+	 *
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { ArgumentTypes.RewardConfig } rewardConfig,
+	 * @param { boolean } ignoreDefault,
+	*/
+	"updateRewardConfig" (
+		reward: ArgumentTypes.AccountId,
+		rewardConfig: ArgumentTypes.RewardConfig,
+		ignoreDefault: boolean,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateRewardConfig", [reward, rewardConfig, ignoreDefault], __options);
+	}
+
+	/**
+	 * changeOptimalValuation
+	 *
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { (string | number | BN) } newOptimalValuation,
+	 * @param { boolean } autoResumeConversations,
+	*/
+	"changeOptimalValuation" (
+		reward: ArgumentTypes.AccountId,
+		newOptimalValuation: (string | number | BN),
+		autoResumeConversations: boolean,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::changeOptimalValuation", [reward, newOptimalValuation, autoResumeConversations], __options);
+	}
+
+	/**
+	 * getBrandDetails
+	 *
+	 * @param { Array<(number | string | BN)> } brandId,
+	*/
+	"getBrandDetails" (
+		brandId: Array<(number | string | BN)>,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::getBrandDetails", [brandId], __options);
+	}
+
+	/**
+	 * getRewardDetails
+	 *
+	 * @param { ArgumentTypes.AccountId } requestor,
+	*/
+	"getRewardDetails" (
+		requestor: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::getRewardDetails", [requestor], __options);
+	}
+
+	/**
+	 * createNewReward
+	 *
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { string | null } rewardName,
+	 * @param { string | null } rewardSymbol,
+	 * @param { string | null } rewardDescriptionLink,
+	 * @param { (number | string | BN) } rewardType,
+	 * @param { Array<(number | string | BN)> } brandId,
+	 * @param { ArgumentTypes.AccountId } requestor,
+	 * @param { ArgumentTypes.AccountId } poolId,
+	*/
+	"createNewReward" (
+		reward: ArgumentTypes.AccountId,
+		rewardName: string | null,
+		rewardSymbol: string | null,
+		rewardDescriptionLink: string | null,
+		rewardType: (number | string | BN),
+		brandId: Array<(number | string | BN)>,
+		requestor: ArgumentTypes.AccountId,
+		poolId: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::createNewReward", [reward, rewardName, rewardSymbol, rewardDescriptionLink, rewardType, brandId, requestor, poolId], __options);
+	}
+
+	/**
+	 * addLiquidityForOpenRewardsFromTreasury
+	 *
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { (string | number | BN) } rewardAmount,
+	 * @param { (string | number | BN) } meAmount,
+	*/
+	"addLiquidityForOpenRewardsFromTreasury" (
+		reward: ArgumentTypes.AccountId,
+		rewardAmount: (string | number | BN),
+		meAmount: (string | number | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::addLiquidityForOpenRewardsFromTreasury", [reward, rewardAmount, meAmount], __options);
+	}
+
+	/**
+	 * activateOpenRewards
+	 *
+	 * @param { ArgumentTypes.AccountId } reward,
+	*/
+	"activateOpenRewards" (
+		reward: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::activateOpenRewards", [reward], __options);
+	}
+
+	/**
 	 * pauseOpenRewards
 	 *
 	 * @param { ArgumentTypes.AccountId } reward,
@@ -169,19 +297,49 @@ export default class Methods {
 	}
 
 	/**
-	 * updateBrandConfigByBrandId
+	 * integrateExistingReward
 	 *
-	 * @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
-	 * @param { boolean } ignoreDefault,
-	 * @param { Array<(number | string | BN)> } brandId,
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { string | null } rewardDescriptionLink,
+	 * @param { boolean } readTAndC,
 	*/
-	"updateBrandConfigByBrandId" (
-		brandConfig: ArgumentTypes.GlobalBrandConfig,
-		ignoreDefault: boolean,
-		brandId: Array<(number | string | BN)>,
+	"integrateExistingReward" (
+		reward: ArgumentTypes.AccountId,
+		rewardDescriptionLink: string | null,
+		readTAndC: boolean,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateBrandConfigByBrandId", [brandConfig, ignoreDefault, brandId], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::integrateExistingReward", [reward, rewardDescriptionLink, readTAndC], __options);
+	}
+
+	/**
+	 * updatePoolConfiguration
+	 *
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { ArgumentTypes.EditablePoolConfig } editablePoolConfig,
+	 * @param { boolean } ignoreDefault,
+	*/
+	"updatePoolConfiguration" (
+		reward: ArgumentTypes.AccountId,
+		editablePoolConfig: ArgumentTypes.EditablePoolConfig,
+		ignoreDefault: boolean,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updatePoolConfiguration", [reward, editablePoolConfig, ignoreDefault], __options);
+	}
+
+	/**
+	 * setBountyTriggerLimit
+	 *
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { (string | number | BN) } triggerLimit,
+	*/
+	"setBountyTriggerLimit" (
+		reward: ArgumentTypes.AccountId,
+		triggerLimit: (string | number | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::setBountyTriggerLimit", [reward, triggerLimit], __options);
 	}
 
 	/**
@@ -203,105 +361,41 @@ export default class Methods {
 	}
 
 	/**
-	 * getBrandConfigById
+	 * getBrandConfigByAddress
 	 *
-	 * @param { Array<(number | string | BN)> } brandId,
+	 * @param { ArgumentTypes.AccountId } brandAddress,
 	*/
-	"getBrandConfigById" (
-		brandId: Array<(number | string | BN)>,
+	"getBrandConfigByAddress" (
+		brandAddress: ArgumentTypes.AccountId,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::getBrandConfigById", [brandId], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::getBrandConfigByAddress", [brandAddress], __options);
 	}
 
 	/**
-	 * integrateExistingReward
+	 * resumeOpenRewards
 	 *
 	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { string | null } rewardDescriptionLink,
-	 * @param { boolean } readTAndC,
 	*/
-	"integrateExistingReward" (
+	"resumeOpenRewards" (
 		reward: ArgumentTypes.AccountId,
-		rewardDescriptionLink: string | null,
-		readTAndC: boolean,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::integrateExistingReward", [reward, rewardDescriptionLink, readTAndC], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::resumeOpenRewards", [reward], __options);
 	}
 
 	/**
-	 * withdrawTreasuryBalances
+	 * fundBountyPool
 	 *
 	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { (string | number | BN) } rewardAmount,
-	 * @param { (string | number | BN) } meAmount,
-	 * @param { ArgumentTypes.AccountId } to,
+	 * @param { (string | number | BN) } amount,
 	*/
-	"withdrawTreasuryBalances" (
+	"fundBountyPool" (
 		reward: ArgumentTypes.AccountId,
-		rewardAmount: (string | number | BN),
-		meAmount: (string | number | BN),
-		to: ArgumentTypes.AccountId,
+		amount: (string | number | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::withdrawTreasuryBalances", [reward, rewardAmount, meAmount, to], __options);
-	}
-
-	/**
-	 * updateBrandDetails
-	 *
-	 * @param { ArgumentTypes.EditableBrandDetails } brandDetails,
-	 * @param { boolean } ignoreDefault,
-	*/
-	"updateBrandDetails" (
-		brandDetails: ArgumentTypes.EditableBrandDetails,
-		ignoreDefault: boolean,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateBrandDetails", [brandDetails, ignoreDefault], __options);
-	}
-
-	/**
-	 * setBountyTriggerLimit
-	 *
-	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { (string | number | BN) } triggerLimit,
-	*/
-	"setBountyTriggerLimit" (
-		reward: ArgumentTypes.AccountId,
-		triggerLimit: (string | number | BN),
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::setBountyTriggerLimit", [reward, triggerLimit], __options);
-	}
-
-	/**
-	 * createNewReward
-	 *
-	 * @param { ArgumentTypes.AccountId } rewardInitiator,
-	 * @param { string | null } rewardName,
-	 * @param { string | null } rewardSymbol,
-	 * @param { string | null } rewardDescriptionLink,
-	 * @param { (number | string | BN) } rewardType,
-	 * @param { (string | number | BN) } initialRewardSupply,
-	 * @param { Array<(number | string | BN)> } saltBytes,
-	 * @param { Array<(number | string | BN)> } brandId,
-	 * @param { ArgumentTypes.AccountId } requestor,
-	*/
-	"createNewReward" (
-		rewardInitiator: ArgumentTypes.AccountId,
-		rewardName: string | null,
-		rewardSymbol: string | null,
-		rewardDescriptionLink: string | null,
-		rewardType: (number | string | BN),
-		initialRewardSupply: (string | number | BN),
-		saltBytes: Array<(number | string | BN)>,
-		brandId: Array<(number | string | BN)>,
-		requestor: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::createNewReward", [rewardInitiator, rewardName, rewardSymbol, rewardDescriptionLink, rewardType, initialRewardSupply, saltBytes, brandId, requestor], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::fundBountyPool", [reward, amount], __options);
 	}
 
 	/**
@@ -319,69 +413,23 @@ export default class Methods {
 	}
 
 	/**
-	 * updateRewardConfig
+	 * withdrawTreasuryBalances
 	 *
 	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { ArgumentTypes.RewardConfig } rewardConfig,
-	 * @param { boolean } ignoreDefault,
+	 * @param { (string | number | BN) } rewardAmount,
+	 * @param { (string | number | BN) } meAmount,
+	 * @param { ArgumentTypes.AccountId } to,
+	 * @param { Array<(number | string | BN)> } brand,
 	*/
-	"updateRewardConfig" (
+	"withdrawTreasuryBalances" (
 		reward: ArgumentTypes.AccountId,
-		rewardConfig: ArgumentTypes.RewardConfig,
-		ignoreDefault: boolean,
+		rewardAmount: (string | number | BN),
+		meAmount: (string | number | BN),
+		to: ArgumentTypes.AccountId,
+		brand: Array<(number | string | BN)>,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateRewardConfig", [reward, rewardConfig, ignoreDefault], __options);
-	}
-
-	/**
-	 * getRewardDetails
-	 *
-	 * @param { ArgumentTypes.AccountId } requestor,
-	*/
-	"getRewardDetails" (
-		requestor: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::getRewardDetails", [requestor], __options);
-	}
-
-	/**
-	 * getBrandConfigByAddress
-	 *
-	 * @param { ArgumentTypes.AccountId } brandAddress,
-	*/
-	"getBrandConfigByAddress" (
-		brandAddress: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::getBrandConfigByAddress", [brandAddress], __options);
-	}
-
-	/**
-	 * updateROptimal
-	 *
-	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { (string | number | BN) } newROptimal,
-	*/
-	"updateROptimal" (
-		reward: ArgumentTypes.AccountId,
-		newROptimal: (string | number | BN),
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateROptimal", [reward, newROptimal], __options);
-	}
-
-	/**
-	 * activateOpenRewards
-	 *
-	 * @param { ArgumentTypes.AccountId } reward,
-	*/
-	"activateOpenRewards" (
-		reward: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::activateOpenRewards", [reward], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::withdrawTreasuryBalances", [reward, rewardAmount, meAmount, to, brand], __options);
 	}
 
 	/**
@@ -401,80 +449,6 @@ export default class Methods {
 	}
 
 	/**
-	 * updatePoolConfiguration
-	 *
-	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { ArgumentTypes.EditablePoolConfig } editablePoolConfig,
-	 * @param { boolean } ignoreDefault,
-	*/
-	"updatePoolConfiguration" (
-		reward: ArgumentTypes.AccountId,
-		editablePoolConfig: ArgumentTypes.EditablePoolConfig,
-		ignoreDefault: boolean,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updatePoolConfiguration", [reward, editablePoolConfig, ignoreDefault], __options);
-	}
-
-	/**
-	 * resumeOpenRewards
-	 *
-	 * @param { ArgumentTypes.AccountId } reward,
-	*/
-	"resumeOpenRewards" (
-		reward: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::resumeOpenRewards", [reward], __options);
-	}
-
-	/**
-	 * updateBrandDetailsByBrandId
-	 *
-	 * @param { ArgumentTypes.EditableBrandDetails } brandDetails,
-	 * @param { boolean } ignoreDefault,
-	 * @param { Array<(number | string | BN)> } brandId,
-	*/
-	"updateBrandDetailsByBrandId" (
-		brandDetails: ArgumentTypes.EditableBrandDetails,
-		ignoreDefault: boolean,
-		brandId: Array<(number | string | BN)>,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateBrandDetailsByBrandId", [brandDetails, ignoreDefault, brandId], __options);
-	}
-
-	/**
-	 * fundBountyPool
-	 *
-	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { (string | number | BN) } amount,
-	*/
-	"fundBountyPool" (
-		reward: ArgumentTypes.AccountId,
-		amount: (string | number | BN),
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::fundBountyPool", [reward, amount], __options);
-	}
-
-	/**
-	 * addLiquidityForOpenRewardsFromTreasury
-	 *
-	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { (string | number | BN) } rewardAmount,
-	 * @param { (string | number | BN) } meAmount,
-	*/
-	"addLiquidityForOpenRewardsFromTreasury" (
-		reward: ArgumentTypes.AccountId,
-		rewardAmount: (string | number | BN),
-		meAmount: (string | number | BN),
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::addLiquidityForOpenRewardsFromTreasury", [reward, rewardAmount, meAmount], __options);
-	}
-
-	/**
 	 * updateBrandConfig
 	 *
 	 * @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
@@ -486,6 +460,20 @@ export default class Methods {
 		__options: GasLimit,
 	){
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateBrandConfig", [brandConfig, ignoreDefault], __options);
+	}
+
+	/**
+	 * updateROptimal
+	 *
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { (string | number | BN) } newROptimal,
+	*/
+	"updateROptimal" (
+		reward: ArgumentTypes.AccountId,
+		newROptimal: (string | number | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateROptimal", [reward, newROptimal], __options);
 	}
 
 	/**
@@ -505,6 +493,50 @@ export default class Methods {
 	}
 
 	/**
+	 * updateBrandDetails
+	 *
+	 * @param { ArgumentTypes.EditableBrandDetails } brandDetails,
+	 * @param { boolean } ignoreDefault,
+	*/
+	"updateBrandDetails" (
+		brandDetails: ArgumentTypes.EditableBrandDetails,
+		ignoreDefault: boolean,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateBrandDetails", [brandDetails, ignoreDefault], __options);
+	}
+
+	/**
+	 * updateBrandDetailsByBrandId
+	 *
+	 * @param { ArgumentTypes.BrandDetails } brandDetails,
+	 * @param { Array<(number | string | BN)> } brandId,
+	*/
+	"updateBrandDetailsByBrandId" (
+		brandDetails: ArgumentTypes.BrandDetails,
+		brandId: Array<(number | string | BN)>,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateBrandDetailsByBrandId", [brandDetails, brandId], __options);
+	}
+
+	/**
+	 * updateBrandConfigByBrandId
+	 *
+	 * @param { ArgumentTypes.GlobalBrandConfig } brandConfig,
+	 * @param { boolean } ignoreDefault,
+	 * @param { Array<(number | string | BN)> } brandId,
+	*/
+	"updateBrandConfigByBrandId" (
+		brandConfig: ArgumentTypes.GlobalBrandConfig,
+		ignoreDefault: boolean,
+		brandId: Array<(number | string | BN)>,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::updateBrandConfigByBrandId", [brandConfig, ignoreDefault, brandId], __options);
+	}
+
+	/**
 	 * changeBrandMainAccount
 	 *
 	 * @param { ArgumentTypes.AccountId } newAccount,
@@ -519,35 +551,55 @@ export default class Methods {
 	}
 
 	/**
-	 * topUpTreasuryBalances
+	 * getBrandConfigById
 	 *
-	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { (string | number | BN) } rewardAmount,
-	 * @param { (string | number | BN) } meAmount,
+	 * @param { Array<(number | string | BN)> } brandId,
 	*/
-	"topUpTreasuryBalances" (
-		reward: ArgumentTypes.AccountId,
-		rewardAmount: (string | number | BN),
-		meAmount: (string | number | BN),
+	"getBrandConfigById" (
+		brandId: Array<(number | string | BN)>,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::topUpTreasuryBalances", [reward, rewardAmount, meAmount], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::getBrandConfigById", [brandId], __options);
 	}
 
 	/**
-	 * changeOptimalValuation
+	 * getRoleAdmin
 	 *
-	 * @param { ArgumentTypes.AccountId } reward,
-	 * @param { (string | number | BN) } newOptimalValuation,
-	 * @param { boolean } autoResumeConversations,
+	 * @param { (number | string | BN) } role,
 	*/
-	"changeOptimalValuation" (
-		reward: ArgumentTypes.AccountId,
-		newOptimalValuation: (string | number | BN),
-		autoResumeConversations: boolean,
+	"getRoleAdmin" (
+		role: (number | string | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "brandController::changeOptimalValuation", [reward, newOptimalValuation, autoResumeConversations], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "accessControl::getRoleAdmin", [role], __options);
+	}
+
+	/**
+	 * hasRole
+	 *
+	 * @param { (number | string | BN) } role,
+	 * @param { ArgumentTypes.AccountId | null } address,
+	*/
+	"hasRole" (
+		role: (number | string | BN),
+		address: ArgumentTypes.AccountId | null,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "accessControl::hasRole", [role, address], __options);
+	}
+
+	/**
+	 * grantRole
+	 *
+	 * @param { (number | string | BN) } role,
+	 * @param { ArgumentTypes.AccountId | null } account,
+	*/
+	"grantRole" (
+		role: (number | string | BN),
+		account: ArgumentTypes.AccountId | null,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "accessControl::grantRole", [role, account], __options);
 	}
 
 	/**
@@ -576,46 +628,6 @@ export default class Methods {
 		__options: GasLimit,
 	){
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "accessControl::renounceRole", [role, account], __options);
-	}
-
-	/**
-	 * hasRole
-	 *
-	 * @param { (number | string | BN) } role,
-	 * @param { ArgumentTypes.AccountId | null } address,
-	*/
-	"hasRole" (
-		role: (number | string | BN),
-		address: ArgumentTypes.AccountId | null,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "accessControl::hasRole", [role, address], __options);
-	}
-
-	/**
-	 * getRoleAdmin
-	 *
-	 * @param { (number | string | BN) } role,
-	*/
-	"getRoleAdmin" (
-		role: (number | string | BN),
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "accessControl::getRoleAdmin", [role], __options);
-	}
-
-	/**
-	 * grantRole
-	 *
-	 * @param { (number | string | BN) } role,
-	 * @param { ArgumentTypes.AccountId | null } account,
-	*/
-	"grantRole" (
-		role: (number | string | BN),
-		account: ArgumentTypes.AccountId | null,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "accessControl::grantRole", [role, account], __options);
 	}
 
 }

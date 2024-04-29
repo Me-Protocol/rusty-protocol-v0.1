@@ -38,6 +38,178 @@ export default class Methods {
 	}
 
 	/**
+	* determineNeededRewardAmountGivenMeAmount
+	*
+	* @param { (string | number | BN) } meAmount,
+	* @param { (string | number | BN) } slippageInPrecision,
+	* @returns { void }
+	*/
+	"determineNeededRewardAmountGivenMeAmount" (
+		meAmount: (string | number | BN),
+		slippageInPrecision: (string | number | BN),
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::determineNeededRewardAmountGivenMeAmount", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [meAmount, slippageInPrecision], __options);
+	}
+
+	/**
+	* withdrawLiquidity
+	*
+	* @param { ArgumentTypes.Id } position,
+	* @param { (string | number | BN) } poolNumeratorAmount,
+	* @param { (string | number | BN) } poolDivisorAmount,
+	* @param { ArgumentTypes.AccountId } requestor,
+	* @param { ArgumentTypes.AccountId } to,
+	* @returns { void }
+	*/
+	"withdrawLiquidity" (
+		position: ArgumentTypes.Id,
+		poolNumeratorAmount: (string | number | BN),
+		poolDivisorAmount: (string | number | BN),
+		requestor: ArgumentTypes.AccountId,
+		to: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawLiquidity", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [position, poolNumeratorAmount, poolDivisorAmount, requestor, to], __options);
+	}
+
+	/**
+	* getLiquidityRatios
+	*
+	* @returns { Result<[ReturnNumber, ReturnNumber], ReturnTypes.LangError> }
+	*/
+	"getLiquidityRatios" (
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<[ReturnNumber, ReturnNumber], ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getLiquidityRatios", [], __options, (result) => { return handleReturnType(result, getTypeDescription(27, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* withdrawProtocolMeOffsetWithRewardsIfNeedBe
+	*
+	* @param { (string | number | BN) } meAmountToWithdraw,
+	* @returns { void }
+	*/
+	"withdrawProtocolMeOffsetWithRewardsIfNeedBe" (
+		meAmountToWithdraw: (string | number | BN),
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawProtocolMeOffsetWithRewardsIfNeedBe", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [meAmountToWithdraw], __options);
+	}
+
+	/**
+	* getPositionData
+	*
+	* @param { (string | number | BN) } position,
+	* @returns { Result<Result<[ReturnNumber, ReturnNumber], ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"getPositionData" (
+		position: (string | number | BN),
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<Result<[ReturnNumber, ReturnNumber], ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getPositionData", [position], __options, (result) => { return handleReturnType(result, getTypeDescription(29, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* getAllPositions
+	*
+	* @param { ArgumentTypes.AccountId } requestor,
+	* @returns { Result<Result<Array<ReturnTypes.Id>, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"getAllPositions" (
+		requestor: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<Result<Array<ReturnTypes.Id>, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getAllPositions", [requestor], __options, (result) => { return handleReturnType(result, getTypeDescription(31, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* getPositionByIndex
+	*
+	* @param { ArgumentTypes.AccountId } requestor,
+	* @param { (string | number | BN) } index,
+	* @returns { Result<Result<ReturnTypes.Id, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	*/
+	"getPositionByIndex" (
+		requestor: ArgumentTypes.AccountId,
+		index: (string | number | BN),
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<Result<ReturnTypes.Id, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getPositionByIndex", [requestor, index], __options, (result) => { return handleReturnType(result, getTypeDescription(34, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* changeROptimal
+	*
+	* @param { (string | number | BN) } newROptimal,
+	* @returns { void }
+	*/
+	"changeROptimal" (
+		newROptimal: (string | number | BN),
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::changeROptimal", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [newROptimal], __options);
+	}
+
+	/**
+	* getOpenRewardsState
+	*
+	* @returns { Result<[boolean, boolean, boolean, ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnNumber, ReturnNumber, ReturnNumber, number], ReturnTypes.LangError> }
+	*/
+	"getOpenRewardsState" (
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<[boolean, boolean, boolean, ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnNumber, ReturnNumber, ReturnNumber, number], ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getOpenRewardsState", [], __options, (result) => { return handleReturnType(result, getTypeDescription(38, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* getOpenRewardsConfigurations
+	*
+	* @returns { Result<[ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, boolean], ReturnTypes.LangError> }
+	*/
+	"getOpenRewardsConfigurations" (
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<[ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, boolean], ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getOpenRewardsConfigurations", [], __options, (result) => { return handleReturnType(result, getTypeDescription(40, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* addProtocolMeOffset
+	*
+	* @param { (string | number | BN) } expectedMeOffset,
+	* @returns { void }
+	*/
+	"addProtocolMeOffset" (
+		expectedMeOffset: (string | number | BN),
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::addProtocolMeOffset", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [expectedMeOffset], __options);
+	}
+
+	/**
+	* pauseOpenRewards
+	*
+	* @returns { void }
+	*/
+	"pauseOpenRewards" (
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::pauseOpenRewards", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
 	* engageIncomingConversation
 	*
 	* @param { (string | number | BN) } expectedRewardAmount,
@@ -57,31 +229,139 @@ export default class Methods {
 	}
 
 	/**
-	* addOpenRewardsManager
+	* changePoolConfigExceptROptimal
 	*
-	* @param { ArgumentTypes.AccountId } newPoolManager,
+	* @param { ArgumentTypes.EditablePoolConfig } editableConfig,
+	* @param { boolean } ignoreDefault,
 	* @returns { void }
 	*/
-	"addOpenRewardsManager" (
-		newPoolManager: ArgumentTypes.AccountId,
+	"changePoolConfigExceptROptimal" (
+		editableConfig: ArgumentTypes.EditablePoolConfig,
+		ignoreDefault: boolean,
 		__options: GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::addOpenRewardsManager", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::changePoolConfigExceptROptimal", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [newPoolManager], __options);
+		}, [editableConfig, ignoreDefault], __options);
 	}
 
 	/**
-	* getAllPositions
+	* withdrawProtocolMeOffsetOnlyMeTokens
 	*
-	* @param { ArgumentTypes.AccountId } requestor,
-	* @returns { Result<Result<Array<ReturnTypes.Id>, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	* @param { (string | number | BN) } meAmountToWithdraw,
+	* @returns { void }
 	*/
-	"getAllPositions" (
-		requestor: ArgumentTypes.AccountId,
+	"withdrawProtocolMeOffsetOnlyMeTokens" (
+		meAmountToWithdraw: (string | number | BN),
 		__options: GasLimit,
-	): Promise< QueryReturnType< Result<Result<Array<ReturnTypes.Id>, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getAllPositions", [requestor], __options, (result) => { return handleReturnType(result, getTypeDescription(26, DATA_TYPE_DESCRIPTIONS)); });
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawProtocolMeOffsetOnlyMeTokens", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [meAmountToWithdraw], __options);
+	}
+
+	/**
+	* getROptimal
+	*
+	* @returns { void }
+	*/
+	"getROptimal" (
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getROptimal", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* recordLiquidityProvided
+	*
+	* @param { (string | number | BN) } poolNumeratorAmount,
+	* @param { (string | number | BN) } poolDivisorAmount,
+	* @param { ArgumentTypes.AccountId } requestor,
+	* @param { ArgumentTypes.AccountId } to,
+	* @returns { void }
+	*/
+	"recordLiquidityProvided" (
+		poolNumeratorAmount: (string | number | BN),
+		poolDivisorAmount: (string | number | BN),
+		requestor: ArgumentTypes.AccountId,
+		to: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::recordLiquidityProvided", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [poolNumeratorAmount, poolDivisorAmount, requestor, to], __options);
+	}
+
+	/**
+	* removeOpenRewardsManager
+	*
+	* @param { ArgumentTypes.AccountId } poolManager,
+	* @returns { void }
+	*/
+	"removeOpenRewardsManager" (
+		poolManager: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::removeOpenRewardsManager", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [poolManager], __options);
+	}
+
+	/**
+	* initiateOutgoingConversation
+	*
+	* @param { (string | number | BN) } rewardAmountIn,
+	* @param { (string | number | BN) } expectedOutputRewardAmount,
+	* @param { ArgumentTypes.AccountId } listener,
+	* @param { (string | number | BN) } listenerROptimal,
+	* @param { ArgumentTypes.AccountId } requestor,
+	* @param { ArgumentTypes.AccountId } outputRewardReceiver,
+	* @param { (string | number | BN) } slippageInPrecision,
+	* @returns { void }
+	*/
+	"initiateOutgoingConversation" (
+		rewardAmountIn: (string | number | BN),
+		expectedOutputRewardAmount: (string | number | BN),
+		listener: ArgumentTypes.AccountId,
+		listenerROptimal: (string | number | BN),
+		requestor: ArgumentTypes.AccountId,
+		outputRewardReceiver: ArgumentTypes.AccountId,
+		slippageInPrecision: (string | number | BN),
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::initiateOutgoingConversation", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [rewardAmountIn, expectedOutputRewardAmount, listener, listenerROptimal, requestor, outputRewardReceiver, slippageInPrecision], __options);
+	}
+
+	/**
+	* resumeOpenRewards
+	*
+	* @returns { void }
+	*/
+	"resumeOpenRewards" (
+		__options: GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::resumeOpenRewards", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* getBalance
+	*
+	* @param { ArgumentTypes.AccountId } token,
+	* @param { ArgumentTypes.AccountId } account,
+	* @returns { Result<ReturnNumber, ReturnTypes.LangError> }
+	*/
+	"getBalance" (
+		token: ArgumentTypes.AccountId,
+		account: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<ReturnNumber, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getBalance", [token, account], __options, (result) => { return handleReturnType(result, getTypeDescription(43, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -100,176 +380,14 @@ export default class Methods {
 	}
 
 	/**
-	* getPositionData
+	* checkOpenRewardsState
 	*
-	* @param { (string | number | BN) } position,
-	* @returns { Result<Result<[ReturnNumber, ReturnNumber], ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
+	* @returns { Result<boolean, ReturnTypes.LangError> }
 	*/
-	"getPositionData" (
-		position: (string | number | BN),
+	"checkOpenRewardsState" (
 		__options: GasLimit,
-	): Promise< QueryReturnType< Result<Result<[ReturnNumber, ReturnNumber], ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getPositionData", [position], __options, (result) => { return handleReturnType(result, getTypeDescription(32, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* changeROptimal
-	*
-	* @param { (string | number | BN) } newROptimal,
-	* @returns { void }
-	*/
-	"changeROptimal" (
-		newROptimal: (string | number | BN),
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::changeROptimal", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [newROptimal], __options);
-	}
-
-	/**
-	* getLiquidityRatios
-	*
-	* @returns { Result<[ReturnNumber, ReturnNumber], ReturnTypes.LangError> }
-	*/
-	"getLiquidityRatios" (
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<[ReturnNumber, ReturnNumber], ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getLiquidityRatios", [], __options, (result) => { return handleReturnType(result, getTypeDescription(35, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* getROptimal
-	*
-	* @returns { void }
-	*/
-	"getROptimal" (
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getROptimal", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* resumeOpenRewards
-	*
-	* @returns { void }
-	*/
-	"resumeOpenRewards" (
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::resumeOpenRewards", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* checkIfIsOpenRewardsManager
-	*
-	* @param { ArgumentTypes.AccountId } poolManager,
-	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"checkIfIsOpenRewardsManager" (
-		poolManager: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::checkIfIsOpenRewardsManager", [poolManager], __options, (result) => { return handleReturnType(result, getTypeDescription(30, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* determineNeededRewardAmountGivenMeAmount
-	*
-	* @param { (string | number | BN) } meAmount,
-	* @param { (string | number | BN) } slippageInPrecision,
-	* @returns { void }
-	*/
-	"determineNeededRewardAmountGivenMeAmount" (
-		meAmount: (string | number | BN),
-		slippageInPrecision: (string | number | BN),
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::determineNeededRewardAmountGivenMeAmount", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [meAmount, slippageInPrecision], __options);
-	}
-
-	/**
-	* getOpenRewardsConfigurations
-	*
-	* @returns { Result<[ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, boolean], ReturnTypes.LangError> }
-	*/
-	"getOpenRewardsConfigurations" (
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<[ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, ReturnNumber, boolean], ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getOpenRewardsConfigurations", [], __options, (result) => { return handleReturnType(result, getTypeDescription(36, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* getPositionByIndex
-	*
-	* @param { ArgumentTypes.AccountId } requestor,
-	* @param { (string | number | BN) } index,
-	* @returns { Result<Result<ReturnTypes.Id, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
-	*/
-	"getPositionByIndex" (
-		requestor: ArgumentTypes.AccountId,
-		index: (string | number | BN),
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<Result<ReturnTypes.Id, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getPositionByIndex", [requestor, index], __options, (result) => { return handleReturnType(result, getTypeDescription(38, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* determineOptimalNeededMeAmountGivenRewardAmount
-	*
-	* @param { (string | number | BN) } rewardAmount,
-	* @returns { void }
-	*/
-	"determineOptimalNeededMeAmountGivenRewardAmount" (
-		rewardAmount: (string | number | BN),
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::determineOptimalNeededMeAmountGivenRewardAmount", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [rewardAmount], __options);
-	}
-
-	/**
-	* getOpenRewardsState
-	*
-	* @returns { Result<[boolean, boolean, boolean, ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnNumber, ReturnNumber, ReturnNumber, number], ReturnTypes.LangError> }
-	*/
-	"getOpenRewardsState" (
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<[boolean, boolean, boolean, ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnNumber, ReturnNumber, ReturnNumber, number], ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getOpenRewardsState", [], __options, (result) => { return handleReturnType(result, getTypeDescription(40, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* getLiquidityIds
-	*
-	* @returns { Result<[ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnTypes.AccountId], ReturnTypes.LangError> }
-	*/
-	"getLiquidityIds" (
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<[ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnTypes.AccountId], ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getLiquidityIds", [], __options, (result) => { return handleReturnType(result, getTypeDescription(42, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* getBalance
-	*
-	* @param { ArgumentTypes.AccountId } token,
-	* @param { ArgumentTypes.AccountId } account,
-	* @returns { Result<ReturnNumber, ReturnTypes.LangError> }
-	*/
-	"getBalance" (
-		token: ArgumentTypes.AccountId,
-		account: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<ReturnNumber, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getBalance", [token, account], __options, (result) => { return handleReturnType(result, getTypeDescription(44, DATA_TYPE_DESCRIPTIONS)); });
+	): Promise< QueryReturnType< Result<boolean, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::checkOpenRewardsState", [], __options, (result) => { return handleReturnType(result, getTypeDescription(44, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -301,188 +419,74 @@ export default class Methods {
 	}
 
 	/**
-	* initiateOutgoingConversation
+	* determineOptimalNeededMeAmountGivenRewardAmount
 	*
-	* @param { (string | number | BN) } rewardAmountIn,
-	* @param { (string | number | BN) } expectedOutputRewardAmount,
-	* @param { ArgumentTypes.AccountId } listener,
-	* @param { (string | number | BN) } listenerROptimal,
-	* @param { ArgumentTypes.AccountId } requestor,
-	* @param { ArgumentTypes.AccountId } outputRewardReceiver,
-	* @param { (string | number | BN) } slippageInPrecision,
+	* @param { (string | number | BN) } rewardAmount,
 	* @returns { void }
 	*/
-	"initiateOutgoingConversation" (
-		rewardAmountIn: (string | number | BN),
-		expectedOutputRewardAmount: (string | number | BN),
-		listener: ArgumentTypes.AccountId,
-		listenerROptimal: (string | number | BN),
-		requestor: ArgumentTypes.AccountId,
-		outputRewardReceiver: ArgumentTypes.AccountId,
-		slippageInPrecision: (string | number | BN),
+	"determineOptimalNeededMeAmountGivenRewardAmount" (
+		rewardAmount: (string | number | BN),
 		__options: GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::initiateOutgoingConversation", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::determineOptimalNeededMeAmountGivenRewardAmount", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [rewardAmountIn, expectedOutputRewardAmount, listener, listenerROptimal, requestor, outputRewardReceiver, slippageInPrecision], __options);
+		}, [rewardAmount], __options);
 	}
 
 	/**
-	* withdrawProtocolMeOffsetOnlyMeTokens
+	* getLiquidityIds
 	*
-	* @param { (string | number | BN) } meAmountToWithdraw,
-	* @returns { void }
+	* @returns { Result<[ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnTypes.AccountId], ReturnTypes.LangError> }
 	*/
-	"withdrawProtocolMeOffsetOnlyMeTokens" (
-		meAmountToWithdraw: (string | number | BN),
+	"getLiquidityIds" (
 		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawProtocolMeOffsetOnlyMeTokens", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [meAmountToWithdraw], __options);
+	): Promise< QueryReturnType< Result<[ReturnTypes.AccountId, ReturnTypes.AccountId, ReturnTypes.AccountId], ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::getLiquidityIds", [], __options, (result) => { return handleReturnType(result, getTypeDescription(45, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
-	* withdrawProtocolMeOffsetWithRewardsIfNeedBe
-	*
-	* @param { (string | number | BN) } meAmountToWithdraw,
-	* @returns { void }
-	*/
-	"withdrawProtocolMeOffsetWithRewardsIfNeedBe" (
-		meAmountToWithdraw: (string | number | BN),
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawProtocolMeOffsetWithRewardsIfNeedBe", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [meAmountToWithdraw], __options);
-	}
-
-	/**
-	* addProtocolMeOffset
-	*
-	* @param { (string | number | BN) } expectedMeOffset,
-	* @returns { void }
-	*/
-	"addProtocolMeOffset" (
-		expectedMeOffset: (string | number | BN),
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::addProtocolMeOffset", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [expectedMeOffset], __options);
-	}
-
-	/**
-	* removeOpenRewardsManager
+	* checkIfIsOpenRewardsManager
 	*
 	* @param { ArgumentTypes.AccountId } poolManager,
-	* @returns { void }
+	* @returns { Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> }
 	*/
-	"removeOpenRewardsManager" (
+	"checkIfIsOpenRewardsManager" (
 		poolManager: ArgumentTypes.AccountId,
 		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::removeOpenRewardsManager", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [poolManager], __options);
+	): Promise< QueryReturnType< Result<Result<boolean, ReturnTypes.ProtocolError>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::checkIfIsOpenRewardsManager", [poolManager], __options, (result) => { return handleReturnType(result, getTypeDescription(36, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
-	* changePoolConfigExceptROptimal
+	* addOpenRewardsManager
 	*
-	* @param { ArgumentTypes.EditablePoolConfig } editableConfig,
-	* @param { boolean } ignoreDefault,
+	* @param { ArgumentTypes.AccountId } newPoolManager,
 	* @returns { void }
 	*/
-	"changePoolConfigExceptROptimal" (
-		editableConfig: ArgumentTypes.EditablePoolConfig,
-		ignoreDefault: boolean,
+	"addOpenRewardsManager" (
+		newPoolManager: ArgumentTypes.AccountId,
 		__options: GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::changePoolConfigExceptROptimal", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::addOpenRewardsManager", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [editableConfig, ignoreDefault], __options);
+		}, [newPoolManager], __options);
 	}
 
 	/**
-	* recordLiquidityProvided
-	*
-	* @param { (string | number | BN) } poolNumeratorAmount,
-	* @param { (string | number | BN) } poolDivisorAmount,
-	* @param { ArgumentTypes.AccountId } requestor,
-	* @param { ArgumentTypes.AccountId } to,
-	* @returns { void }
-	*/
-	"recordLiquidityProvided" (
-		poolNumeratorAmount: (string | number | BN),
-		poolDivisorAmount: (string | number | BN),
-		requestor: ArgumentTypes.AccountId,
-		to: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::recordLiquidityProvided", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [poolNumeratorAmount, poolDivisorAmount, requestor, to], __options);
-	}
-
-	/**
-	* pauseOpenRewards
-	*
-	* @returns { void }
-	*/
-	"pauseOpenRewards" (
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::pauseOpenRewards", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* withdrawLiquidity
-	*
-	* @param { ArgumentTypes.Id } position,
-	* @param { (string | number | BN) } poolNumeratorAmount,
-	* @param { (string | number | BN) } poolDivisorAmount,
-	* @param { ArgumentTypes.AccountId } requestor,
-	* @param { ArgumentTypes.AccountId } to,
-	* @returns { void }
-	*/
-	"withdrawLiquidity" (
-		position: ArgumentTypes.Id,
-		poolNumeratorAmount: (string | number | BN),
-		poolDivisorAmount: (string | number | BN),
-		requestor: ArgumentTypes.AccountId,
-		to: ArgumentTypes.AccountId,
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawLiquidity", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [position, poolNumeratorAmount, poolDivisorAmount, requestor, to], __options);
-	}
-
-	/**
-	* checkOpenRewardsState
-	*
-	* @returns { Result<boolean, ReturnTypes.LangError> }
-	*/
-	"checkOpenRewardsState" (
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<boolean, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "poolController::checkOpenRewardsState", [], __options, (result) => { return handleReturnType(result, getTypeDescription(46, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* getRoleAdmin
+	* grantRole
 	*
 	* @param { (number | string | BN) } role,
-	* @returns { Result<number, ReturnTypes.LangError> }
+	* @param { ArgumentTypes.AccountId | null } account,
+	* @returns { void }
 	*/
-	"getRoleAdmin" (
+	"grantRole" (
 		role: (number | string | BN),
+		account: ArgumentTypes.AccountId | null,
 		__options: GasLimit,
-	): Promise< QueryReturnType< Result<number, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::getRoleAdmin", [role], __options, (result) => { return handleReturnType(result, getTypeDescription(47, DATA_TYPE_DESCRIPTIONS)); });
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::grantRole", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [role, account], __options);
 	}
 
 	/**
@@ -497,24 +501,20 @@ export default class Methods {
 		address: ArgumentTypes.AccountId | null,
 		__options: GasLimit,
 	): Promise< QueryReturnType< Result<boolean, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::hasRole", [role, address], __options, (result) => { return handleReturnType(result, getTypeDescription(46, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::hasRole", [role, address], __options, (result) => { return handleReturnType(result, getTypeDescription(44, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
-	* renounceRole
+	* getRoleAdmin
 	*
 	* @param { (number | string | BN) } role,
-	* @param { ArgumentTypes.AccountId | null } account,
-	* @returns { void }
+	* @returns { Result<number, ReturnTypes.LangError> }
 	*/
-	"renounceRole" (
+	"getRoleAdmin" (
 		role: (number | string | BN),
-		account: ArgumentTypes.AccountId | null,
 		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::renounceRole", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [role, account], __options);
+	): Promise< QueryReturnType< Result<number, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "accessControl::getRoleAdmin", [role], __options, (result) => { return handleReturnType(result, getTypeDescription(50, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
@@ -535,18 +535,18 @@ export default class Methods {
 	}
 
 	/**
-	* grantRole
+	* renounceRole
 	*
 	* @param { (number | string | BN) } role,
 	* @param { ArgumentTypes.AccountId | null } account,
 	* @returns { void }
 	*/
-	"grantRole" (
+	"renounceRole" (
 		role: (number | string | BN),
 		account: ArgumentTypes.AccountId | null,
 		__options: GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::grantRole", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::renounceRole", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [role, account], __options);
 	}
@@ -572,37 +572,26 @@ export default class Methods {
 		owner: ArgumentTypes.AccountId,
 		__options: GasLimit,
 	): Promise< QueryReturnType< Result<number, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "psp34::balanceOf", [owner], __options, (result) => { return handleReturnType(result, getTypeDescription(47, DATA_TYPE_DESCRIPTIONS)); });
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "psp34::balanceOf", [owner], __options, (result) => { return handleReturnType(result, getTypeDescription(50, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
-	* ownerOf
+	* approve
 	*
-	* @param { ArgumentTypes.Id } id,
-	* @returns { Result<ReturnTypes.AccountId | null, ReturnTypes.LangError> }
-	*/
-	"ownerOf" (
-		id: ArgumentTypes.Id,
-		__options: GasLimit,
-	): Promise< QueryReturnType< Result<ReturnTypes.AccountId | null, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "psp34::ownerOf", [id], __options, (result) => { return handleReturnType(result, getTypeDescription(52, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* allowance
-	*
-	* @param { ArgumentTypes.AccountId } owner,
 	* @param { ArgumentTypes.AccountId } operator,
 	* @param { ArgumentTypes.Id | null } id,
-	* @returns { Result<boolean, ReturnTypes.LangError> }
+	* @param { boolean } approved,
+	* @returns { void }
 	*/
-	"allowance" (
-		owner: ArgumentTypes.AccountId,
+	"approve" (
 		operator: ArgumentTypes.AccountId,
 		id: ArgumentTypes.Id | null,
+		approved: boolean,
 		__options: GasLimit,
-	): Promise< QueryReturnType< Result<boolean, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "psp34::allowance", [owner, operator, id], __options, (result) => { return handleReturnType(result, getTypeDescription(46, DATA_TYPE_DESCRIPTIONS)); });
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "psp34::approve", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [operator, id, approved], __options);
 	}
 
 	/**
@@ -625,6 +614,36 @@ export default class Methods {
 	}
 
 	/**
+	* allowance
+	*
+	* @param { ArgumentTypes.AccountId } owner,
+	* @param { ArgumentTypes.AccountId } operator,
+	* @param { ArgumentTypes.Id | null } id,
+	* @returns { Result<boolean, ReturnTypes.LangError> }
+	*/
+	"allowance" (
+		owner: ArgumentTypes.AccountId,
+		operator: ArgumentTypes.AccountId,
+		id: ArgumentTypes.Id | null,
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<boolean, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "psp34::allowance", [owner, operator, id], __options, (result) => { return handleReturnType(result, getTypeDescription(44, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* ownerOf
+	*
+	* @param { ArgumentTypes.Id } id,
+	* @returns { Result<ReturnTypes.AccountId | null, ReturnTypes.LangError> }
+	*/
+	"ownerOf" (
+		id: ArgumentTypes.Id,
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<ReturnTypes.AccountId | null, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "psp34::ownerOf", [id], __options, (result) => { return handleReturnType(result, getTypeDescription(55, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
 	* totalSupply
 	*
 	* @returns { Result<ReturnNumber, ReturnTypes.LangError> }
@@ -632,26 +651,7 @@ export default class Methods {
 	"totalSupply" (
 		__options: GasLimit,
 	): Promise< QueryReturnType< Result<ReturnNumber, ReturnTypes.LangError> > >{
-		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "psp34::totalSupply", [], __options, (result) => { return handleReturnType(result, getTypeDescription(44, DATA_TYPE_DESCRIPTIONS)); });
-	}
-
-	/**
-	* approve
-	*
-	* @param { ArgumentTypes.AccountId } operator,
-	* @param { ArgumentTypes.Id | null } id,
-	* @param { boolean } approved,
-	* @returns { void }
-	*/
-	"approve" (
-		operator: ArgumentTypes.AccountId,
-		id: ArgumentTypes.Id | null,
-		approved: boolean,
-		__options: GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "psp34::approve", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [operator, id, approved], __options);
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "psp34::totalSupply", [], __options, (result) => { return handleReturnType(result, getTypeDescription(43, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
 	/**
