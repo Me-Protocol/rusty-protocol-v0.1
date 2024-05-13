@@ -1,5 +1,5 @@
 [package]
-name = "services"
+name = "votes"
 version = "0.1.0"
 authors = ["[your_name] <[your_email]>"]
 edition = "2021"
@@ -7,19 +7,21 @@ edition = "2021"
 [dependencies]
 ink = { version = "4.2.0", default-features = false }
 
+
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
 scale-info = { version = "2.6", default-features = false, features = ["derive"], optional = true }
 
-
 # These dependencies
-openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "4.0.0-beta.1", default-features = false, features = ["access_control", "psp34", "reentrancy_guard", "governance"] }
+openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "4.0.0-beta.1", default-features = false, features = ["psp22", "governance"] }
 global = {path = "../../../", default-features = false}
 
-[dev-dependencies]
-ink_e2e = "4.2.0"
+
+# [dev-dependencies]
+# ink_e2e = "4.2.0"
 
 [lib]
-path = "services.rs"
+name = "votes"
+path = "votes.rs"
 
 [features]
 default = ["std"]
@@ -31,12 +33,14 @@ std = [
     "openbrush/std",
     "global/std"
 ]
-
 ink-as-dependency = []
+e2e-tests = []
 
 [profile.release]
 panic = "abort"
 lto = false
+
+
 
 [profile.dev]
 

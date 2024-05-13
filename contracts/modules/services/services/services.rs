@@ -7,8 +7,10 @@ mod services {
     use ink::{ prelude::vec::Vec};
     use global::{controllers::services::customers, providers::{common::roleguard::RecordStorage, data::{a_reward::RewardRecords, brand::BrandRecords, protocol::{EditableProtocolConfig, EditableProtocolRecords, ProtocolConfig, ProtocolRecords}}, services::{admin::{AdminImpl, BrandImpl}, customers::CustomerImpl}}};
     use openbrush::{
-        contracts::access_control::{*, self},
+        contracts::{access_control::{*, self}, governance::{*}},
+
         traits::Storage,
+
     };
 
     pub use global::providers::services::{customers::*, admin::*};
@@ -38,6 +40,9 @@ mod services {
 
         #[storage_field]
         pub record_storage: RecordStorage,  
+
+        #[storage_field]
+        governor: governor::Data,
 
     }
 
