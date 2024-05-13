@@ -29,61 +29,65 @@ export default class Methods {
 	}
 
 	/**
-	* engageIncomingConversation
+	* determineNeededRewardAmountGivenMeAmount
 	*
-	* @param { (string | number | BN) } expectedRewardAmount,
-	* @param { ArgumentTypes.AccountId } outputRewardReceiver,
+	* @param { (string | number | BN) } meAmount,
 	* @param { (string | number | BN) } slippageInPrecision,
 	*/
-	"engageIncomingConversation" (
-		expectedRewardAmount: (string | number | BN),
-		outputRewardReceiver: ArgumentTypes.AccountId,
+	"determineNeededRewardAmountGivenMeAmount" (
+		meAmount: (string | number | BN),
 		slippageInPrecision: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::engageIncomingConversation", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::determineNeededRewardAmountGivenMeAmount", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [expectedRewardAmount, outputRewardReceiver, slippageInPrecision], __options);
+		}, [meAmount, slippageInPrecision], __options);
 	}
 
 	/**
-	* addOpenRewardsManager
+	* withdrawLiquidity
 	*
-	* @param { ArgumentTypes.AccountId } newPoolManager,
-	*/
-	"addOpenRewardsManager" (
-		newPoolManager: ArgumentTypes.AccountId,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::addOpenRewardsManager", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [newPoolManager], __options);
-	}
-
-	/**
-	* getAllPositions
-	*
+	* @param { ArgumentTypes.Id } position,
+	* @param { (string | number | BN) } poolNumeratorAmount,
+	* @param { (string | number | BN) } poolDivisorAmount,
 	* @param { ArgumentTypes.AccountId } requestor,
+	* @param { ArgumentTypes.AccountId } to,
 	*/
-	"getAllPositions" (
+	"withdrawLiquidity" (
+		position: ArgumentTypes.Id,
+		poolNumeratorAmount: (string | number | BN),
+		poolDivisorAmount: (string | number | BN),
 		requestor: ArgumentTypes.AccountId,
+		to: ArgumentTypes.AccountId,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getAllPositions", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawLiquidity", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [requestor], __options);
+		}, [position, poolNumeratorAmount, poolDivisorAmount, requestor, to], __options);
 	}
 
 	/**
-	* withdrawProtocolMeOffsetWithdrawable
+	* getLiquidityRatios
+	*
+	*/
+	"getLiquidityRatios" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getLiquidityRatios", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* withdrawProtocolMeOffsetWithRewardsIfNeedBe
 	*
 	* @param { (string | number | BN) } meAmountToWithdraw,
 	*/
-	"withdrawProtocolMeOffsetWithdrawable" (
+	"withdrawProtocolMeOffsetWithRewardsIfNeedBe" (
 		meAmountToWithdraw: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawProtocolMeOffsetWithdrawable", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawProtocolMeOffsetWithRewardsIfNeedBe", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [meAmountToWithdraw], __options);
 	}
@@ -103,95 +107,17 @@ export default class Methods {
 	}
 
 	/**
-	* changeROptimal
+	* getAllPositions
 	*
-	* @param { (string | number | BN) } newROptimal,
+	* @param { ArgumentTypes.AccountId } requestor,
 	*/
-	"changeROptimal" (
-		newROptimal: (string | number | BN),
+	"getAllPositions" (
+		requestor: ArgumentTypes.AccountId,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::changeROptimal", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getAllPositions", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [newROptimal], __options);
-	}
-
-	/**
-	* getLiquidityRatios
-	*
-	*/
-	"getLiquidityRatios" (
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getLiquidityRatios", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* getROptimal
-	*
-	*/
-	"getROptimal" (
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getROptimal", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* resumeOpenRewards
-	*
-	*/
-	"resumeOpenRewards" (
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::resumeOpenRewards", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
-	}
-
-	/**
-	* checkIfIsOpenRewardsManager
-	*
-	* @param { ArgumentTypes.AccountId } poolManager,
-	*/
-	"checkIfIsOpenRewardsManager" (
-		poolManager: ArgumentTypes.AccountId,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::checkIfIsOpenRewardsManager", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [poolManager], __options);
-	}
-
-	/**
-	* determineNeededRewardAmountGivenMeAmount
-	*
-	* @param { (string | number | BN) } meAmount,
-	* @param { (string | number | BN) } slippageInPrecision,
-	*/
-	"determineNeededRewardAmountGivenMeAmount" (
-		meAmount: (string | number | BN),
-		slippageInPrecision: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::determineNeededRewardAmountGivenMeAmount", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [meAmount, slippageInPrecision], __options);
-	}
-
-	/**
-	* getOpenRewardsConfigurations
-	*
-	*/
-	"getOpenRewardsConfigurations" (
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getOpenRewardsConfigurations", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [], __options);
+		}, [requestor], __options);
 	}
 
 	/**
@@ -211,17 +137,17 @@ export default class Methods {
 	}
 
 	/**
-	* determineOptimalNeededMeAmountGivenRewardAmount
+	* changeROptimal
 	*
-	* @param { (string | number | BN) } rewardAmount,
+	* @param { (string | number | BN) } newROptimal,
 	*/
-	"determineOptimalNeededMeAmountGivenRewardAmount" (
-		rewardAmount: (string | number | BN),
+	"changeROptimal" (
+		newROptimal: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::determineOptimalNeededMeAmountGivenRewardAmount", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::changeROptimal", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [rewardAmount], __options);
+		}, [newROptimal], __options);
 	}
 
 	/**
@@ -237,57 +163,135 @@ export default class Methods {
 	}
 
 	/**
-	* getLiquidityIds
+	* getOpenRewardsConfigurations
 	*
 	*/
-	"getLiquidityIds" (
+	"getOpenRewardsConfigurations" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getLiquidityIds", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getOpenRewardsConfigurations", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}
 
 	/**
-	* getBalance
+	* addProtocolMeOffset
 	*
-	* @param { ArgumentTypes.AccountId } token,
-	* @param { ArgumentTypes.AccountId } account,
+	* @param { (string | number | BN) } expectedMeOffset,
 	*/
-	"getBalance" (
-		token: ArgumentTypes.AccountId,
-		account: ArgumentTypes.AccountId,
+	"addProtocolMeOffset" (
+		expectedMeOffset: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getBalance", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::addProtocolMeOffset", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [token, account], __options);
+		}, [expectedMeOffset], __options);
 	}
 
 	/**
-	* startOpenRewards
+	* pauseOpenRewards
 	*
 	*/
-	"startOpenRewards" (
+	"pauseOpenRewards" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::startOpenRewards", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::pauseOpenRewards", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}
 
 	/**
-	* forcefullyWithdrawProtocolOffsetMeTokens
+	* engageIncomingConversation
+	*
+	* @param { (string | number | BN) } expectedRewardAmount,
+	* @param { ArgumentTypes.AccountId } outputRewardReceiver,
+	* @param { (string | number | BN) } slippageInPrecision,
+	*/
+	"engageIncomingConversation" (
+		expectedRewardAmount: (string | number | BN),
+		outputRewardReceiver: ArgumentTypes.AccountId,
+		slippageInPrecision: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::engageIncomingConversation", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [expectedRewardAmount, outputRewardReceiver, slippageInPrecision], __options);
+	}
+
+	/**
+	* changePoolConfigExceptROptimal
+	*
+	* @param { ArgumentTypes.EditablePoolConfig } editableConfig,
+	* @param { boolean } ignoreDefault,
+	*/
+	"changePoolConfigExceptROptimal" (
+		editableConfig: ArgumentTypes.EditablePoolConfig,
+		ignoreDefault: boolean,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::changePoolConfigExceptROptimal", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [editableConfig, ignoreDefault], __options);
+	}
+
+	/**
+	* withdrawProtocolMeOffsetOnlyMeTokens
 	*
 	* @param { (string | number | BN) } meAmountToWithdraw,
 	*/
-	"forcefullyWithdrawProtocolOffsetMeTokens" (
+	"withdrawProtocolMeOffsetOnlyMeTokens" (
 		meAmountToWithdraw: (string | number | BN),
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::forcefullyWithdrawProtocolOffsetMeTokens", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawProtocolMeOffsetOnlyMeTokens", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [meAmountToWithdraw], __options);
+	}
+
+	/**
+	* getROptimal
+	*
+	*/
+	"getROptimal" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getROptimal", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* recordLiquidityProvided
+	*
+	* @param { (string | number | BN) } poolNumeratorAmount,
+	* @param { (string | number | BN) } poolDivisorAmount,
+	* @param { ArgumentTypes.AccountId } requestor,
+	* @param { ArgumentTypes.AccountId } to,
+	*/
+	"recordLiquidityProvided" (
+		poolNumeratorAmount: (string | number | BN),
+		poolDivisorAmount: (string | number | BN),
+		requestor: ArgumentTypes.AccountId,
+		to: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::recordLiquidityProvided", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [poolNumeratorAmount, poolDivisorAmount, requestor, to], __options);
+	}
+
+	/**
+	* removeOpenRewardsManager
+	*
+	* @param { ArgumentTypes.AccountId } poolManager,
+	*/
+	"removeOpenRewardsManager" (
+		poolManager: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::removeOpenRewardsManager", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [poolManager], __options);
 	}
 
 	/**
@@ -317,129 +321,45 @@ export default class Methods {
 	}
 
 	/**
-	* withdrawProtocolMeOffsetOnlyMeTokens
-	*
-	* @param { (string | number | BN) } meAmountToWithdraw,
-	*/
-	"withdrawProtocolMeOffsetOnlyMeTokens" (
-		meAmountToWithdraw: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawProtocolMeOffsetOnlyMeTokens", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [meAmountToWithdraw], __options);
-	}
-
-	/**
-	* withdrawProtocolMeOffsetWithRewardsIfNeedBe
-	*
-	* @param { (string | number | BN) } meAmountToWithdraw,
-	*/
-	"withdrawProtocolMeOffsetWithRewardsIfNeedBe" (
-		meAmountToWithdraw: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawProtocolMeOffsetWithRewardsIfNeedBe", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [meAmountToWithdraw], __options);
-	}
-
-	/**
-	* addProtocolMeOffset
-	*
-	* @param { (string | number | BN) } expectedMeOffset,
-	*/
-	"addProtocolMeOffset" (
-		expectedMeOffset: (string | number | BN),
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::addProtocolMeOffset", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [expectedMeOffset], __options);
-	}
-
-	/**
-	* removeOpenRewardsManager
-	*
-	* @param { ArgumentTypes.AccountId } poolManager,
-	*/
-	"removeOpenRewardsManager" (
-		poolManager: ArgumentTypes.AccountId,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::removeOpenRewardsManager", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [poolManager], __options);
-	}
-
-	/**
-	* changePoolConfigExceptROptimal
-	*
-	* @param { ArgumentTypes.EditablePoolConfig } editableConfig,
-	* @param { boolean } ignoreDefault,
-	*/
-	"changePoolConfigExceptROptimal" (
-		editableConfig: ArgumentTypes.EditablePoolConfig,
-		ignoreDefault: boolean,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::changePoolConfigExceptROptimal", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [editableConfig, ignoreDefault], __options);
-	}
-
-	/**
-	* recordLiquidityProvided
-	*
-	* @param { (string | number | BN) } poolNumeratorAmount,
-	* @param { (string | number | BN) } poolDivisorAmount,
-	* @param { ArgumentTypes.AccountId } requestor,
-	* @param { ArgumentTypes.AccountId } to,
-	*/
-	"recordLiquidityProvided" (
-		poolNumeratorAmount: (string | number | BN),
-		poolDivisorAmount: (string | number | BN),
-		requestor: ArgumentTypes.AccountId,
-		to: ArgumentTypes.AccountId,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::recordLiquidityProvided", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [poolNumeratorAmount, poolDivisorAmount, requestor, to], __options);
-	}
-
-	/**
-	* pauseOpenRewards
+	* resumeOpenRewards
 	*
 	*/
-	"pauseOpenRewards" (
+	"resumeOpenRewards" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::pauseOpenRewards", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::resumeOpenRewards", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
 	}
 
 	/**
-	* withdrawLiquidity
+	* getBalance
 	*
-	* @param { ArgumentTypes.Id } position,
-	* @param { (string | number | BN) } poolNumeratorAmount,
-	* @param { (string | number | BN) } poolDivisorAmount,
-	* @param { ArgumentTypes.AccountId } requestor,
-	* @param { ArgumentTypes.AccountId } to,
+	* @param { ArgumentTypes.AccountId } token,
+	* @param { ArgumentTypes.AccountId } account,
 	*/
-	"withdrawLiquidity" (
-		position: ArgumentTypes.Id,
-		poolNumeratorAmount: (string | number | BN),
-		poolDivisorAmount: (string | number | BN),
-		requestor: ArgumentTypes.AccountId,
-		to: ArgumentTypes.AccountId,
+	"getBalance" (
+		token: ArgumentTypes.AccountId,
+		account: ArgumentTypes.AccountId,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawLiquidity", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getBalance", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [position, poolNumeratorAmount, poolDivisorAmount, requestor, to], __options);
+		}, [token, account], __options);
+	}
+
+	/**
+	* withdrawProtocolMeOffsetWithdrawable
+	*
+	* @param { (string | number | BN) } meAmountToWithdraw,
+	*/
+	"withdrawProtocolMeOffsetWithdrawable" (
+		meAmountToWithdraw: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::withdrawProtocolMeOffsetWithdrawable", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [meAmountToWithdraw], __options);
 	}
 
 	/**
@@ -455,17 +375,99 @@ export default class Methods {
 	}
 
 	/**
-	* getRoleAdmin
+	* startOpenRewards
 	*
-	* @param { (number | string | BN) } role,
 	*/
-	"getRoleAdmin" (
-		role: (number | string | BN),
+	"startOpenRewards" (
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::getRoleAdmin", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::startOpenRewards", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [role], __options);
+		}, [], __options);
+	}
+
+	/**
+	* forcefullyWithdrawProtocolOffsetMeTokens
+	*
+	* @param { (string | number | BN) } meAmountToWithdraw,
+	*/
+	"forcefullyWithdrawProtocolOffsetMeTokens" (
+		meAmountToWithdraw: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::forcefullyWithdrawProtocolOffsetMeTokens", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [meAmountToWithdraw], __options);
+	}
+
+	/**
+	* determineOptimalNeededMeAmountGivenRewardAmount
+	*
+	* @param { (string | number | BN) } rewardAmount,
+	*/
+	"determineOptimalNeededMeAmountGivenRewardAmount" (
+		rewardAmount: (string | number | BN),
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::determineOptimalNeededMeAmountGivenRewardAmount", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [rewardAmount], __options);
+	}
+
+	/**
+	* getLiquidityIds
+	*
+	*/
+	"getLiquidityIds" (
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::getLiquidityIds", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [], __options);
+	}
+
+	/**
+	* checkIfIsOpenRewardsManager
+	*
+	* @param { ArgumentTypes.AccountId } poolManager,
+	*/
+	"checkIfIsOpenRewardsManager" (
+		poolManager: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::checkIfIsOpenRewardsManager", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [poolManager], __options);
+	}
+
+	/**
+	* addOpenRewardsManager
+	*
+	* @param { ArgumentTypes.AccountId } newPoolManager,
+	*/
+	"addOpenRewardsManager" (
+		newPoolManager: ArgumentTypes.AccountId,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "poolController::addOpenRewardsManager", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [newPoolManager], __options);
+	}
+
+	/**
+	* grantRole
+	*
+	* @param { (number | string | BN) } role,
+	* @param { ArgumentTypes.AccountId | null } account,
+	*/
+	"grantRole" (
+		role: (number | string | BN),
+		account: ArgumentTypes.AccountId | null,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::grantRole", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [role, account], __options);
 	}
 
 	/**
@@ -485,19 +487,17 @@ export default class Methods {
 	}
 
 	/**
-	* renounceRole
+	* getRoleAdmin
 	*
 	* @param { (number | string | BN) } role,
-	* @param { ArgumentTypes.AccountId | null } account,
 	*/
-	"renounceRole" (
+	"getRoleAdmin" (
 		role: (number | string | BN),
-		account: ArgumentTypes.AccountId | null,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::renounceRole", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::getRoleAdmin", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [role, account], __options);
+		}, [role], __options);
 	}
 
 	/**
@@ -517,17 +517,17 @@ export default class Methods {
 	}
 
 	/**
-	* grantRole
+	* renounceRole
 	*
 	* @param { (number | string | BN) } role,
 	* @param { ArgumentTypes.AccountId | null } account,
 	*/
-	"grantRole" (
+	"renounceRole" (
 		role: (number | string | BN),
 		account: ArgumentTypes.AccountId | null,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::grantRole", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "accessControl::renounceRole", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [role, account], __options);
 	}
@@ -559,35 +559,21 @@ export default class Methods {
 	}
 
 	/**
-	* ownerOf
+	* approve
 	*
-	* @param { ArgumentTypes.Id } id,
-	*/
-	"ownerOf" (
-		id: ArgumentTypes.Id,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "psp34::ownerOf", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [id], __options);
-	}
-
-	/**
-	* allowance
-	*
-	* @param { ArgumentTypes.AccountId } owner,
 	* @param { ArgumentTypes.AccountId } operator,
 	* @param { ArgumentTypes.Id | null } id,
+	* @param { boolean } approved,
 	*/
-	"allowance" (
-		owner: ArgumentTypes.AccountId,
+	"approve" (
 		operator: ArgumentTypes.AccountId,
 		id: ArgumentTypes.Id | null,
+		approved: boolean,
 		__options ? : GasLimit,
 	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "psp34::allowance", (events: EventRecord) => {
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "psp34::approve", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [owner, operator, id], __options);
+		}, [operator, id, approved], __options);
 	}
 
 	/**
@@ -609,6 +595,38 @@ export default class Methods {
 	}
 
 	/**
+	* allowance
+	*
+	* @param { ArgumentTypes.AccountId } owner,
+	* @param { ArgumentTypes.AccountId } operator,
+	* @param { ArgumentTypes.Id | null } id,
+	*/
+	"allowance" (
+		owner: ArgumentTypes.AccountId,
+		operator: ArgumentTypes.AccountId,
+		id: ArgumentTypes.Id | null,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "psp34::allowance", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [owner, operator, id], __options);
+	}
+
+	/**
+	* ownerOf
+	*
+	* @param { ArgumentTypes.Id } id,
+	*/
+	"ownerOf" (
+		id: ArgumentTypes.Id,
+		__options ? : GasLimit,
+	){
+		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "psp34::ownerOf", (events: EventRecord) => {
+			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
+		}, [id], __options);
+	}
+
+	/**
 	* totalSupply
 	*
 	*/
@@ -618,24 +636,6 @@ export default class Methods {
 		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "psp34::totalSupply", (events: EventRecord) => {
 			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
 		}, [], __options);
-	}
-
-	/**
-	* approve
-	*
-	* @param { ArgumentTypes.AccountId } operator,
-	* @param { ArgumentTypes.Id | null } id,
-	* @param { boolean } approved,
-	*/
-	"approve" (
-		operator: ArgumentTypes.AccountId,
-		id: ArgumentTypes.Id | null,
-		approved: boolean,
-		__options ? : GasLimit,
-	){
-		return txSignAndSend( this.__apiPromise, this.__nativeContract, this.__keyringPair, "psp34::approve", (events: EventRecord) => {
-			return decodeEvents(events, this.__nativeContract, EVENT_DATA_TYPE_DESCRIPTIONS);
-		}, [operator, id, approved], __options);
 	}
 
 	/**

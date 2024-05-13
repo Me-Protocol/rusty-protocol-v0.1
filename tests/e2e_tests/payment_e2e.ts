@@ -8,7 +8,7 @@ import rewardConstructor from '../../typechain-generated/constructors/reward'
 import rewardContract from '../../typechain-generated/contracts/reward'
 import { use } from 'chai'
 
-describe( "Payment Service Test", () => {
+describe( "Payment Test", () => {
 
     let payment_fixture = async() =>{
         // const api = await ApiPromise.create()
@@ -197,19 +197,6 @@ describe( "Payment Service Test", () => {
 
       await expect(payment.withSigner(admin).tx.protocolWithdrawMe(1000, user1.address)).to.be.eventually.rejected
     })
-
-    
-
-
-
-
-
-
-
-    
-
-
-
 
     
 })

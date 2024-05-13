@@ -1,3 +1,5 @@
+use core::clone;
+
 use openbrush::traits::{ AccountId, Balance, String, Storage };
 use ink::{ storage::{ traits::StorageLayout, Mapping } };
 use crate::providers::common::{ database::*, types::BRAND_ID_TYPE, errors::ProtocolError };
@@ -5,7 +7,7 @@ use crate::providers::common::{ database::*, types::BRAND_ID_TYPE, errors::Proto
 pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
 
 
-#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode, Clone)]
 #[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
 pub struct RewardDetails {
     pub name: Option<String>,
@@ -36,6 +38,7 @@ pub struct RewardConfig {
 #[derive(Debug, Default)]
 #[openbrush::storage_item(REWARD_RECORDS)]
 pub struct RewardRecords {
+    pub num : Mapping<u32, u32>,
     pub details: Mapping<AccountId, RewardDetails>,
     pub config: Mapping<AccountId, RewardConfig>,
 }
@@ -45,7 +48,16 @@ pub struct RewardRecords {
 pub struct EditableRewardDetails {
     pub name: Option<String>,
     pub symbol: Option<String>,
+    pub r_type: u8,
+    pub verified: bool,
+    pub contract_address: AccountId,
     pub description_link: Option<String>,
+    pub issuing_brand: BRAND_ID_TYPE,
+    pub open: bool,
+    pub interspendable: bool,
+    pub pool_id: AccountId,
+    pub date_created: u128,
+    
 }
 
 impl Default for RewardConfig {
@@ -80,18 +92,23 @@ impl Default for RewardDetails {
     }
 }
 
+
+// pub fn get_num<T>(instance: &mut T, reward: AccountId) -> Result<u32> where T: Storage<RewardRecords> {
+    
+// }
+
 pub fn get_pool_id<T>(instance: &mut T, reward: AccountId) -> Result<AccountId,ProtocolError> where T: Storage<RewardRecords> {
     let pool_id = instance.data::<RewardRecords>().details.get(reward).unwrap().pool_id;
     if pool_id == ZERO_ADDRESS.into() {return Err(ProtocolError::RewardHasNoPool)}
     Ok(pool_id)
 }
 
-pub fn get_reward_config<T>(instance: &mut T, reward: AccountId) -> Result<RewardConfig,ProtocolError> where T: Storage<RewardRecords> {
+pub fn get_reward_config<T>(instance: &T, reward: AccountId) -> Result<RewardConfig,ProtocolError> where T: Storage<RewardRecords> {
     let config = instance.data::<RewardRecords>().config.get(reward).unwrap();
     Ok(config)
 }
 
-pub fn get_reward_details<T>(instance: &mut T, reward: AccountId) -> Result<RewardDetails,ProtocolError> where T: Storage<RewardRecords> {
+pub fn get_reward_details<T>(instance: &T, reward: AccountId) -> Result<RewardDetails,ProtocolError> where T: Storage<RewardRecords> {
     let details = instance.data::<RewardRecords>().details.get(reward).unwrap();
     Ok(details)
 }

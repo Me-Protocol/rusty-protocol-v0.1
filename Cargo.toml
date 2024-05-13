@@ -20,7 +20,10 @@ bounty = { path = "contracts/modules/peripherals/bounty", default-features = fal
 oracle = { path = "contracts/modules/services/oracle", default-features = false }
 services ={ path = "contracts/modules/services/services", default-features = false }
 payment = { path = "contracts/modules/services/payment", default-features = false }
+governance ={ path = "contracts/modules/peripherals/governance", default-features = false }
 global = { path = "contracts", default-features = false }
+votes ={ path = "contracts/modules/peripherals/votes", default-features = false }
+receiver ={ path = "contracts/modules/peripherals/receiver", default-features = false }
 
 [dev-dependencies]
 rustc-serialize = "0.3"

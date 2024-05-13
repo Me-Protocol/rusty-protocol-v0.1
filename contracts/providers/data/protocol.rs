@@ -18,6 +18,8 @@ pub struct ProtocolConfig {
     pub cai_in_me: Balance,
     pub protocol_fee: Balance,
     pub bounty_contribution_in_precision: u128,
+    pub conversions_slippage_in_precisiion: u128,
+    pub informations_slippage_in_precision: u128,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -46,31 +48,32 @@ impl  Default for ProtocolRecords {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-#[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
-pub struct ProtocolConfigClone {
-    pub default_minimum_me_for_conversation: Balance,
-    pub default_minimum_reward_for_conversation_in_percent: u8,
-    pub default_maximum_r_limit_for_conversation_in_precision: u128,
-    pub default_reward_notify_threshold_in_percent: u8,
-    pub default_notify_me_amount: Balance,
-    pub default_notify_reward_amount_in_percent: u8,
-    pub cai_in_me: Balance,
-    pub protocol_fee: Balance,
-    pub bounty_contribution_in_precision: u128,
-}
+// #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+// #[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
+// pub struct ProtocolConfigClone {
+//     pub default_minimum_me_for_conversation: Balance,
+//     pub default_minimum_reward_for_conversation_in_percent: u8,
+//     pub default_maximum_r_limit_for_conversation_in_precision: u128,
+//     pub default_reward_notify_threshold_in_percent: u8,
+//     pub default_notify_me_amount: Balance,
+//     pub default_notify_reward_amount_in_percent: u8,
+//     pub cai_in_me: Balance,
+//     pub protocol_fee: Balance,
+//     pub bounty_contribution_in_precision: u128,
 
-#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-#[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
-pub struct ProtocolRecordsClone {
-    pub me: AccountId,
-    pub bounty: AccountId,
-    pub treasury: AccountId,
-    pub admin_id: BRAND_ID_TYPE,
-    pub total_number_of_brands: u128,
-    pub total_number_of_rewards: u128,
-    pub last_updated: u64,
-}
+// }
+
+// #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+// #[cfg_attr(feature = "std", derive(scale_info::TypeInfo, StorageLayout))]
+// pub struct ProtocolRecordsClone {
+//     pub me: AccountId,
+//     pub bounty: AccountId,
+//     pub treasury: AccountId,
+//     pub admin_id: BRAND_ID_TYPE,
+//     pub total_number_of_brands: u128,
+//     pub total_number_of_rewards: u128,
+//     pub last_updated: u64,
+// }
 
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -96,8 +99,10 @@ pub struct EditableProtocolRecords {
     pub me: AccountId,
     pub bounty: AccountId,
     pub treasury: AccountId,
-    pub vault_id: AccountId,
     pub admin_id: BRAND_ID_TYPE,
+    pub total_number_of_brands: u128,
+    pub total_number_of_rewards: u128,
+    pub last_updated: u64,
 }
 
 pub fn get_me<T>(instance: &mut T) -> AccountId where T: Storage<ProtocolRecords> {
@@ -126,6 +131,8 @@ pub fn get_treasury_id<T>(instance: &mut T) -> AccountId where T: Storage<Protoc
     instance.data::<ProtocolConfig>().cai_in_me = protocol_config.cai_in_me;
     instance.data::<ProtocolConfig>().protocol_fee = protocol_config.protocol_fee;
     instance.data::<ProtocolConfig>().bounty_contribution_in_precision = protocol_config.bounty_contribution_in_precision;
+    instance.data::<ProtocolConfig>().conversions_slippage_in_precisiion = protocol_config.conversions_slippage_in_precisiion;
+    instance.data::<ProtocolConfig>().informations_slippage_in_precision = protocol_config.informations_slippage_in_precision;
 }
 
 
@@ -134,4 +141,7 @@ pub fn update_editable_protocol_records<T>(instance: &mut T, protocol_records: E
     instance.data::<ProtocolRecords>().me = protocol_records.me;
     instance.data::<ProtocolRecords>().bounty = protocol_records.bounty;
     instance.data::<ProtocolRecords>().treasury = protocol_records.treasury;
+    instance.data::<ProtocolRecords>().total_number_of_brands = protocol_records.total_number_of_brands;
+    instance.data::<ProtocolRecords>().total_number_of_rewards = protocol_records.total_number_of_rewards;
+    instance.data::<ProtocolRecords>().last_updated = protocol_records.last_updated;
 }

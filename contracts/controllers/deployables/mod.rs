@@ -4,3 +4,4 @@ pub mod treasury;
 pub mod bounty;
 pub mod payment;
 pub mod pool_initiator;
+pub mod reward_initiator;

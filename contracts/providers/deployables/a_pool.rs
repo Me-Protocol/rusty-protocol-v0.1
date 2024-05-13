@@ -36,7 +36,7 @@ use openbrush::{
     AccessControlImpl {
 
     #[modifiers(when_not_active)]
-    #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
+    // #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
      fn start_open_rewards(
         &mut self
     ) -> Result<u128, ProtocolError> {
@@ -73,14 +73,14 @@ use openbrush::{
     }
 
     #[modifiers(when_active)]
-    #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
+    // #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
       fn pause_open_rewards( &mut self) -> Result<bool, ProtocolError> {
         self.data::<PoolState>().active = false;
         Ok(true)
     }
 
     #[modifiers(when_not_active)]
-    #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
+    // #[modifiers(only_role(OPEN_REWARDS_MANAGER))]
       fn resume_open_rewards( &mut self) -> Result<bool, ProtocolError> {
         if !self.data::<PoolState>().started  {
             return Err(ProtocolError::OpenRewardsNotStarted);

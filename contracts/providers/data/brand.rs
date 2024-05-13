@@ -1,6 +1,6 @@
-use openbrush::{ traits::{ AccountId, Balance, String } };
+use openbrush::traits::{ AccountId, Balance, Storage, String };
 use ink::{ storage::{ traits::StorageLayout, Mapping } };
-use crate::providers::common::{ database::*, types::* };
+use crate::providers::common::{ database::*, errors::ProtocolError, types::* };
 
 pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
 
@@ -73,3 +73,11 @@ impl Default for BrandDetails {
     }
 }
 
+
+pub fn get_brand_details<T>(instance: &T, brand_id: BRAND_ID_TYPE) -> BrandDetails where T: Storage<BrandRecords> {
+   instance.data::<BrandRecords>().details.get(brand_id).unwrap()
+}
+
+pub fn update_brand_details<T>(instance: &mut T, brand_id: BRAND_ID_TYPE, brand_details:BrandDetails) where T: Storage<BrandRecords> {
+    instance.data::<BrandRecords>().details.insert(&brand_id, &brand_details);
+}

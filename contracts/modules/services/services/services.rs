@@ -4,10 +4,13 @@
 #[openbrush::contract]
 mod services {
 
-    use global::{controllers::services::customers, providers::{common::roleguard::RecordStorage, data::{a_reward::RewardRecords, brand::BrandRecords, protocol::{ProtocolConfig, ProtocolRecords}}, services::{admin::{AdminImpl, BrandImpl}, customers::CustomerImpl}}};
+    use ink::{ prelude::vec::Vec};
+    use global::{controllers::services::customers, providers::{common::roleguard::RecordStorage, data::{a_reward::RewardRecords, brand::BrandRecords, protocol::{EditableProtocolConfig, EditableProtocolRecords, ProtocolConfig, ProtocolRecords}}, services::{admin::{AdminImpl, BrandImpl}, customers::CustomerImpl}}};
     use openbrush::{
-        contracts::access_control::{*, self},
+        contracts::{access_control::{*, self}, governance::{*}},
+
         traits::Storage,
+
     };
 
     pub use global::providers::services::{customers::*, admin::*};
@@ -38,6 +41,9 @@ mod services {
         #[storage_field]
         pub record_storage: RecordStorage,  
 
+        #[storage_field]
+        governor: governor::Data,
+
     }
 
 
@@ -66,12 +72,12 @@ mod services {
     impl AdminController for Services {
         
         #[ink(message)]
-        fn get_protocol_config(&self) -> Result<ProtocolConfigClone, ProtocolError> {
+        fn get_protocol_config(&self) -> EditableProtocolConfig {
             AdminImpl::get_protocol_config(self)
         }
 
         #[ink(message)]
-        fn get_protocol_records(&self) -> Result<ProtocolRecordsClone, ProtocolError> {
+        fn get_protocol_records(&self) -> EditableProtocolRecords {
             AdminImpl::get_protocol_records(self)
         }
 
@@ -107,11 +113,6 @@ mod services {
     impl BrandController for Services {
 
         #[ink(message)]
-        fn create_more_rewards(&mut self, _amount: Balance, _reward_address: AccountId, _to: AccountId) -> Result<bool, ProtocolError> {
-            BrandImpl::create_more_rewards(self, _amount, _reward_address, _to)
-        }
-
-        #[ink(message)]
         fn update_brand_details(
             &mut self,
             brand_details: EditableBrandDetails,
@@ -123,11 +124,11 @@ mod services {
         #[ink(message)]
         fn update_brand_details_by_brand_id(
             &mut self,
-            brand_details: EditableBrandDetails,
-            ignore_default: bool,
+            brand_details: BrandDetails,
+            // ignore_default: bool,
             brand_id: BRAND_ID_TYPE
-        ) -> Result<bool, ProtocolError> {
-            BrandImpl::update_brand_details_by_brand_id(self, brand_details, ignore_default, brand_id)
+        )  {
+            BrandImpl::update_brand_details_by_brand_id(self, brand_details,brand_id)
         }
 
         #[ink(message)]
@@ -292,7 +293,7 @@ mod services {
         fn get_brand_config_by_id (
             &self,
             brand_id: BRAND_ID_TYPE
-        ) -> Result<BrandDetails, ProtocolError>{
+        ) ->GlobalBrandConfig{
             BrandImpl::get_brand_config_by_id(self, brand_id)
         }
 
@@ -301,9 +302,10 @@ mod services {
             &mut self,
             reward: AccountId,
             reward_amount: Balance,
-            me_amount: Balance
+            me_amount: Balance,
+            brand: BRAND_ID_TYPE
         ) -> Result<bool, ProtocolError>{
-            BrandImpl::top_up_treasury_balances(self, reward, reward_amount, me_amount)
+            BrandImpl::top_up_treasury_balances(self, reward, reward_amount, me_amount,brand)
         }
 
         #[ink(message)]
@@ -312,11 +314,31 @@ mod services {
             reward: AccountId,
             reward_amount: Balance,
             me_amount: Balance,
-            to: AccountId
+            to: AccountId,
+            brand: BRAND_ID_TYPE
         ) -> Result<bool, ProtocolError>{
-            BrandImpl::withdraw_treasury_balances(self, reward, reward_amount, me_amount, to)
+            BrandImpl::withdraw_treasury_balances(self, reward, reward_amount, me_amount, to, brand)
         }
-        
+
+        #[ink(message)]
+        fn create_new_reward(&mut self, reward: AccountId, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8,brand_id: BRAND_ID_TYPE, requestor: AccountId, pool_id: AccountId) -> Result<bool, ProtocolError>{
+
+            BrandImpl::create_new_reward(self, reward, reward_name, reward_symbol, reward_description_link, reward_type, brand_id, requestor, pool_id)
+
+        }
+
+        #[ink(message)]
+        fn get_reward_details ( &self, requestor: AccountId) -> RewardDetails{
+
+            BrandImpl::get_reward_details(self, requestor)
+        }
+
+        #[ink(message)]
+        fn get_brand_details ( &self, brand_id: BRAND_ID_TYPE) -> BrandDetails {
+
+            BrandImpl::get_brand_details(self, brand_id)
+        }
+
     }
     
 
@@ -325,7 +347,20 @@ mod services {
        
         #[ink(constructor)]
         pub fn new() -> Self {
-            Self::default()
+
+            let mut instance = Self::default(); 
+           
+            let caller = instance.env().caller();
+
+            access_control::InternalImpl::_init_with_admin(&mut instance, Some(caller));
+
+            access_control::InternalImpl::_setup_role(&mut instance,PROTOCOL_ADMIN, Some(caller));
+
+            access_control::InternalImpl::_setup_role(&mut instance,ONBOARDING_MANAGER, Some(caller));
+
+            RewardConfig::default();
+
+            instance
         }
 
 

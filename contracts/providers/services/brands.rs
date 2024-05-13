@@ -1,5 +1,5 @@
 
-use crate::controllers::deployables::{reward, treasury};
+use crate::{controllers::deployables::{reward, treasury}, providers::data::brand};
 pub use crate::{
     providers::{
         data::{ brand::*, a_pool::*, a_reward::*, protocol::* },
@@ -14,7 +14,7 @@ pub use crate::{
     },
     controllers::{
         services::brands::*,
-        deployables::{ a_pool::*, reward::*, treasury::*, bounty::* },
+        deployables::{ a_pool::*, reward::*, treasury::*, bounty::* , reward_initiator::*},
     },
 };
 
@@ -39,60 +39,42 @@ pub trait BrandImpl: Storage<BrandRecords> +
         Storage<ProtocolRecords> + 
         AccessControlImpl 
 {
-    //  fn register(
-    //     &mut self,
-    //     name: Option<String>,                                              
-    //     online_presence: Option<String>,
-    //     requestor: AccountId,
-    //     brand_id: BRAND_ID_TYPE
-    // ) -> Result<(), ProtocolError> {
+ 
 
-    //     let mut details = BrandDetails::default();
-    //     let config = GlobalBrandConfig::default();
+    fn create_new_reward(&mut self, reward: AccountId, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8,brand_id: BRAND_ID_TYPE, requestor: AccountId, pool_id: AccountId) -> Result<bool, ProtocolError>{
 
-    //     details.name = name.clone();
-    //     details.online_presence = online_presence.clone();
-    //     details.main_account = requestor;
-    //     details.date_joined = Self::env().block_timestamp();
-    
-    //     ensure_brand_is_not_empty(brand_id);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-    //     self.data::<BrandRecords>().exists.insert(brand_id, &true);
-    //     self.data::<BrandRecords>().details.insert(brand_id, &details);
-    //     self.data::<BrandRecords>().global_config.insert(brand_id, &config);
-    //     self.data::<BrandRecords>().id.insert(requestor, &brand_id);
+        if reward_name == None {return Err(ProtocolError::RewardNameCannotBeEmpty)}
+        if reward_symbol == None {return Err(ProtocolError::RewardSymbolCannotBeEmpty)}
+        ensure_address_is_not_zero_address(requestor).unwrap();
+        ensure_value_is_not_zero(reward_type.into()).unwrap();
 
-    //     Ok(())
-    // }
+       if reward_type == FUNGIBLE_REWARD{
+       let reward_details = RewardDetails {
+            name: reward_name,
+            symbol: reward_symbol,
+            r_type: reward_type,
+            verified: false,
+            contract_address: reward,
+            description_link: reward_description_link,
+            issuing_brand: brand_id,
+            open: true,
+            interspendable: false,
+            pool_id: pool_id,
+            date_created: 20,
+       };
+     
+       self.data::<RewardRecords>().details.insert(&reward, &reward_details);
+       }
 
-    // fn create_new_reward(&mut self, reward_name: Option<String>, reward_symbol: Option<String>, reward_description_link:Option<String>, reward_type:u8, initial_reward_supply:Balance, use_global_config:bool, requestor: AccountId) -> Result<bool, ProtocolError>{
-
-    //     if reward_name == None {return Err(ProtocolError::RewardNameCannotBeEmpty)}
-    //     if reward_symbol == None {return Err(ProtocolError::RewardSymbolCannotBeEmpty)}
-    //     ensure_address_is_not_zero_address(requestor);
-    //     ensure_value_is_not_zero(reward_type.into());
-
-    //    let mut reward_details: RewardDetails = Default::default();
-    //    let mut reward_config: RewardConfig = Default::default();
-    //    reward_details.name = reward_name;
-    //    reward_details.symbol = reward_symbol;
-    //    reward_details.description_link = reward_description_link;
-    //    reward_details.r_type = reward_type;
-    //    if reward_type == FUNGIBLE_REWARD{
-    //     RewardRef::new()
-    //    }
-
-    //     Ok(true)
-    // }
-
-    fn create_more_rewards(&mut self, _amount: Balance, _reward_address: AccountId, _to: AccountId) -> Result<bool, ProtocolError> {
-
-        let requestor = Self::env().caller();
-        let requestor_id = self.data::<BrandRecords>().id.get(&requestor).unwrap();
-        // Todo: no create more rewards
-        // RewardRef::create_more_rewards(&_reward_address, _to, _amount);
         Ok(true)
     }
 
+
+    fn get_reward_details ( &self, requestor: AccountId) -> RewardDetails{
+
+     let res = get_reward_details(self, requestor).unwrap();
+        res
+    }
 
 
    // Todo: Implement Role Guard
@@ -121,29 +103,19 @@ pub trait BrandImpl: Storage<BrandRecords> +
         Ok(true)
     }
 
+    fn get_brand_details ( &self, brand_id: BRAND_ID_TYPE) -> BrandDetails{
+        get_brand_details(self, brand_id)
+    }
+
    // Todo: Implement Role Guard
     fn update_brand_details_by_brand_id(
         &mut self,
-        brand_details: EditableBrandDetails,
-        ignore_default: bool,
+        brand_details: BrandDetails,
         brand_id: BRAND_ID_TYPE
-    ) -> Result<bool, ProtocolError> {
+    ){
         let _ = ensure_brand_is_not_empty(brand_id);
-        let mut details: BrandDetails = self.data::<BrandRecords>().details.get(brand_id).unwrap();
 
-        if !ignore_default {
-            details.online_presence = brand_details.online_presence;
-            details.name = brand_details.name;
-        } else {
-            if brand_details.online_presence != Default::default() {
-                details.online_presence = brand_details.online_presence;
-            }
-            if brand_details.name != Default::default() {
-                details.name = brand_details.name;
-            }
-        }
-        self.data::<BrandRecords>().details.insert(brand_id, &details);
-        Ok(true)
+        update_brand_details(self, brand_id, brand_details)
     }
 
    // Todo: Implement Role Guard
@@ -293,72 +265,38 @@ pub trait BrandImpl: Storage<BrandRecords> +
         Ok(true)
     }
 
+   
+    fn add_pool_manager(
+        &mut self,
+        reward: AccountId,
+        pool_manager: AccountId
+    ) -> Result<bool, ProtocolError> {
+        ensure_address_is_not_zero_address(pool_manager)?;
+        ensure_address_is_not_zero_address(reward)?;
+        let requestor = Self::env().caller();
+ 
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
+        if pool_id == ZERO_ADDRESS.into() {
+            return Err(ProtocolError::RewardHasNoPool);
+        }
+        Ok(true)
+    }
 
-    // fn add_bounty_manager(
-    //     &mut self,
-    //     reward: AccountId,
-    //     bounty_manager: AccountId
-    // ) -> Result<bool, ProtocolError> {
-    //     ensure_address_is_not_zero_address(reward)?;
-    //     ensure_address_is_not_zero_address(bounty_manager)?;
-    //     let requestor = Self::env().caller();
-    //     ensure_is_issuing_brand(self, reward, requestor)?;
-    //     if self.data::<access_control::Data>().has_role(BOUNTY_MANAGER, bounty_manager) {
-    //         return Err(ProtocolError::AccountAlreadyABountyManager);
-    //     }
-    //     self.data::<access_control::Data>().grant_role(BOUNTY_MANAGER, bounty_manager)?;
-    //     Ok(true)
-    // }
-
-//     fn remove_bounty_manager(
-//         &mut self,
-//         reward: AccountId,
-//         bounty_manager: AccountId
-//     ) -> Result<bool, ProtocolError> {
-//         let requestor = Self::env().caller();
-//         ensure_address_is_not_zero_address(bounty_manager)?;
-//         ensure_address_is_not_zero_address(reward)?;
-//         ensure_is_issuing_brand(self, reward, requestor)?;
-//         if !self.data::<access_control::Data>().has_role(BOUNTY_MANAGER, bounty_manager) {
-//             return Err(ProtocolError::AccountIsNotABountyManager);
-//         }
-//         self.data::<access_control::Data>().revoke_role(BOUNTY_MANAGER, bounty_manager)?;
-//         Ok(true)
-//     }
-
-//     fn add_pool_manager(
-//         &mut self,
-//         reward: AccountId,
-//         pool_manager: AccountId
-//     ) -> Result<bool, ProtocolError> {
-//         ensure_address_is_not_zero_address(pool_manager)?;
-//         ensure_address_is_not_zero_address(reward)?;
-//         let requestor = Self::env().caller();
-//         ensure_is_issuing_brand(self, reward, requestor)?;
-//         let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
-//         if pool_id == ZERO_ADDRESS.into() {
-//             return Err(ProtocolError::RewardHasNoPool);
-//         }
-//         APoolRef::add_pool_manager(&pool_id, pool_manager)?;
-//         Ok(true)
-//     }
-
-//     fn remove_pool_manager(
-//         &mut self,
-//         reward: AccountId,
-//         pool_manager: AccountId
-//     ) -> Result<bool, ProtocolError> {
-//         ensure_address_is_not_zero_address(pool_manager)?;
-//         ensure_address_is_not_zero_address(reward)?;
-//         let requestor = Self::env().caller();
-//         ensure_is_issuing_brand(self, reward, requestor)?;
-//         let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
-//         if pool_id == ZERO_ADDRESS.into() {
-//             return Err(ProtocolError::RewardHasNoPool);
-//         }
-//         APoolRef::remove_pool_manager(&pool_id, pool_manager)?;
-//         Ok(true)
-//     }
+    fn remove_pool_manager(
+        &mut self,
+        reward: AccountId,
+        pool_manager: AccountId
+    ) -> Result<bool, ProtocolError> {
+        ensure_address_is_not_zero_address(pool_manager)?;
+        ensure_address_is_not_zero_address(reward)?;
+        let requestor = Self::env().caller();
+        
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
+        if pool_id == ZERO_ADDRESS.into() {
+            return Err(ProtocolError::RewardHasNoPool);
+        }
+        Ok(true)
+    }
 
     fn set_bounty_trigger_limit(
         &mut self,
@@ -385,7 +323,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
         let requestor = Self::env().caller();
         BountyRef::withdraw_bounty(&bounty, reward, amount, requestor, treasury)?;
 
-        TreasuryRef::deposit_reward_and_or_me(&treasury, reward, amount,  EMPTY_AMOUNT, DEFAULT_BRAND_ID, requestor, Some("".to_string()) )
+        TreasuryRef::deposit_reward_and_or_me(&treasury, reward, amount,  EMPTY_AMOUNT, DEFAULT_BRAND_ID, requestor, Some("".into()) )
     }
 
     fn add_liquidity_for_open_rewards (
@@ -457,7 +395,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
 
      APoolRef::record_liquidity_provided(&open_reward_id,reward_amount, me_amount, requestor, requestor)?;
         
-     self.activate_open_rewards(reward)?;   
+     self.activate_open_rewards(open_reward_id)?;   
 
       Ok(true)
     }   
@@ -512,7 +450,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
     
     APoolRef::withdraw_liquidity(&open_reward_id, liquidity_position, reward_amount, me_amount,requestor,  to)?;
 
-    TreasuryRef::deposit_reward_and_or_me(&to, reward,reward_amount, me_amount,brand_id, requestor, Some("".to_string()))?;
+    TreasuryRef::deposit_reward_and_or_me(&to, reward,reward_amount, me_amount,brand_id, requestor, Some("".into()))?;
     
     Ok(true)
     }
@@ -615,6 +553,10 @@ pub trait BrandImpl: Storage<BrandRecords> +
         Ok(true)
     }
 
+    fn set_id(&mut self, id: BRAND_ID_TYPE, requestor: AccountId)  {
+        self.data::<BrandRecords>().id.insert(requestor, &id);
+    }
+
     fn change_optimal_valuation(
         &mut self,
         reward: AccountId,
@@ -657,37 +599,37 @@ pub trait BrandImpl: Storage<BrandRecords> +
 
     fn activate_open_rewards(&mut self, reward: AccountId) -> Result<bool, ProtocolError> {
         ensure_address_is_not_zero_address(reward)?;
-        let requestor = Self::env().caller();
-        Self::ensure_is_issuing_brand(self, reward, requestor)?;
+        // let requestor = Self::env().caller();
+        // Self::ensure_is_issuing_brand(self, reward, requestor)?;
         let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
-        APoolRef::start_open_rewards(&reward)?;
+        APoolRef::start_open_rewards(&pool_id)?;
         Ok(true)
     }
 
     fn pause_open_rewards(&mut self, reward: AccountId) -> Result<bool, ProtocolError> {
         ensure_address_is_not_zero_address(reward)?;
-        let requestor = Self::env().caller();
-        Self::ensure_is_issuing_brand(self, reward, requestor)?;
+        // let requestor = Self::env().caller();
+        // Self::ensure_is_issuing_brand(self, reward, requestor)?;
         let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
-        APoolRef::pause_open_rewards(&reward)?;
+        APoolRef::pause_open_rewards(&pool_id)?;
         Ok(true)
     }
 
     fn resume_open_rewards(&mut self, reward: AccountId) -> Result<bool, ProtocolError> {
         ensure_address_is_not_zero_address(reward)?;
-        let requestor = Self::env().caller();
-        Self::ensure_is_issuing_brand(self, reward, requestor)?;
+        // let requestor = Self::env().caller();
+        // Self::ensure_is_issuing_brand(self, reward, requestor)?;
         let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
         if pool_id == ZERO_ADDRESS.into() {
             return Err(ProtocolError::RewardHasNoPool);
         }
-        APoolRef::resume_open_rewards(&reward)?;
+        APoolRef::resume_open_rewards(&pool_id)?;
         Ok(true)
     }
 
@@ -704,77 +646,68 @@ pub trait BrandImpl: Storage<BrandRecords> +
     fn get_brand_config_by_id (
         &self,
         brand_id: BRAND_ID_TYPE
-    ) -> Result<BrandDetails, ProtocolError> {
-        let brand = self.data::<BrandRecords>().details.get(&brand_id).unwrap();
-        Ok(brand)
+    ) -> GlobalBrandConfig{
+        self.data::<BrandRecords>().global_config.get(&brand_id).unwrap()
     }
 
 
-//     fn top_up_pool_balances(
-//         &mut self,
-//         reward: AccountId,
-//         reward_amount: Balance,
-//         me_amount: Balance
-//     ) -> Result<bool, ProtocolError> {
-//         ensure_address_is_not_zero_address(reward)?;
-//         if reward_amount == 0 && me_amount == 0 {
-//             return Err(ProtocolError::BothDepositsCanNotBeZero);
-//         }
-//         let requestor = Self::env().caller();
-//         ensure_is_issuing_brand(self, reward, requestor)?;
-//         let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
-//         if pool_id == ZERO_ADDRESS.into() {
-//             return Err(ProtocolError::RewardHasNoPool);
-//         }
-//         let me = self.data::<ProtocolRecords>().me;
-
-//         if reward_amount > 0 {
-//             PSP22Ref::transfer_from(&reward, requestor, pool_id, reward_amount, Vec::<u8>::new())?;
-//         }
-//         if me_amount > 0 {
-//             PSP22Ref::transfer_from(&me, requestor, pool_id, reward_amount, Vec::<u8>::new())?;
-//         }
-//         Ok(true)
-//     }
-
-    // fn reduce_pool_balances(
-    //     &mut self,
-    //     reward: AccountId,
-    //     position: u128,
-    //     reward_amount: Balance,
-    //     me_amount: Balance
-    // ) -> Result<bool, ProtocolError> {
-    //     ensure_address_is_not_zero_address(reward)?;
-    //     if reward_amount == 0 && me_amount == 0 {
-    //         return Err(ProtocolError::BothWithdrawalsCanNotBeZero);
-    //     }
-    //     let requestor = Self::env().caller();
-    //     Self::ensure_is_issuing_brand(self, reward, requestor)?;
-    //     let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
-    //     if pool_id == ZERO_ADDRESS.into() {
-    //         return Err(ProtocolError::RewardHasNoPool);
-    //     }
-    //     APoolRef::withdraw_assets_from_position(
-    //         &pool_id,
-    //         position,
-    //         reward_amount,
-    //         me_amount,
-    //         requestor,
-    //         requestor
-    //     )?;
-    //     Ok(true)
-    // }
-
-    fn top_up_treasury_balances(
+    fn top_up_pool_balances(
         &mut self,
         reward: AccountId,
         reward_amount: Balance,
         me_amount: Balance
     ) -> Result<bool, ProtocolError> {
         ensure_address_is_not_zero_address(reward)?;
+        if reward_amount == 0 && me_amount == 0 {
+            return Err(ProtocolError::BothDepositsCanNotBeZero);
+        }
+        let requestor = Self::env().caller();
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
+        if pool_id == ZERO_ADDRESS.into() {
+            return Err(ProtocolError::RewardHasNoPool);
+        }
+        let me = self.data::<ProtocolRecords>().me;
+
+        if reward_amount > 0 {
+            PSP22Ref::transfer_from(&reward, requestor, pool_id, reward_amount, Vec::<u8>::new())?;
+        }
+        if me_amount > 0 {
+            PSP22Ref::transfer_from(&me, requestor, pool_id, reward_amount, Vec::<u8>::new())?;
+        }
+        Ok(true)
+    }
+
+    fn reduce_pool_balances(
+        &mut self,
+        reward: AccountId,
+        position: u128,
+        reward_amount: Balance,
+        me_amount: Balance
+    ) -> Result<bool, ProtocolError> {
+        ensure_address_is_not_zero_address(reward)?;
+        if reward_amount == 0 && me_amount == 0 {
+            return Err(ProtocolError::BothWithdrawalsCanNotBeZero);
+        }
+        let requestor = Self::env().caller();
+        Self::ensure_is_issuing_brand(self, reward, requestor)?;
+        let pool_id = self.data::<RewardRecords>().details.get(&reward).unwrap().pool_id;
+        if pool_id == ZERO_ADDRESS.into() {
+            return Err(ProtocolError::RewardHasNoPool);
+        }
+        Ok(true)
+    }
+
+    fn top_up_treasury_balances(
+        &mut self,
+        reward: AccountId,
+        reward_amount: Balance,
+        me_amount: Balance,
+        brand: BRAND_ID_TYPE
+    ) -> Result<bool, ProtocolError> {
+        ensure_address_is_not_zero_address(reward)?;
         let requestor = Self::env().caller();
         let treasury = self.data::<ProtocolRecords>().treasury.clone();
-        let brand = Self::get_self_id(self, requestor).unwrap_or_default();
+        // let brand = Self::get_self_id(self, requestor).unwrap_or_default();
         let me = get_me(self);
         if reward_amount > 0 {
             PSP22Ref::transfer_from(&reward, requestor, treasury, reward_amount, Vec::<u8>::new())?;
@@ -800,13 +733,14 @@ pub trait BrandImpl: Storage<BrandRecords> +
         reward: AccountId,
         reward_amount: Balance,
         me_amount: Balance,
-        to: AccountId
+        to: AccountId,
+        brand: BRAND_ID_TYPE
     ) -> Result<bool, ProtocolError> {
         ensure_address_is_not_zero_address(reward)?;
         ensure_address_is_not_zero_address(to)?;
         let requestor = Self::env().caller();
         let treasury = self.data::<ProtocolRecords>().treasury.clone();
-        let brand = Self::get_self_id(self, requestor).unwrap_or_default();
+        // let brand = Self::get_self_id(self, requestor).unwrap_or_default();
         TreasuryRef::withdraw_reward_and_or_me(
             &treasury,
             reward,
@@ -832,6 +766,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
         return Err(ProtocolError::BrandDoesNotExist);
     }
 }
+
 
 fn ensure_is_issuing_brand<T>(
     instance: &mut T,

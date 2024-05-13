@@ -1,6 +1,7 @@
 use openbrush::{contracts::psp34::Id, traits::{ AccountId, String }};
 
 use crate::providers::common::{ errors::*, types::*, constants::* };
+use ink::{ prelude::vec::Vec };
 
 pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
 

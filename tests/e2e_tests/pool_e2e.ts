@@ -40,17 +40,17 @@ describe( "Pool Test", () => {
 
        
 
-        const poolAAddress = (await poolFactory.new(rewardAAddress, meAddress,
-            {   rOptimal: 1000000,
-                maximumRLimit: 10000000,
-                minimumRewardAmountForConversation: 0,
-                minimumMeAmountForConversation: 0,
-                notifyRewardAmount: 0,
-                notifyMeAmount: 0,
-                defaultSlippageInPrecision: 0,
-                allowInternalSwap: false
-            }
-            )).address;
+            const poolAAddress = (await poolFactory.new(rewardAAddress, meAddress,
+                {   rOptimal: 1000000,
+                    maximumRLimit: 10000000,
+                    minimumRewardAmountForConversation: 0,
+                    minimumMeAmountForConversation: 0,
+                    notifyRewardAmount: 0,
+                    notifyMeAmount: 0,
+                    defaultSlippageInPrecision: 0,
+                    allowInternalSwap: false
+                }
+                )).address;
             const poolBAddress = (await poolFactory.new(rewardBAddress, meAddress,
                 {   rOptimal: 0,
                     maximumRLimit: 0,
@@ -252,7 +252,7 @@ describe( "Pool Test", () => {
 
                 let brandAMeBalanceBefore = (await me.query.balanceOf(brandA.address)).value.unwrapRecursively().rawNumber.toString();
 
-                // let result = await poolA.withSigner(brandA).tx.withdrawLiquidity(IdBuilder.U128(0),100,100,brandA.address, brandA.address);
+                // let resault = await poolA.withSigner(brandA).tx.withdrawLiquidity(IdBuilder.U128(0),100,100,brandA.address, brandA.address);
 
                 // let result = (await poolA.query.getBalance(rewardA.address, brandA.address)).value.unwrapRecursively().rawNumber.toString();
 
