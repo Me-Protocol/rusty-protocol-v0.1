@@ -196,6 +196,197 @@ The Oracle contract serves as a crucial bridge for Me Protocol users, enabling t
 
 For comprehensive information regarding the Oracle contract and its function, please refer to the official documentation or educational resources provided by MY AI, Inc.
 
+# Services Contract Documentation
+
+## Introduction
+
+The Services contract is a key component of the Me Protocol, designed to manage interactions among brands, customers, and administrators. This contract encapsulates three main roles: Brand, Customer, and Admin, each with its specific functions and responsibilities. The Services contract ensures efficient protocol management, customer operations, and brand reward handling, making it a comprehensive tool within the Me Protocol ecosystem.
+
+## Services Contract Overview
+
+### Brand Functions
+
+The Brand component exposes various functions that allow brands to manage their rewards and liquidity pools. Brands can create new rewards, update reward details, manage liquidity, and perform other related operations.
+
+#### Key Functions:
+
+1. **Create New Reward**
+   - **Function Name:** `create_new_reward`
+   - **Parameters:**
+     - `reward`: AccountId
+     - `reward_name`: Option<String>
+     - `reward_symbol`: Option<String>
+     - `reward_description_link`: Option<String>
+     - `reward_type`: u8
+     - `brand_id`: BRAND_ID_TYPE
+     - `requestor`: AccountId
+     - `pool_id`: AccountId
+   - **Description:** Creates a new reward token for the brand.
+
+2. **Update Reward Details**
+   - **Function Name:** `update_reward_details`
+   - **Parameters:**
+     - `reward`: AccountId
+     - `reward_details`: EditableRewardDetails
+     - `ignore_default`: bool
+   - **Description:** Updates details of an existing reward token.
+
+3. **Add Liquidity for Open Rewards**
+   - **Function Name:** `add_liquidity_for_open_rewards`
+   - **Parameters:**
+     - `reward`: AccountId
+     - `reward_amount`: Balance
+     - `me_amount`: Balance
+   - **Description:** Adds liquidity for open rewards.
+
+4. **Withdraw Rewards from Bounty Pool to Treasury**
+   - **Function Name:** `withdraw_rewards_from_bounty_pool_to_treasury`
+   - **Parameters:**
+     - `reward`: AccountId
+     - `amount`: Balance
+   - **Description:** Withdraws specified amount of rewards from the bounty pool to the treasury.
+
+5. **Update Brand Details**
+   - **Function Name:** `update_brand_details`
+   - **Parameters:**
+     - `brand_details`: EditableBrandDetails
+     - `ignore_default`: bool
+   - **Description:** Updates the details of a brand.
+
+### Customer Functions
+
+The Customer component provides functions that allow customers to interact with the rewards, including spending, exchanging, and managing their rewards.
+
+#### Key Functions:
+
+1. **Spend Rewards on Issuing Brand**
+   - **Function Name:** `spend_rewards_on_issuing_brand`
+   - **Parameters:**
+     - `reward`: AccountId
+     - `amount`: Balance
+   - **Description:** Allows customers to spend rewards on the issuing brand.
+
+2. **Spend Rewards on Other Brand**
+   - **Function Name:** `spend_rewards_on_other_brand`
+   - **Parameters:**
+     - `reward_at_hand`: AccountId
+     - `targeted_reward`: AccountId
+     - `amount_of_reward_at_hand`: Balance
+     - `expected_amount_of_targeted_reward`: Balance
+   - **Description:** Enables customers to spend rewards on a different brand.
+
+3. **Exchange Brand Rewards**
+   - **Function Name:** `exchange_brand_rewards`
+   - **Parameters:**
+     - `reward_at_hand`: AccountId
+     - `targeted_reward`: AccountId
+     - `amount_of_reward_at_hand`: Balance
+     - `expected_amount_of_targeted_reward`: Balance
+     - `to`: AccountId
+   - **Description:** Allows customers to exchange brand rewards with another user.
+
+### Admin Functions
+
+The Admin component is responsible for managing the overall protocol configurations and records. Admins can update protocol configurations, manage brands, and handle other administrative tasks.
+
+#### Key Functions:
+
+1. **Get Protocol Config**
+   - **Function Name:** `get_protocol_config`
+   - **Return Type:** EditableProtocolConfig
+   - **Description:** Retrieves the current protocol configuration.
+
+2. **Update Protocol Configurations**
+   - **Function Name:** `update_protocol_configurations`
+   - **Parameters:**
+     - `config`: EditableProtocolConfig
+   - **Description:** Updates the protocol configurations.
+
+3. **Register Brand**
+   - **Function Name:** `register_brand`
+   - **Parameters:**
+     - `brand_name`: Option<String>
+     - `brand_online_presence`: Option<String>
+     - `brand_account`: AccountId
+     - `brand_id`: BRAND_ID_TYPE
+   - **Description:** Registers a new brand in the protocol.
+
+4. **Update Treasury Address**
+   - **Function Name:** `update_treasury_address`
+   - **Parameters:**
+     - `address`: AccountId
+   - **Description:** Updates the treasury address in the protocol.
+
+## Conclusion
+
+The Services contract is a comprehensive and essential component of the Me Protocol, enabling seamless interactions among brands, customers, and administrators. By encapsulating functionalities for managing rewards, liquidity, and protocol configurations, the Services contract ensures a robust and efficient protocol operation.
+
+For more detailed information regarding the Services contract and its functionalities, please refer to the official documentation or educational resources provided by MY AI, Inc.
+
+# Governance Contract Documentation
+
+## Introduction
+
+The governance function is used to pass proposals and create votes within the Me Protocol. This component is essential for managing decision-making processes and ensuring that protocol changes are carried out democratically and transparently.
+
+## Governance Contract Overview
+
+### Key Functions:
+
+1. **Hash Proposal**
+   - **Function Name:** `hash_proposal`
+   - **Description:** Generates a unique hash for a given proposal consisting of a list of transactions and a description hash. This ensures that each proposal is uniquely identifiable.
+
+2. **State**
+   - **Function Name:** `state`
+   - **Description:** Retrieves the current state of a proposal, such as whether it is pending, succeeded, or failed. This helps in tracking the proposal's progress.
+
+3. **Proposal Snapshot**
+   - **Function Name:** `proposal_snapshot`
+   - **Description:** Returns the timestamp at which votes for a proposal start. This defines the beginning of the voting period for a proposal.
+
+4. **Proposal Deadline**
+   - **Function Name:** `proposal_deadline`
+   - **Description:** Returns the timestamp at which votes for a proposal end. This marks the end of the voting period.
+
+5. **Proposal Proposer**
+   - **Function Name:** `proposal_proposer`
+   - **Description:** Returns the AccountId of the proposer of a proposal. This identifies who initiated the proposal.
+
+6. **Get Votes with Parameters**
+   - **Function Name:** `get_votes_with_params`
+   - **Description:** Returns the number of votes already cast for a proposal by a given account, considering specific parameters. This provides detailed voting information.
+
+7. **Propose**
+   - **Function Name:** `propose`
+   - **Description:** Allows a user to make a proposal for a list of transactions to be executed, and returns the ID of the proposal. This is the starting point for any governance decision.
+
+8. **Execute**
+   - **Function Name:** `execute`
+   - **Description:** Executes a proposal if it is in the `Succeeded` state, meaning it has passed all necessary votes. It returns the ID of the executed proposal.
+
+9. **Cancel**
+   - **Function Name:** `cancel`
+   - **Description:** Cancels a proposal if it is in the `Pending` state and returns the ID of the canceled proposal. This allows the proposer to withdraw a proposal before it is voted on.
+
+10. **Cast Vote**
+    - **Function Name:** `cast_vote`
+    - **Description:** Allows a user to cast a vote for a proposal, specifying their support and optionally providing a reason and additional parameters. It returns the number of votes cast by the user.
+
+11. **Cast Vote with Signature**
+    - **Function Name:** `cast_vote_with_signature`
+    - **Description:** Allows a user to cast a vote for a proposal using a cryptographic signature for verification. This adds an extra layer of security.
+
+12. **Cast Vote with Signature and Parameters**
+    - **Function Name:** `cast_vote_with_signature_and_params`
+    - **Description:** Similar to casting a vote with a signature, but also includes additional parameters. This is useful for more complex voting scenarios.
+
+## Conclusion
+
+The Governance contract is a critical component of the Me Protocol, facilitating the democratic and transparent management of protocol changes. By providing functionalities for proposing, voting on, and executing proposals, the Governance contract ensures that all stakeholders have a voice in the protocol's evolution.
+
+For more detailed information regarding the Governance contract and its functionalities, please refer to the official documentation or educational resources provided by MY AI, Inc.
+
 
 ### Docker Environment Setup 
 
