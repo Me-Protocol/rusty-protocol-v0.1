@@ -32,7 +32,7 @@ mod reward_initiator_test {
     
         let mut reward_initiator = RewardInitiator::new(hash);
 
-        assert_eq!(reward_initiator.get_pool_hash(), hash);
+        assert_eq!(reward_initiator.get_reward_hash(), hash);
     }
 
     #[ink::test]
@@ -64,7 +64,7 @@ mod reward_initiator_test {
 
        let _ = reward_initiator.update_pool_hash(new_hash);
 
-        assert_eq!(reward_initiator.get_pool_hash(), new_hash);
+        assert_eq!(reward_initiator.get_reward_hash(), new_hash);
     }
 
 
