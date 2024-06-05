@@ -183,5 +183,9 @@ pub trait BrandController {
     #[ink(message)]
     fn get_brand_details ( &self, brand_id: BRAND_ID_TYPE) -> BrandDetails;
 
+    #[ink(message)]
+    fn get_all_brands(&self) -> Vec<BRAND_ID_TYPE>;
+
+
 }
 

@@ -1,11 +1,14 @@
 
 pub use crate::{
     providers::common::{ roles::*, errors::ProtocolError, eunice::*, validator::* },
-    controllers::deployables::a_pool::*,
+    controllers::{deployables::a_pool::*, services::brands::*},
 };
+use ink::{ prelude::vec::Vec };
 
 use ink::primitives::AccountId;
 use openbrush::traits::Balance;
+
+use super::customers::BRAND_ID_TYPE;
 
 
 pub trait OracleImpl {
@@ -23,4 +26,20 @@ pub trait OracleImpl {
 
         Ok(reward_b_amount)
      }
+
+     fn determine_me_and_reward_balance_in_a_pool( 
+        pool: AccountId,
+        reward: AccountId,
+        me_token: AccountId
+    ) -> (Balance, Balance) {
+       objectively_obtain_pool_balances(
+            pool,
+            reward,
+            me_token
+        )
+    }
+
+    fn get_all_brands(protocol: AccountId) -> Vec<BRAND_ID_TYPE> {
+        BrandRef::get_all_brands(&protocol)
+    }
 }

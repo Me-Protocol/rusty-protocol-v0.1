@@ -5,11 +5,10 @@
 
 #[cfg(test)]
 mod treasury_test {
-    use ink::primitives::Hash;
+    
     use treasury::treasury::*;
-    use global::providers::  common::{ roles::*, errors::ProtocolError, eunice::*, validator::* };
-    use openbrush::{ test_utils::*, traits::{ AccountId, Balance } };
-    use global::{ providers::data::treasury::* };
+    use openbrush::test_utils::*;
+    
     
     
 
@@ -17,7 +16,7 @@ mod treasury_test {
     fn new_works() {
         let accounts = accounts();
         let a = accounts.bob;
-        let b = accounts.alice;
+        let _b = accounts.alice;
         let mut treasury = Treasury::new(a);
 
         assert_eq!(treasury::treasury::TreasuryImpl::get_me_id(&mut treasury), Ok(a));
@@ -27,7 +26,7 @@ mod treasury_test {
     fn withdraw_reward_and_or_me_test () {
         let accounts = accounts();
         let a = accounts.bob;
-        let b = accounts.alice;
+   
         let mut treasury = Treasury::new(a);
         let id: BRAND_ID_TYPE = [0; 10];
         // treasury::treasury::TreasuryImpl::deposit_reward_and_or_me(&mut treasury, b, 1000,1000,id, a, Some(String::from("metadata"))
@@ -40,7 +39,7 @@ mod treasury_test {
         let a = accounts.bob;
         let b = accounts.alice;
         let mut treasury = Treasury::new(a);
-        let id: BRAND_ID_TYPE = [0; 10];
+  
         assert_eq!(treasury::treasury::TreasuryImpl::get_reward_notify_limit(&mut treasury,b, a),  Ok(0));
     }
 
@@ -48,9 +47,9 @@ mod treasury_test {
     fn set_me_notify_limit_test() {
         let accounts = accounts();
         let a = accounts.bob;
-        let b = accounts.alice;
+        let _b = accounts.alice;
         let mut treasury = Treasury::new(a);
-        let id: BRAND_ID_TYPE = [0; 10];
+        let _id: BRAND_ID_TYPE = [0; 10];
 
         assert_eq!(treasury::treasury::TreasuryImpl::set_me_notify_limit(&mut treasury, 100, a),  Ok(true));
     }
@@ -59,7 +58,7 @@ mod treasury_test {
     fn get_me_notify_limit_test() {
         let accounts = accounts();
         let a = accounts.bob;
-        let b = accounts.alice;
+        let _b = accounts.alice;
         let mut treasury = Treasury::new(a);
         
         let _ = treasury::treasury::TreasuryImpl::set_me_notify_limit(&mut treasury, 100, a);

@@ -1,6 +1,7 @@
 use openbrush::traits::{ AccountId, Balance, Storage, String };
 use ink::{ storage::{ traits::StorageLayout, Mapping } };
 use crate::providers::common::{ database::*, errors::ProtocolError, types::* };
+use ink::{ prelude::vec::Vec };
 
 pub const ZERO_ADDRESS: [u8; 32] = [0u8; 32];
 
@@ -22,7 +23,7 @@ pub struct BrandRecords {
     pub exists: Mapping<BRAND_ID_TYPE, bool>,
     pub details: Mapping<BRAND_ID_TYPE, BrandDetails>,
     pub global_config: Mapping<BRAND_ID_TYPE, GlobalBrandConfig>,
-    // pub acount_managers: Mapping<AccountId, AccountId>,
+    pub all_brands: Vec<BRAND_ID_TYPE>,
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]

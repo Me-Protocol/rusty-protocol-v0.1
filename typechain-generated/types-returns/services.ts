@@ -10,6 +10,14 @@ export type AccessData = {
 
 export type BTreeMap = Array<[AccountId, boolean]>;
 
+export type Transaction = {
+	callee: AccountId | null,
+	selector: Array<number>,
+	input: Array<number>,
+	transferredValue: ReturnNumber,
+	gasLimit: number
+}
+
 export enum LangError {
 	couldNotReadInput = 'CouldNotReadInput'
 }
@@ -628,48 +636,6 @@ export type EditableProtocolConfig = {
 	informationsSlippageInPrecision: ReturnNumber
 }
 
-export type RewardConfig = {
-	specificExceptions: boolean,
-	bountyEnabled: boolean,
-	caiEnabled: boolean,
-	bountyTriggerLimit: ReturnNumber,
-	bountyContributionInPrecision: ReturnNumber,
-	payIncomingGasFee: boolean,
-	payOutgoingGasFee: boolean
-}
-
-export type BrandDetails = {
-	name: string | null,
-	id: Array<number>,
-	mainAccount: AccountId,
-	onlinePresence: string | null,
-	dateJoined: number
-}
-
-export type RewardDetails = {
-	name: string | null,
-	symbol: string | null,
-	rType: number,
-	verified: boolean,
-	contractAddress: AccountId,
-	descriptionLink: string | null,
-	issuingBrand: Array<number>,
-	open: boolean,
-	interspendable: boolean,
-	poolId: AccountId,
-	dateCreated: ReturnNumber
-}
-
-export type EditablePoolConfig = {
-	maximumRLimit: ReturnNumber,
-	minimumRewardAmountForConversation: ReturnNumber,
-	minimumMeAmountForConversation: ReturnNumber,
-	notifyRewardAmount: ReturnNumber,
-	notifyMeAmount: ReturnNumber,
-	defaultSlippageInPrecision: ReturnNumber,
-	allowInternalSwap: boolean
-}
-
 export interface Id {
 	u8 ? : number,
 	u16 ? : number,
@@ -712,6 +678,14 @@ export class IdBuilder {
 	}
 }
 
+export type BrandDetails = {
+	name: string | null,
+	id: Array<number>,
+	mainAccount: AccountId,
+	onlinePresence: string | null,
+	dateJoined: number
+}
+
 export type EditableRewardDetails = {
 	name: string | null,
 	symbol: string | null,
@@ -736,5 +710,39 @@ export type GlobalBrandConfig = {
 export type EditableBrandDetails = {
 	name: string | null,
 	onlinePresence: string | null
+}
+
+export type RewardDetails = {
+	name: string | null,
+	symbol: string | null,
+	rType: number,
+	verified: boolean,
+	contractAddress: AccountId,
+	descriptionLink: string | null,
+	issuingBrand: Array<number>,
+	open: boolean,
+	interspendable: boolean,
+	poolId: AccountId,
+	dateCreated: ReturnNumber
+}
+
+export type RewardConfig = {
+	specificExceptions: boolean,
+	bountyEnabled: boolean,
+	caiEnabled: boolean,
+	bountyTriggerLimit: ReturnNumber,
+	bountyContributionInPrecision: ReturnNumber,
+	payIncomingGasFee: boolean,
+	payOutgoingGasFee: boolean
+}
+
+export type EditablePoolConfig = {
+	maximumRLimit: ReturnNumber,
+	minimumRewardAmountForConversation: ReturnNumber,
+	minimumMeAmountForConversation: ReturnNumber,
+	notifyRewardAmount: ReturnNumber,
+	notifyMeAmount: ReturnNumber,
+	defaultSlippageInPrecision: ReturnNumber,
+	allowInternalSwap: boolean
 }
 

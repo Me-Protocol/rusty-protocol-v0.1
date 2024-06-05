@@ -36,4 +36,32 @@ export default class Methods {
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "determineNeededRewardBGivenRewardA", [rewardA, rewardB, amount], __options);
 	}
 
+	/**
+	 * determineMeAndRewardBalanceInAPool
+	 *
+	 * @param { ArgumentTypes.AccountId } pool,
+	 * @param { ArgumentTypes.AccountId } reward,
+	 * @param { ArgumentTypes.AccountId } meToken,
+	*/
+	"determineMeAndRewardBalanceInAPool" (
+		pool: ArgumentTypes.AccountId,
+		reward: ArgumentTypes.AccountId,
+		meToken: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "determineMeAndRewardBalanceInAPool", [pool, reward, meToken], __options);
+	}
+
+	/**
+	 * getAllBrands
+	 *
+	 * @param { ArgumentTypes.AccountId } protocol,
+	*/
+	"getAllBrands" (
+		protocol: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "getAllBrands", [protocol], __options);
+	}
+
 }
