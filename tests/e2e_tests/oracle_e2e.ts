@@ -8,7 +8,11 @@ import rewardConstructor from '../../typechain-generated/constructors/reward'
 import rewardContract from '../../typechain-generated/contracts/reward'
 import poolConstructor from '../../typechain-generated/constructors/pool'
 import poolContract from '../../typechain-generated/contracts/pool'
+import servicesConstructor from '../../typechain-generated/constructors/services'
+import servicesContract from '../../typechain-generated/contracts/services'
 import { IdBuilder } from '../../typechain-generated/types-arguments/pool'
+
+import { BrandDetails, EditableBrandDetails, GlobalBrandConfig } from '../../typechain-generated/types-arguments/services'
 
 describe( "Pool Test", () => {
 
@@ -37,6 +41,9 @@ describe( "Pool Test", () => {
         const oracleFactory = new oracleConstructor(api, admin)
         const oracleAddress = (await oracleFactory.new(meAddress)).address
         const oracle = new oracleContract(oracleAddress, admin, api)
+        const servicesFactory = new servicesConstructor(api, admin)
+        const servicesAddress = (await servicesFactory.new()).address
+        const services = new servicesContract(servicesAddress, admin, api)
 
        
 
@@ -76,6 +83,7 @@ describe( "Pool Test", () => {
           rewardB,
           poolAAddress,
           poolBAddress,
+          services,
           meAddress,
           rewardAAddress,
           rewardBAddress,
@@ -116,7 +124,66 @@ describe( "Pool Test", () => {
               });
 
 
+              it('should return the exact balances of me and reward in a pool', async () => {
+                const { poolA, poolB, rewardA, rewardB, me, admin,oracle, close } = await pool_fixture();
+            
+                await  rewardA.withSigner(admin).tx.transfer(poolA.address, 1000, []);  
+                await me.withSigner(admin).tx.transfer(poolA.address, 1000, []);
+        
+                await  rewardB.withSigner(admin).tx.transfer(poolB.address, 2000, []);
+                await me.withSigner(admin).tx.transfer(poolB.address, 2000, []);
+                             
+                await poolA.withSigner(admin).tx.startOpenRewards();
+                await poolB.withSigner(admin).tx.startOpenRewards();
 
+                await poolA.withSigner(admin).tx.recordLiquidityProvided(1000, 1000, admin.address, admin.address)
+                await poolB.withSigner(admin).tx.recordLiquidityProvided(2000, 2000, admin.address, admin.address)
+
+                let config = (await poolA.query.getOpenRewardsConfigurations()).value.unwrapRecursively()
+
+                let pool_bal = (await oracle.query.determineMeAndRewardBalanceInAPool(poolA.address, rewardA.address, me.address)).value.unwrapRecursively()
+
+                console.log("pool balance",pool_bal.toString())
+
+                expect(pool_bal.toString()).to.eq("1000,1000")
+
+                
+                await close();
+              });
+
+              
+
+              it('Should total brands added to the protocol', async () => {
+                const { admin, services, oracle} = await pool_fixture();
+
+                const brand1 = [31,42,53,64,75,86,27,38,49,20]
+                const brand2 = [11,32,43,546,56,76,87,98,99,30]
+    
+                let  brandDetail1: BrandDetails = {
+                  name: "Nike",
+                  onlinePresence: "www.nike.com",
+                  id: brand1,
+                  mainAccount: admin.address,
+                  dateJoined: 23344
+              }
+
+              let  brandDetail2: BrandDetails = {
+                name: "Nike",
+                onlinePresence: "www.addidas.com",
+                id: brand1,
+                mainAccount: admin.address,
+                dateJoined: 12345
+            }
+
+              await services.tx.updateBrandDetailsByBrandId(brandDetail1, brand1)
+              await services.tx.updateBrandDetailsByBrandId(brandDetail2, brand2)
+             
+              let brands = (await oracle.query.getAllBrands(services.address)).value.unwrapRecursively();
+              console.log("All brands", brands);
+  
+       
+              expect((await oracle.query.getAllBrands(services.address)).value.unwrapRecursively().length).to.be.eq(2)
+            })
 
      });
 

@@ -18,7 +18,7 @@ To run the unit test, run the following command ```cargo test```, your unit test
 
 3. Run the following command ```docker build -t my-rust-environment:v1 . ```. The following command would build the docker image. 
 
-4. Run the folowing comand to finally run the test from docker ```docker run -p 9944:9944 my-rust-environment:v1 ```.
+4. Run the folowing comand to finally run the test from docker ```docker run -p 9945:9945 my-rust-environment:v1 ```.
 
 Your E2E test should be running sucessfully now.
 

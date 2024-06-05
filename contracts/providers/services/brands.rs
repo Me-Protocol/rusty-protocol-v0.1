@@ -100,6 +100,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
             }
         }
         self.data::<BrandRecords>().details.insert(brand_id, &details);
+        self.data::<BrandRecords>().all_brands.push(brand_id);
         Ok(true)
     }
 
@@ -115,6 +116,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
     ){
         let _ = ensure_brand_is_not_empty(brand_id);
 
+        self.data::<BrandRecords>().all_brands.push(brand_id);
         update_brand_details(self, brand_id, brand_details)
     }
 
@@ -149,6 +151,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
                 previous_config.pay_outgoing_gas_fees = brand_config.pay_outgoing_gas_fees;
             }
             self.data::<BrandRecords>().global_config.insert(&id, &previous_config);
+            self.data::<BrandRecords>().all_brands.push(id);
         }
 
         Ok(true)
@@ -185,6 +188,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
                 previous_config.pay_outgoing_gas_fees = brand_config.pay_outgoing_gas_fees;
             }
             self.data::<BrandRecords>().global_config.insert(&brand_id, &previous_config);
+            self.data::<BrandRecords>().all_brands.push(brand_id);
         }
 
         Ok(true)
@@ -263,6 +267,11 @@ pub trait BrandImpl: Storage<BrandRecords> +
         self.data::<RewardRecords>().details.insert(reward, &details);
 
         Ok(true)
+    }
+
+    fn get_all_brands(&self) -> Vec<BRAND_ID_TYPE> {
+        let brands = self.data::<BrandRecords>().all_brands.clone();
+        brands
     }
 
    
@@ -549,6 +558,7 @@ pub trait BrandImpl: Storage<BrandRecords> +
         
         brand_record.id.insert(requestor, &DEFAULT_BRAND_ID);
         brand_record.id.insert(_new_account, &brand_id);
+        brand_record.all_brands.push(brand_id);
 
         Ok(true)
     }

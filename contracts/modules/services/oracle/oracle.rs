@@ -13,8 +13,11 @@
 mod oracle {
 
     use global::providers::{
-        deployables::a_pool::{ * }, services::oracle::OracleImpl,
+        common::types::BRAND_ID_TYPE, data::protocol, deployables::a_pool::*, services::oracle::OracleImpl
     };
+    use ink::{ prelude::vec::Vec };
+
+
 
     #[ink(storage)]
     pub struct Oracle {
@@ -40,6 +43,24 @@ mod oracle {
         {
            <Oracle as OracleImpl>::determine_needed_reward_b_given_reward_a(reward_a, reward_b, amount)
         }
+
+        #[ink(message)]
+        pub fn determine_me_and_reward_balance_in_a_pool( 
+            &self,
+            pool: AccountId,
+            reward: AccountId,
+            me_token: AccountId
+        ) -> (Balance, Balance) {
+            <Oracle as OracleImpl>::determine_me_and_reward_balance_in_a_pool(pool, reward, me_token)
+        }
+
+
+        #[ink(message)]
+        pub fn get_all_brands(&self, protocol: AccountId) -> Vec<BRAND_ID_TYPE> {
+            <Oracle as OracleImpl>::get_all_brands(protocol)
+        }
+
+
         
     }
 

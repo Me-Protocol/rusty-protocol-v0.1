@@ -151,6 +151,11 @@ mod services {
         }
 
         #[ink(message)]
+        fn get_all_brands(&self) -> Vec<BRAND_ID_TYPE> {
+            BrandImpl::get_all_brands(self)
+        }
+
+        #[ink(message)]
         fn update_reward_config(
             &mut self,
             reward: AccountId,

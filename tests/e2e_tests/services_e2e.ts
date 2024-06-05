@@ -251,6 +251,7 @@ describe( "Service Test", () => {
                 }
 
                 await services.tx.updateBrandDetailsByBrandId(brandDetail, brand)
+               
                 let res = await services.query.getBrandDetails(brand)
                 // console.log("The results", res)
          
@@ -269,8 +270,8 @@ describe( "Service Test", () => {
 
             await services.tx.updateBrandConfigByBrandId( config, false, brand)
 
-            let res = await services.query.getBrandConfigById(brand)
 
+            let res = await services.query.getBrandConfigById(brand)
             // console.log("The brand config", res)
 
             expect(res.value.unwrapRecursively().enableBountyRewards).to.be.eq(config.enableBountyRewards)

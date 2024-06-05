@@ -54,4 +54,34 @@ export default class Methods {
 		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "determineNeededRewardBGivenRewardA", [rewardA, rewardB, amount], __options, (result) => { return handleReturnType(result, getTypeDescription(8, DATA_TYPE_DESCRIPTIONS)); });
 	}
 
+	/**
+	* determineMeAndRewardBalanceInAPool
+	*
+	* @param { ArgumentTypes.AccountId } pool,
+	* @param { ArgumentTypes.AccountId } reward,
+	* @param { ArgumentTypes.AccountId } meToken,
+	* @returns { Result<[ReturnNumber, ReturnNumber], ReturnTypes.LangError> }
+	*/
+	"determineMeAndRewardBalanceInAPool" (
+		pool: ArgumentTypes.AccountId,
+		reward: ArgumentTypes.AccountId,
+		meToken: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<[ReturnNumber, ReturnNumber], ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "determineMeAndRewardBalanceInAPool", [pool, reward, meToken], __options, (result) => { return handleReturnType(result, getTypeDescription(20, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
+	/**
+	* getAllBrands
+	*
+	* @param { ArgumentTypes.AccountId } protocol,
+	* @returns { Result<Array<Array<number>>, ReturnTypes.LangError> }
+	*/
+	"getAllBrands" (
+		protocol: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	): Promise< QueryReturnType< Result<Array<Array<number>>, ReturnTypes.LangError> > >{
+		return queryOkJSON( this.__apiPromise, this.__nativeContract, this.__callerAddress, "getAllBrands", [protocol], __options, (result) => { return handleReturnType(result, getTypeDescription(22, DATA_TYPE_DESCRIPTIONS)); });
+	}
+
 }
